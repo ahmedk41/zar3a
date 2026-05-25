@@ -1,0 +1,325 @@
+import { Product, ExpertListing, User, OrderTracking, Order, OrderItem } from '../models/index.js';
+import notificationService from './notification.controller.js';
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * CROP MARKET ENDPOINTS
+ * (for FARMER role only)
+ * ─────────────────────────────────────────────────────────
+ */
+
+export const getCropMarketProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      where: { marketplaceType: 'CROP_MARKET' },
+      include: [{ model: User, attributes: ['id', 'fullName', 'username', 'role'] }],
+      order: [['createdAt', 'DESC']],
+    });
+    return res.json(products);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const createCropMarketProduct = async (req, res) => {
+  try {
+    const user = req.user;
+
+    // Enforce role: only FARMER can add to crop market
+    if (user.role !== 'FARMER' && user.role !== 'ADMIN') {
+      return res.status(403).json({
+        message: 'Only farmers can add products to Crop Market. Your role is: ' + user.role,
+      });
+    }
+
+    const { title, description, category, price, unit, region, imageUrl, productSource } =
+      req.body;
+
+    if (!title || !description || !category || !price) {
+      return res.status(400).json({
+        message: 'Title, description, category and price are required',
+      });
+    }
+
+    // Normalize category
+    const CATEGORY_MAP = {
+      seeds: 'SEEDS',
+      fertilizers: 'FERTILIZERS',
+      tools: 'TOOLS',
+      produce: 'PRODUCE',
+      equipment: 'EQUIPMENT',
+      other: 'OTHER',
+    };
+    const normalizedCategory = (category || '').toString().trim().toLowerCase();
+    const dbCategory = CATEGORY_MAP[normalizedCategory] || 'OTHER';
+
+    const SOURCE_MAP = { manual: 'MANUAL', sensed: 'SENSED', MANUAL: 'MANUAL', SENSED: 'SENSED' };
+    const dbSource = SOURCE_MAP[(productSource || '').toString().trim().toLowerCase()] || 'MANUAL';
+
+    const product = await Product.create({
+      userId: user.id,
+      title,
+      description,
+      category: dbCategory,
+      price: Number(price),
+      unit: unit || 'unit',
+      region: region || '',
+      imageUrl: imageUrl || '',
+      marketplaceType: 'CROP_MARKET', // ← ALWAYS crop market for this endpoint
+      productSource: dbSource,
+      isVerified: false,
+    });
+
+    // Create tracking record
+    await OrderTracking.create({
+      productId: product.id,
+      userId: user.id,
+      marketplaceType: 'CROP_MARKET',
+      productSource: dbSource,
+      title: product.title,
+      description: product.description,
+      category: product.category,
+      price: product.price,
+      unit: product.unit,
+      region: product.region,
+      imageUrl: product.imageUrl,
+      quantity: 1,
+      status: product.status,
+    });
+
+    await notificationService.notifyUsersOnProductAdded(product, user);
+
+    return res.status(201).json({
+      ...product.toJSON(),
+      message: 'Crop market product added successfully',
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * AGRI SHOP ENDPOINTS
+ * (for SUPPLIER role only)
+ * ─────────────────────────────────────────────────────────
+ */
+
+export const getAgriShopProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      where: { marketplaceType: 'AGRI_MARKET' },
+      include: [{ model: User, attributes: ['id', 'fullName', 'username', 'role'] }],
+      order: [['createdAt', 'DESC']],
+    });
+    return res.json(products);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const createAgriShopProduct = async (req, res) => {
+  try {
+    const user = req.user;
+
+    // Enforce role: only SUPPLIER can add to agri shop
+    if (user.role !== 'SUPPLIER' && user.role !== 'ADMIN') {
+      return res.status(403).json({
+        message: 'Only suppliers can add products to Agri Shop. Your role is: ' + user.role,
+      });
+    }
+
+    const { title, description, category, price, unit, region, imageUrl, productSource } =
+      req.body;
+
+    if (!title || !description || !category || !price) {
+      return res.status(400).json({
+        message: 'Title, description, category and price are required',
+      });
+    }
+
+    const CATEGORY_MAP = {
+      seeds: 'SEEDS',
+      fertilizers: 'FERTILIZERS',
+      tools: 'TOOLS',
+      produce: 'PRODUCE',
+      equipment: 'EQUIPMENT',
+      other: 'OTHER',
+    };
+    const normalizedCategory = (category || '').toString().trim().toLowerCase();
+    const dbCategory = CATEGORY_MAP[normalizedCategory] || 'OTHER';
+
+    const SOURCE_MAP = { manual: 'MANUAL', sensed: 'SENSED', MANUAL: 'MANUAL', SENSED: 'SENSED' };
+    const dbSource = SOURCE_MAP[(productSource || '').toString().trim().toLowerCase()] || 'MANUAL';
+
+    const product = await Product.create({
+      userId: user.id,
+      title,
+      description,
+      category: dbCategory,
+      price: Number(price),
+      unit: unit || 'unit',
+      region: region || '',
+      imageUrl: imageUrl || '',
+      marketplaceType: 'AGRI_MARKET', // ← ALWAYS agri market for this endpoint
+      productSource: dbSource,
+      isVerified: false,
+    });
+
+    // Create tracking record
+    await OrderTracking.create({
+      productId: product.id,
+      userId: user.id,
+      marketplaceType: 'AGRI_MARKET',
+      productSource: dbSource,
+      title: product.title,
+      description: product.description,
+      category: product.category,
+      price: product.price,
+      unit: product.unit,
+      region: product.region,
+      imageUrl: product.imageUrl,
+      quantity: 1,
+      status: product.status,
+    });
+
+    await notificationService.notifyUsersOnProductAdded(product, user);
+
+    return res.status(201).json({
+      ...product.toJSON(),
+      message: 'Agri shop product added successfully',
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * EXPERT LISTINGS (unchanged)
+ * ─────────────────────────────────────────────────────────
+ */
+
+export const getExpertListings = async (req, res) => {
+  try {
+    // Only show APPROVED experts
+    const listings = await ExpertListing.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'fullName', 'username', 'email', 'isApproved'],
+          where: { isApproved: true, role: 'AGRO_EXPERT' },
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+    return res.json(listings);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const createExpertListing = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== 'AGRO_EXPERT' && user.role !== 'ADMIN') {
+      return res.status(403).json({ message: 'Only experts can create expert listings' });
+    }
+
+    // Enforce: expert must be APPROVED to list
+    if (user.role === 'AGRO_EXPERT' && !user.isApproved) {
+      return res
+        .status(403)
+        .json({ message: 'Expert must be approved before creating listings' });
+    }
+
+    // Enforce: expert must have uploaded CV
+    // const expertProfile = await user.getExpertProfile?.();
+    // if (!expertProfile?.cvFilePath) {
+    //   return res.status(403).json({
+    //     message: 'CV upload is required before creating expert listings',
+    //   });
+    // }
+
+    const { title, specialty, description, hourlyRate, location, imageUrl } = req.body;
+
+    if (!title || !specialty || !description || !hourlyRate) {
+      return res.status(400).json({
+        message: 'Title, specialty, description and hourlyRate are required',
+      });
+    }
+
+    const listing = await ExpertListing.create({
+      userId: user.id,
+      title,
+      specialty,
+      description,
+      hourlyRate: Number(hourlyRate),
+      location: location || '',
+      imageUrl: imageUrl || '',
+      isVerified: true,
+    });
+
+    return res.status(201).json(listing);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * PRODUCT SEARCH (gets both marketplaces)
+ * ─────────────────────────────────────────────────────────
+ */
+
+export const searchProducts = async (req, res) => {
+  try {
+    const { q, marketplace, category } = req.query;
+    const where = {};
+
+    if (marketplace === 'crop') where.marketplaceType = 'CROP_MARKET';
+    if (marketplace === 'agri') where.marketplaceType = 'AGRI_MARKET';
+    if (category) where.category = category.toUpperCase();
+
+    if (q) {
+      where.$or = [
+        sequelize.where(sequelize.fn('LOWER', sequelize.col('title')), 'LIKE', `%${q.toLowerCase()}%`),
+        sequelize.where(sequelize.fn('LOWER', sequelize.col('description')), 'LIKE', `%${q.toLowerCase()}%`),
+      ];
+    }
+
+    const products = await Product.findAll({
+      where,
+      include: [{ model: User, attributes: ['id', 'fullName', 'username', 'role'] }],
+      order: [['createdAt', 'DESC']],
+      limit: 50,
+    });
+
+    return res.json(products);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await Product.findByPk(productId, {
+      include: [{ model: User, attributes: ['id', 'fullName', 'username', 'role'] }],
+    });
+
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    return res.json(product);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};

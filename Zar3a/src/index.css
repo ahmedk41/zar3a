@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+body {
+  font-family: 'Cairo', sans-serif;
+}
+
+@theme {
+  --color-brand-green: #22c55e;
+  --color-brand-dark: #16a34a;
+}
+
+
+@variant dark (&:where(.dark, .dark *));

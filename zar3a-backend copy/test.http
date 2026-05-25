@@ -1,0 +1,61 @@
+### Test Zar3a API
+
+## 1️⃣ Backend Health Check
+GET http://localhost:5000
+Accept: application/json
+
+###
+
+## 2️⃣ Register New User
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Ahmed Test",
+  "username": "ahmadtest123",
+  "email": "ahmadtest@example.com",
+  "phone": "1234567890",
+  "password": "TestPassword123"
+}
+
+### Store userId from response above and use in next request
+
+## 3️⃣ Choose Role (Replace :userId with actual ID from step 2)
+POST http://localhost:5000/auth/choose-role/1
+Content-Type: application/json
+
+{
+  "role": "FARMER"
+}
+
+###
+
+## 4️⃣ Complete Farmer Profile
+POST http://localhost:5000/auth/complete/farmer/1
+Content-Type: application/json
+
+{
+  "farmSize": "5 hectares",
+  "soilType": "clay",
+  "location": "Cairo, Egypt"
+}
+
+###
+
+## 5️⃣ Login Test
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "ahmadtest@example.com",
+  "password": "TestPassword123"
+}
+
+###
+
+## 6️⃣ Get Current User (use accessToken from login response)
+GET http://localhost:5000/auth/me
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+Accept: application/json
+
+###

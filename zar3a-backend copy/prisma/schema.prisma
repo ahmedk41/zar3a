@@ -1,0 +1,89 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  FARMER
+  BUYER
+  SUPPLIER
+  AGRO_EXPERT
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  fullName     String       @db.VarChar(150)
+  username     String       @unique @db.VarChar(255)
+  email        String       @unique @db.VarChar(255)
+  phone        String       @db.VarChar(20)
+  passwordHash String?      @db.VarChar(255)
+  role         UserRole?
+  pendingRole  UserRole?
+  authProvider AuthProvider @default(EMAIL)
+  googleId     String?      @unique @db.VarChar(255)
+
+  isActive   Boolean @default(true)
+  isVerified Boolean @default(false)
+  isApproved Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  farmerProfile      FarmerProfile?
+  expertProfile      AgroExpertProfile?
+  supplierProfile    SupplierProfile?
+  refreshTokens      RefreshToken[]
+}
+
+model FarmerProfile {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  farmSize  String? @db.VarChar(255)
+  soilType  String? @db.VarChar(255)
+  location  String? @db.VarChar(255)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AgroExpertProfile {
+  id              Int     @id @default(autoincrement())
+  userId          Int     @unique
+  academicDegree  String? @db.VarChar(200)
+  experienceYears Int?
+  cvFilePath      String? @db.VarChar(500)
+  bio             String? @db.Text
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SupplierProfile {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @unique
+  tradeLicense String? @db.VarChar(255)
+  location    String? @db.VarChar(255)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique @db.VarChar(512)
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
