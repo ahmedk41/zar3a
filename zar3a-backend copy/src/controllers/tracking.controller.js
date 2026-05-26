@@ -11,198 +11,95 @@ import { OrderTracking, Product, User, Order, OrderItem } from '../models/index.
 export const getOrderTracking = async (req, res) => {
   try {
     const user = req.user;
-    const { page = 1, limit = 20, status, marketplaceType, search } = req.query;
+    const { page = 1, limit = 20, status, search } = req.query;
     const offset = (page - 1) * limit;
 
-    // Build filters based on user role
-    const prodWhere = {};
-    const trackWhere = { paymentStatus: { [Op.in]: ['PAID', 'PENDING'] } }; // Show paid & pending orders
-    const orderItemWhere = {};
-    const orderWhere = { paymentStatus: { [Op.in]: ['PAID', 'PENDING'] } }; // Show paid & pending orders
-
-    // Non-admin users only see their own orders
-    if (user.role !== 'ADMIN') {
-      trackWhere.userId = user.id;
-      orderWhere.userId = user.id;
+    // ⛔ ROLE-BASED ACCESS CONTROL
+    if (user.role === 'BUYER' || user.role === 'AGRO_EXPERT') {
+      return res.status(403).json({
+        message: `${user.role} users do not have access to Track Orders.`,
+      });
     }
 
-    // Apply role-based marketplace filtering
+    // Base where clause - only PAID orders
+    const orderWhere = {
+      paymentStatus: 'PAID',
+      userId: user.id, // User only sees their own orders
+    };
+
+    // Role-based marketplace filtering
     if (user.role === 'FARMER') {
-      // Farmers only see CROP_MARKET items they purchased
-      prodWhere.marketplaceType = 'CROP_MARKET';
-      trackWhere.marketplaceType = 'CROP_MARKET';
-      orderItemWhere.marketplaceType = 'CROP_MARKET';
+      // Farmers see ONLY CROP_MARKET orders
+      orderWhere.marketplaceType = 'CROP_MARKET';
     } else if (user.role === 'SUPPLIER') {
-      // Suppliers only see AGRI_MARKET items they purchased
-      prodWhere.marketplaceType = 'AGRI_MARKET';
-      trackWhere.marketplaceType = 'AGRI_MARKET';
-      orderItemWhere.marketplaceType = 'AGRI_MARKET';
+      // Suppliers see ONLY AGRI_MARKET orders
+      orderWhere.marketplaceType = 'AGRI_MARKET';
     }
-    // Admin sees everything (no marketplace filter)
+    // Admin sees ALL (no marketplace filter)
 
-    // Apply search and status filters
-    if (marketplaceType && user.role === 'ADMIN') {
-      // Admin can filter by marketplace type if specified
-      prodWhere.marketplaceType = marketplaceType;
-      trackWhere.marketplaceType = marketplaceType;
-      orderItemWhere.marketplaceType = marketplaceType;
-    }
-    if (search) {
-      prodWhere.title = { [Op.like]: `%${search}%` };
-      trackWhere.title = { [Op.like]: `%${search}%` };
-      orderItemWhere.title = { [Op.like]: `%${search}%` };
-    }
-    if (status) {
-      trackWhere.status = status;
-      orderWhere.status = status;
-    }
-
-    // Fetch products (listings) - manual & sensed
-    const products = await Product.findAll({
-      where: prodWhere,
-      include: [{ model: User, attributes: ['id', 'fullName', 'username', 'email'] }],
-      order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
-      offset,
-    });
-
-    // Fetch order tracking entries (purchases, inquiries, listings)
-    const { rows: trackRows } = await OrderTracking.findAndCountAll({
-      where: trackWhere,
-      include: [
-        { model: Product, attributes: ['id', 'title', 'category', 'price', 'status'] },
-        { model: User, attributes: ['id', 'fullName', 'email', 'role'] },
-      ],
-      offset,
-      limit: parseInt(limit),
-      order: [['createdAt', 'DESC']],
-    });
-
-    // Fetch order items from real orders
-    const orders = await Order.findAll({
-      where: orderWhere,
+    // Fetch orders with their items
+    const { count, rows: orders } = await Order.findAndCountAll({
+      where: { userId: user.id, paymentStatus: 'PAID' },
       include: [
         {
           model: OrderItem,
-          where: orderItemWhere,
+          where: user.role !== 'ADMIN' ? { marketplaceType: orderWhere.marketplaceType } : {},
           required: false,
           include: [{ model: Product, attributes: ['id', 'title', 'category', 'price', 'status'] }],
         },
         { model: User, attributes: ['id', 'fullName', 'email', 'role'] },
       ],
       order: [['createdAt', 'DESC']],
+      offset,
+      limit: parseInt(limit),
     });
 
-    // Normalize products as tracking items (type: LISTING)
-    const productItems = products.map((p) => ({
-      id: `prod-${p.id}`,
-      productId: p.id,
-      type: 'LISTING',
-      title: p.title,
-      description: p.description,
-      category: p.category,
-      price: p.price,
-      unit: p.unit,
-      region: p.region,
-      imageUrl: p.imageUrl,
-      marketplaceType: p.marketplaceType,
-      productSource: p.productSource,
-      status: p.status,
-      paymentStatus: 'NONE',
-      User: p.User,
-      createdAt: p.createdAt,
-    }));
+    // Transform orders into items (flatten OrderItems)
+    const items = [];
+    const seenIds = new Set(); // Deduplicate items
 
-    // Tracking items from OrderTracking
-    const trackItems = trackRows.map((t) => ({
-      id: `track-${t.id}`,
-      orderId: t.id,
-      productId: t.productId,
-      type: t.type,
-      title: t.title,
-      description: t.description,
-      category: t.category,
-      price: t.price,
-      unit: t.unit,
-      region: t.region,
-      imageUrl: t.imageUrl,
-      marketplaceType: t.marketplaceType,
-      productSource: t.productSource,
-      status: t.status,
-      paymentStatus: t.paymentStatus || 'NONE',
-      quantity: t.quantity,
-      User: t.User,
-      Product: t.Product,
-      createdAt: t.createdAt,
-    }));
+    orders.forEach((order) => {
+      order.OrderItems.forEach((item) => {
+        // Skip if this exact item was already processed
+        const itemKey = `${item.id}-${item.orderId}`;
+        if (seenIds.has(itemKey)) return;
+        seenIds.add(itemKey);
 
-    // Order items from new orders
-    const orderItems = orders.flatMap((order) =>
-      order.OrderItems.map((item) => ({
-        id: `orderitem-${item.id}`,
-        orderId: order.id,
-        productId: item.productId,
-        type: 'PURCHASE',
-        title: item.title,
-        description: item.description,
-        category: item.category,
-        price: item.price,
-        unit: item.unit,
-        region: item.region,
-        imageUrl: item.imageUrl,
-        marketplaceType: item.marketplaceType,
-        productSource: item.productSource,
-        status: order.status,
-        paymentStatus: order.paymentStatus,
-        quantity: item.quantity,
-        totalPrice: item.totalPrice,
-        User: order.User,
-        Product: item.Product,
-        createdAt: item.createdAt,
-      }))
-    );
-
-    // Combine and sort by createdAt desc
-    const combined = [...productItems, ...trackItems, ...orderItems].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    // Filter based on user role - always filter by userId to show only their orders
-    let filtered = combined;
-    if (user.role === 'FARMER') {
-      // Farmers see their own CROP_MARKET purchases (PENDING or PAID)
-      filtered = combined.filter(
-        (item) =>
-          item.type === 'PURCHASE' &&
-          ['PAID', 'PENDING'].includes(item.paymentStatus) &&
-          item.marketplaceType === 'CROP_MARKET'
-      );
-    } else if (user.role === 'SUPPLIER') {
-      // Suppliers see their own AGRI_MARKET purchases (PENDING or PAID)
-      filtered = combined.filter(
-        (item) =>
-          item.type === 'PURCHASE' &&
-          ['PAID', 'PENDING'].includes(item.paymentStatus) &&
-          item.marketplaceType === 'AGRI_MARKET'
-      );
-    } else if (user.role === 'BUYER') {
-      // Buyers see all their purchases (PENDING or PAID, any marketplace)
-      filtered = combined.filter(
-        (item) =>
-          item.type === 'PURCHASE' &&
-          ['PAID', 'PENDING'].includes(item.paymentStatus)
-      );
-    }
-    // Admin sees everything (no filtering)
+        items.push({
+          id: `orderitem-${item.id}`,
+          orderId: order.id,
+          productId: item.productId,
+          type: 'PURCHASE',
+          title: item.title,
+          description: item.description,
+          category: item.category,
+          price: item.price,
+          unit: item.unit,
+          region: item.region,
+          imageUrl: item.imageUrl,
+          marketplaceType: item.marketplaceType,
+          productSource: item.productSource,
+          status: order.status,
+          paymentStatus: order.paymentStatus,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+          User: order.User,
+          Product: item.Product,
+          createdAt: item.createdAt,
+        });
+      });
+    });
 
     res.status(200).json({
-      total: filtered.length,
+      total: items.length,
       page: parseInt(page),
       limit: parseInt(limit),
-      pages: Math.ceil(filtered.length / limit),
-      items: filtered.slice(offset, offset + parseInt(limit)),
+      pages: Math.ceil(items.length / limit),
+      items: items.slice(0, parseInt(limit)),
     });
   } catch (err) {
     console.error('getOrderTracking error:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
 

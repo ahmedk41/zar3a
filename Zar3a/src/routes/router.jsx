@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 // Layouts
 import MainLayout from "../layouts/MainLayout/MainLayout";

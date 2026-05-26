@@ -58,9 +58,8 @@ app.use((err, _req, res, _next) => {
 // ── Boot & Database Sync ──────────────────────────────────────────────────────
 const startServer = async () => {
   try {
-    // Use alter:true in development so Sequelize updates missing columns automatically.
-    const syncOptions = process.env.NODE_ENV === 'development' ? { alter: true } : {};
-    await sequelize.sync(syncOptions);
+    // نستخدم alter: true فقط وقت التطوير لتحديث الجداول تلقائياً
+    await sequelize.sync();
     console.log("✅ Database connected & synced");
 
     app.listen(PORT, () => {

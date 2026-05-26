@@ -1,32 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LuListChecks, LuRefreshCcw, LuSearch, LuMapPin, LuTriangleAlert } from 'react-icons/lu';
+import { LuListChecks, LuRefreshCcw, LuSearch, LuMapPin, LuTriangleAlert, LuLock } from 'react-icons/lu';
 import { useAuth } from '../../context/AuthContext';
 
 const TrackOrders = () => {
-  const { user, getOrderTracking } = useAuth();
+  const { user, getOrderTracking, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
 
-  // Check if user has access to this page
+  // ⛔ STRICT ROLE-BASED ACCESS CONTROL
   useEffect(() => {
-    if (user && user.role === 'AGRO_EXPERT') {
-      setError('Agro Experts do not have access to Track Orders.');
-      setLoading(false);
+    if (!authLoading && user) {
+      // Only FARMER, SUPPLIER, and ADMIN can access Track Orders
+      if (user.role === 'BUYER' || user.role === 'AGRO_EXPERT') {
+        setError(`⛔ Access Denied: ${user.role} users cannot access Track Orders.`);
+        setLoading(false);
+      }
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
       setError('');
-      
-      // If user is AGRO_EXPERT, deny access
-      if (user && user.role === 'AGRO_EXPERT') {
-        setError('Agro Experts do not have access to Track Orders.');
+
+      // Double-check access
+      if (user && (user.role === 'BUYER' || user.role === 'AGRO_EXPERT')) {
+        setError(`⛔ Access Denied: ${user.role} users cannot access Track Orders.`);
         setLoading(false);
         return;
       }
@@ -42,22 +45,25 @@ const TrackOrders = () => {
   };
 
   useEffect(() => {
-    if (!user || user.role === 'AGRO_EXPERT') {
+    if (!user || user.role === 'BUYER' || user.role === 'AGRO_EXPERT' || authLoading) {
       return;
     }
     fetchOrders();
-  }, [query, user]);
+  }, [query, user, authLoading]);
 
-  if (user && user.role === 'AGRO_EXPERT') {
+  // Render access denied page for unauthorized users
+  if (user && (user.role === 'BUYER' || user.role === 'AGRO_EXPERT')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
         <div className="max-w-md w-full rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 p-8 text-center">
-          <div className="rounded-full bg-amber-100 dark:bg-amber-900/30 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <LuTriangleAlert className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+          <div className="rounded-full bg-red-100 dark:bg-red-900/30 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <LuLock className="w-8 h-8 text-red-600 dark:text-red-400" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Access Denied</h2>
           <p className="text-slate-600 dark:text-slate-400 mb-6">
-            Agro Experts cannot access the Track Orders page. Please visit another section.
+            {user.role === 'BUYER'
+              ? 'Buyers cannot access Track Orders. This feature is available for Farmers, Suppliers, and Administrators.'
+              : 'Agro Experts cannot access Track Orders. This feature is available for Farmers, Suppliers, and Administrators.'}
           </p>
           <button
             onClick={() => navigate('/dashboard')}

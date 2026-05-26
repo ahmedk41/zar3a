@@ -79,7 +79,6 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// Checkout: process multiple cart items and create a single order
 export const checkout = async (req, res) => {
   try {
     const user = req.user;
@@ -135,11 +134,11 @@ export const checkout = async (req, res) => {
       return res.status(400).json({ message: 'No valid cart items found' });
     }
 
-    // Create order with PENDING status for payment
+    // Create order with PAID status (payment validated on frontend via Stripe)
     const order = await Order.create({
       userId: user.id,
-      status: 'PENDING', // Will update to PROCESSING once payment confirmed
-      paymentStatus: 'PENDING', // Will be updated by Stripe webhook
+      status: 'PROCESSING',
+      paymentStatus: 'PAID', // Mark as PAID after successful checkout
       totalAmount,
       paymentMethod,
       shippingAddress,
@@ -150,6 +149,7 @@ export const checkout = async (req, res) => {
         const created = await OrderItem.create({ orderId: order.id, ...item });
 
         await OrderTracking.create({
+          orderId: order.id,
           productId: item.productId,
           userId: user.id,
           marketplaceType: item.marketplaceType,
@@ -162,9 +162,9 @@ export const checkout = async (req, res) => {
           region: item.region,
           imageUrl: item.imageUrl,
           quantity: item.quantity,
-          status: 'PENDING',
+          status: 'PROCESSING',
           type: 'PURCHASE',
-          paymentStatus: 'PENDING',
+          paymentStatus: 'PAID',
         });
 
         return created;
@@ -172,7 +172,7 @@ export const checkout = async (req, res) => {
     );
 
     return res.status(201).json({
-      message: 'Order created. Proceed to payment.',
+      message: 'Order created successfully after payment.',
       orderId: order.id,
       totalAmount,
       paymentMethod,
