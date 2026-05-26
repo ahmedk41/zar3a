@@ -14,6 +14,14 @@ const OrderTracking = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    orderId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Orders',
+        key: 'id',
+      },
+    },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
