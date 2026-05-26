@@ -16,9 +16,9 @@ export const getOrderTracking = async (req, res) => {
 
     // Build filters based on user role
     const prodWhere = {};
-    const trackWhere = { paymentStatus: 'PAID' }; // Only show paid orders
+    const trackWhere = { paymentStatus: { [Op.in]: ['PAID', 'PENDING'] } }; // Show paid & pending orders
     const orderItemWhere = {};
-    const orderWhere = { paymentStatus: 'PAID' }; // Only show paid orders
+    const orderWhere = { paymentStatus: { [Op.in]: ['PAID', 'PENDING'] } }; // Show paid & pending orders
 
     // Apply role-based marketplace filtering
     if (user.role === 'FARMER') {
@@ -162,11 +162,11 @@ export const getOrderTracking = async (req, res) => {
     // Filter based on user role
     let filtered = combined;
     if (user.role === 'FARMER' || user.role === 'SUPPLIER' || user.role === 'BUYER') {
-      // Regular users only see their own purchases (PURCHASE and INQUIRY types with paid status)
+      // Regular users only see their own purchases (PURCHASE type with paid/pending status)
       filtered = combined.filter(
         (item) =>
           item.type === 'PURCHASE' &&
-          item.paymentStatus === 'PAID' &&
+          ['PAID', 'PENDING'].includes(item.paymentStatus) &&
           item.marketplaceType &&
           (user.role === 'FARMER' ? item.marketplaceType === 'CROP_MARKET' : item.marketplaceType === 'AGRI_MARKET')
       );
