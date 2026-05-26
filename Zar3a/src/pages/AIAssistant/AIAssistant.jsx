@@ -7,14 +7,15 @@ import { LuSend, LuBot, LuUser, LuSprout, LuActivity, LuSparkles } from "react-i
 // 🔑 الـ API Key من متغيرات البيئة
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY; 
 
-if (!GROQ_API_KEY) {
-  console.warn('Warning: VITE_GROQ_API_KEY environment variable is not set');
+let groq = null;
+if (GROQ_API_KEY) {
+  groq = new Groq({ 
+    apiKey: GROQ_API_KEY, 
+    dangerouslyAllowBrowser: true 
+  });
+} else {
+  console.warn('⚠️ Warning: VITE_GROQ_API_KEY is not set. AI Assistant will be disabled.');
 }
-
-const groq = new Groq({ 
-  apiKey: GROQ_API_KEY, 
-  dangerouslyAllowBrowser: true 
-});
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState([
@@ -34,6 +35,13 @@ const AIAssistant = () => {
 
   const handleSend = async () => {
     if (!inputText.trim() || isTyping) return;
+    
+    // Check if Groq API key is configured
+    if (!groq) {
+      const errorMsg = "⚠️ **AI Assistant Not Configured**\n\nThe GROQ API key is missing. Please add `VITE_GROQ_API_KEY` to your `.env.local` file and restart the development server.";
+      setMessages(prev => [...prev, { id: Date.now() + 1, sender: "ai", text: errorMsg }]);
+      return;
+    }
     
     const userMsg = inputText;
     setMessages(prev => [...prev, { id: Date.now(), sender: "user", text: userMsg }]);
