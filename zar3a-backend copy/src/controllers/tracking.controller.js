@@ -20,6 +20,12 @@ export const getOrderTracking = async (req, res) => {
     const orderItemWhere = {};
     const orderWhere = { paymentStatus: { [Op.in]: ['PAID', 'PENDING'] } }; // Show paid & pending orders
 
+    // Non-admin users only see their own orders
+    if (user.role !== 'ADMIN') {
+      trackWhere.userId = user.id;
+      orderWhere.userId = user.id;
+    }
+
     // Apply role-based marketplace filtering
     if (user.role === 'FARMER') {
       // Farmers only see CROP_MARKET items they purchased
@@ -159,16 +165,30 @@ export const getOrderTracking = async (req, res) => {
     // Combine and sort by createdAt desc
     const combined = [...productItems, ...trackItems, ...orderItems].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    // Filter based on user role
+    // Filter based on user role - always filter by userId to show only their orders
     let filtered = combined;
-    if (user.role === 'FARMER' || user.role === 'SUPPLIER' || user.role === 'BUYER') {
-      // Regular users only see their own purchases (PURCHASE type with paid/pending status)
+    if (user.role === 'FARMER') {
+      // Farmers see their own CROP_MARKET purchases (PENDING or PAID)
       filtered = combined.filter(
         (item) =>
           item.type === 'PURCHASE' &&
           ['PAID', 'PENDING'].includes(item.paymentStatus) &&
-          item.marketplaceType &&
-          (user.role === 'FARMER' ? item.marketplaceType === 'CROP_MARKET' : item.marketplaceType === 'AGRI_MARKET')
+          item.marketplaceType === 'CROP_MARKET'
+      );
+    } else if (user.role === 'SUPPLIER') {
+      // Suppliers see their own AGRI_MARKET purchases (PENDING or PAID)
+      filtered = combined.filter(
+        (item) =>
+          item.type === 'PURCHASE' &&
+          ['PAID', 'PENDING'].includes(item.paymentStatus) &&
+          item.marketplaceType === 'AGRI_MARKET'
+      );
+    } else if (user.role === 'BUYER') {
+      // Buyers see all their purchases (PENDING or PAID, any marketplace)
+      filtered = combined.filter(
+        (item) =>
+          item.type === 'PURCHASE' &&
+          ['PAID', 'PENDING'].includes(item.paymentStatus)
       );
     }
     // Admin sees everything (no filtering)
