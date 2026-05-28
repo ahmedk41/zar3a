@@ -1,5 +1,7 @@
+// Orders controller - triggers nodemon restart
 import { Product, OrderTracking, Order, OrderItem, User } from '../models/index.js';
 import { Op } from 'sequelize';
+import { triggerOrderNotifications } from './notification.controller.js';
 
 /**
  * ─────────────────────────────────────────────────────────
@@ -19,11 +21,27 @@ export const createOrder = async (req, res) => {
 
     const totalAmount = Number(product.price) * finalQuantity;
 
-    // Create order with PENDING status (will be completed after payment)
+    // Idempotency check: check if an identical order was created within the last 10 seconds
+    const tenSecondsAgo = new Date(Date.now() - 10000);
+    const existingOrder = await Order.findOne({
+      where: {
+        userId: user.id,
+        totalAmount,
+        createdAt: {
+          [Op.gte]: tenSecondsAgo,
+        },
+      },
+    });
+
+    if (existingOrder) {
+      return res.status(400).json({ message: 'Order already created' });
+    }
+
+    // Create order with PAID/PROCESSING status (auto-paid in development/default)
     const order = await Order.create({
       userId: user.id,
-      status: 'PENDING', // Changed from COMPLETED
-      paymentStatus: 'PENDING', // Changed from PAID - will update via Stripe webhook
+      status: 'PROCESSING',
+      paymentStatus: 'PAID',
       totalAmount,
       paymentMethod,
       shippingAddress,
@@ -48,6 +66,7 @@ export const createOrder = async (req, res) => {
     });
 
     await OrderTracking.create({
+      orderId: order.id,
       productId: product.id,
       userId: user.id,
       marketplaceType: product.marketplaceType,
@@ -62,14 +81,17 @@ export const createOrder = async (req, res) => {
       quantity: finalQuantity,
       status: 'PENDING',
       type: 'PURCHASE',
-      paymentStatus: 'PENDING',
+      paymentStatus: 'PAID',
     });
 
+    // Trigger order notifications
+    await triggerOrderNotifications(order, [orderItem]);
+
     return res.status(201).json({
-      orderId: order.id, // Return for payment processing
+      orderId: order.id,
       order,
       orderItems: [orderItem],
-      message: 'Order created. Proceed to payment.',
+      message: 'Order created successfully.',
       totalAmount,
       paymentMethod,
     });
@@ -79,6 +101,7 @@ export const createOrder = async (req, res) => {
   }
 };
 
+// Checkout: process multiple cart items and create a single order
 export const checkout = async (req, res) => {
   try {
     const user = req.user;
@@ -134,11 +157,27 @@ export const checkout = async (req, res) => {
       return res.status(400).json({ message: 'No valid cart items found' });
     }
 
-    // Create order with PAID status (payment validated on frontend via Stripe)
+    // Idempotency check: check if an identical order was created within the last 10 seconds
+    const tenSecondsAgo = new Date(Date.now() - 10000);
+    const existingOrder = await Order.findOne({
+      where: {
+        userId: user.id,
+        totalAmount,
+        createdAt: {
+          [Op.gte]: tenSecondsAgo,
+        },
+      },
+    });
+
+    if (existingOrder) {
+      return res.status(400).json({ message: 'Order already created' });
+    }
+
+    // Create order with PAID/PROCESSING status (auto-paid in development/default)
     const order = await Order.create({
       userId: user.id,
       status: 'PROCESSING',
-      paymentStatus: 'PAID', // Mark as PAID after successful checkout
+      paymentStatus: 'PAID',
       totalAmount,
       paymentMethod,
       shippingAddress,
@@ -162,7 +201,7 @@ export const checkout = async (req, res) => {
           region: item.region,
           imageUrl: item.imageUrl,
           quantity: item.quantity,
-          status: 'PROCESSING',
+          status: 'PENDING',
           type: 'PURCHASE',
           paymentStatus: 'PAID',
         });
@@ -171,8 +210,11 @@ export const checkout = async (req, res) => {
       })
     );
 
+    // Trigger order notifications for the new purchase
+    await triggerOrderNotifications(order, createdOrderItems);
+
     return res.status(201).json({
-      message: 'Order created successfully after payment.',
+      message: 'Order placed successfully.',
       orderId: order.id,
       totalAmount,
       paymentMethod,
@@ -188,7 +230,7 @@ export const checkout = async (req, res) => {
 export const listUserOrders = async (req, res) => {
   try {
     const user = req.user;
-    
+
     let orders;
 
     // Fetch orders based on role with simplified query
@@ -287,47 +329,61 @@ export const listUserOrders = async (req, res) => {
 
 /**
  * ─────────────────────────────────────────────────────────
- * UPDATE PAYMENT STATUS (Called by Stripe webhook or manually)
+ * UPDATE PAYMENT STATUS (Called by Stripe webhook)
  * ─────────────────────────────────────────────────────────
  */
-export const updatePaymentStatus = async (req, res, orderId = null, paymentStatus = null) => {
+export const updatePaymentStatus = async (req, res) => {
   try {
-    // Support both route handler and function call modes
-    const finalOrderId = orderId || req.body?.orderId;
-    const finalPaymentStatus = paymentStatus || req.body?.paymentStatus;
+    const { orderId, paymentStatus } = req.body;
 
     const validPaymentStatuses = ['PENDING', 'PAID', 'FAILED'];
-    if (!finalPaymentStatus || !validPaymentStatuses.includes(finalPaymentStatus)) {
-      return res?.status(400).json?.({
+    if (!validPaymentStatuses.includes(paymentStatus)) {
+      return res.status(400).json({
         message: `paymentStatus must be one of: ${validPaymentStatuses.join(', ')}`,
       });
     }
 
-    const order = await Order.findByPk(finalOrderId);
-    if (!order) return res?.status(404).json?.({ message: 'Order not found' });
+    const order = await Order.findByPk(orderId);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
 
     // Update both payment status and order status
-    const newOrderStatus = finalPaymentStatus === 'PAID' ? 'PROCESSING' : 'FAILED';
+    const newOrderStatus = paymentStatus === 'PAID' ? 'PROCESSING' : 'FAILED';
     await order.update({
-      paymentStatus: finalPaymentStatus,
+      paymentStatus,
       status: newOrderStatus,
     });
 
+    const trackingStatus = ['AVAILABLE', 'SOLD', 'PENDING', 'INQUIRY_PENDING', 'DELETED'].includes(newOrderStatus)
+      ? newOrderStatus
+      : 'PENDING';
+
     // Update all tracking records for this order
     await OrderTracking.update(
-      { paymentStatus: finalPaymentStatus, status: newOrderStatus },
-      { where: { orderId: finalOrderId } }
+      { paymentStatus, status: trackingStatus },
+      {
+        where: {
+          '$OrderItem.orderId$': orderId,
+        },
+      }
     ).catch(() => {
-      // Silently fail if no tracking records exist
+      // Update records individually if above query fails
+      order.getOrderItems().then((items) => {
+        items.forEach((item) => {
+          OrderTracking.update(
+            { paymentStatus, status: trackingStatus },
+            { where: { orderId: item.orderId } }
+          );
+        });
+      });
     });
 
-    return res?.json?.({
+    return res.json({
       message: 'Payment status updated',
       order: order.toJSON(),
     });
   } catch (err) {
     console.error('updatePaymentStatus error:', err);
-    return res?.status(500).json?.({ message: 'Server error', error: err.message });
+    return res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
 
@@ -432,3 +488,97 @@ export const listAllOrders = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * GET FARMER ORDERS — only orders containing Crop Market products
+ * ─────────────────────────────────────────────────────────
+ */
+export const getFarmerOrders = async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: OrderItem,
+          include: [{ model: Product }],
+          where: { marketplaceType: 'CROP_MARKET' },
+          required: true,
+        },
+        { model: User, attributes: ['id', 'fullName', 'email', 'role'] },
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json({ orders });
+  } catch (err) {
+    console.error('getFarmerOrders error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * GET SUPPLIER ORDERS — only orders containing Agri Shop products
+ * ─────────────────────────────────────────────────────────
+ */
+export const getSupplierOrders = async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: OrderItem,
+          include: [{ model: Product }],
+          where: { marketplaceType: 'AGRI_MARKET' },
+          required: true,
+        },
+        { model: User, attributes: ['id', 'fullName', 'email', 'role'] },
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json({ orders });
+  } catch (err) {
+    console.error('getSupplierOrders error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * GET ADMIN ORDERS — all orders (admin only, enforced at route level)
+ * ─────────────────────────────────────────────────────────
+ */
+export const getAdminOrders = async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: OrderItem,
+          include: [{ model: Product }],
+        },
+        { model: User, attributes: ['id', 'fullName', 'email', 'role'] },
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json({ orders });
+  } catch (err) {
+    console.error('getAdminOrders error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * ─────────────────────────────────────────────────────────
+ * GET TRACKING ORDERS — dynamic role-based wrapper
+ * Routes to farmer/supplier/admin view based on user role
+ * ─────────────────────────────────────────────────────────
+ */
+export const getTrackingOrders = async (req, res) => {
+  const role = req.user?.role;
+  if (role === 'FARMER') return getFarmerOrders(req, res);
+  if (role === 'SUPPLIER') return getSupplierOrders(req, res);
+  if (role === 'ADMIN') return getAdminOrders(req, res);
+  return res.status(403).json({ message: 'No tracking data available for your role' });
+};
+

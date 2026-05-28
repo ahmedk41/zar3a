@@ -1,69 +1,71 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LuListChecks, LuRefreshCcw, LuSearch, LuMapPin, LuTriangleAlert, LuLock } from 'react-icons/lu';
+import { LuListChecks, LuRefreshCcw, LuSearch, LuMapPin } from 'react-icons/lu';
+import { FiAlertTriangle } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
 const TrackOrders = () => {
-  const { user, getOrderTracking, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, getOrderTracking } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
 
-  // ⛔ STRICT ROLE-BASED ACCESS CONTROL
+  // Check if user has access to this page
   useEffect(() => {
-    if (!authLoading && user) {
-      // Only FARMER, SUPPLIER, and ADMIN can access Track Orders
-      if (user.role === 'BUYER' || user.role === 'AGRO_EXPERT') {
-        setError(`⛔ Access Denied: ${user.role} users cannot access Track Orders.`);
-        setLoading(false);
-      }
+    if (authLoading) return;
+    if (!user) {
+      navigate('/login');
+      return;
     }
-  }, [user, authLoading]);
+    if (user.role === 'AGRO_EXPERT' || user.role === 'BUYER') {
+      setError('You do not have access to Track Orders.');
+      setLoading(false);
+    }
+  }, [user, authLoading, navigate]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
       setError('');
-
-      // Double-check access
-      if (user && (user.role === 'BUYER' || user.role === 'AGRO_EXPERT')) {
-        setError(`⛔ Access Denied: ${user.role} users cannot access Track Orders.`);
+      
+      // If user is AGRO_EXPERT or BUYER, deny access
+      if (user && (user.role === 'AGRO_EXPERT' || user.role === 'BUYER')) {
+        setError('You do not have access to Track Orders.');
         setLoading(false);
         return;
       }
 
-      const { items } = await getOrderTracking({ search: query });
-      setItems(items);
+      const response = await getOrderTracking({ search: query });
+      const itemsData = response?.items || [];
+      setItems(itemsData);
     } catch (err) {
       setError(err?.response?.data?.message || 'Unable to load order tracking data');
       console.error('TrackOrders error:', err);
+      setItems([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!user || user.role === 'BUYER' || user.role === 'AGRO_EXPERT' || authLoading) {
+    if (authLoading || !user || user.role === 'AGRO_EXPERT' || user.role === 'BUYER') {
       return;
     }
     fetchOrders();
   }, [query, user, authLoading]);
 
-  // Render access denied page for unauthorized users
-  if (user && (user.role === 'BUYER' || user.role === 'AGRO_EXPERT')) {
+  if (user && (user.role === 'AGRO_EXPERT' || user.role === 'BUYER')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
         <div className="max-w-md w-full rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 p-8 text-center">
-          <div className="rounded-full bg-red-100 dark:bg-red-900/30 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <LuLock className="w-8 h-8 text-red-600 dark:text-red-400" />
+          <div className="rounded-full bg-amber-100 dark:bg-amber-900/30 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <FiAlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-400" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Access Denied</h2>
           <p className="text-slate-600 dark:text-slate-400 mb-6">
-            {user.role === 'BUYER'
-              ? 'Buyers cannot access Track Orders. This feature is available for Farmers, Suppliers, and Administrators.'
-              : 'Agro Experts cannot access Track Orders. This feature is available for Farmers, Suppliers, and Administrators.'}
+            Buyers and Agro Experts cannot access the Track Orders page. Please visit another section.
           </p>
           <button
             onClick={() => navigate('/dashboard')}
@@ -115,7 +117,7 @@ const TrackOrders = () => {
               </div>
               <div>
                 <p className="text-sm font-semibold">Total items</p>
-                <p className="text-2xl font-bold">{items.length}</p>
+                <p className="text-2xl font-bold">{items?.length || 0}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
@@ -129,7 +131,7 @@ const TrackOrders = () => {
             <div className="text-center py-16 text-slate-500 dark:text-slate-400">Loading order tracking...</div>
           ) : error ? (
             <div className="rounded-3xl border border-rose-200 bg-rose-50 p-8 text-rose-700">{error}</div>
-          ) : items.length === 0 ? (
+          ) : !items || items.length === 0 ? (
             <div className="text-center py-16 text-slate-500 dark:text-slate-400">No tracked items found.</div>
           ) : (
             <div className="space-y-4">

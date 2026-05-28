@@ -55,11 +55,11 @@ api.interceptors.response.use(
 export const marketplaceAPI = {
   // CROP MARKET
   getCropMarketProducts: () => api.get('/marketplace/crop-products'),
-  createCropMarketProduct: (data) => api.post('/marketplace/crop-products', data),
+  createCropMarketProduct: (data) => api.post('/marketplace/crop-products', data, data instanceof FormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : {}),
 
   // AGRI SHOP
   getAgriShopProducts: () => api.get('/marketplace/agri-products'),
-  createAgriShopProduct: (data) => api.post('/marketplace/agri-products', data),
+  createAgriShopProduct: (data) => api.post('/marketplace/agri-products', data, data instanceof FormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : {}),
 
   // SEARCH
   searchProducts: (q, marketplace, category) =>

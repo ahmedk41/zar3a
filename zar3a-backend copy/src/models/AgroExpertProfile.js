@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
-``
+
 const AgroExpertProfile = sequelize.define('AgroExpertProfiles', {
   id: {
     type: DataTypes.INTEGER,

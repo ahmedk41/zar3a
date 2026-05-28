@@ -3,6 +3,10 @@ import { User } from "../models/index.js";
 import { decodeAccessToken } from "../utils/auth.js";
 
 const authenticate = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith("Bearer "))

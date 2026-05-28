@@ -11,72 +11,42 @@ import {
   LuSearch,
   LuPlus,
   LuCheck,
+  LuMapPin,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const FALLBACK_EXPERTS = [
-  {
-    id: 1,
-    title: "Soil & Irrigation Specialist",
-    specialty: "Soil & Irrigation Specialist",
-    rating: 4.9,
-    reviews: 124,
-    hourlyRate: 220,
-    location: "Cairo",
-    description: "Specializes in smart irrigation systems and soil salinity management for desert environments.",
-    education: "PhD in Agricultural Science - Cairo University",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed",
-    owner: "Dr. Ahmed Salem",
-  },
-  {
-    id: 2,
-    title: "Plant Pathology Expert",
-    specialty: "Plant Pathology Expert",
-    rating: 4.8,
-    reviews: 89,
-    hourlyRate: 180,
-    location: "Alexandria",
-    description: "Expert in identifying and treating fungal and viral diseases in greenhouse crops.",
-    education: "MSc in Plant Protection - Alexandria University",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    owner: "Eng. Sarah Younis",
-  },
-  {
-    id: 3,
-    title: "Hydroponics Consultant",
-    specialty: "Hydroponics Consultant",
-    rating: 5.0,
-    reviews: 210,
-    hourlyRate: 300,
-    location: "Giza",
-    description: "Pioneer in vertical farming and nutrient film technique (NFT) systems in Egypt.",
-    education: "Post-Doc in Modern Farming - Wageningen University",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohamed",
-    owner: "Prof. Mohamed Ali",
-  },
-];
-
-const normalizeListing = (listing) => ({
-  id: listing.id,
-  userId: listing.userId,
-  title: listing.title,
-  specialty: listing.specialty,
-  description: listing.description,
-  hourlyRate: listing.hourlyRate,
-  location: listing.location || "-",
-  image: listing.imageUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=Expert",
-  rating: listing.rating || 4.8,
-  reviews: listing.reviews || 24,
-  owner: listing.User?.fullName || listing.User?.username || "Expert",
-});
+const normalizeListing = (listing) => {
+  let imgUrl = listing.imageUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=Expert";
+  if (imgUrl && !imgUrl.startsWith("http://") && !imgUrl.startsWith("https://")) {
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5002";
+    imgUrl = imgUrl.startsWith("/") ? `${backendUrl}${imgUrl}` : `${backendUrl}/${imgUrl}`;
+  }
+  return {
+    id: listing.id,
+    userId: listing.userId,
+    title: listing.title,
+    name: listing.name || listing.User?.fullName || listing.User?.username || "Expert",
+    specialization: listing.specialization || listing.specialty,
+    description: listing.description,
+    hourlyRate: listing.hourlyRate,
+    location: listing.location || "-",
+    image: imgUrl,
+    rating: listing.rating || 4.8,
+    reviews: listing.reviews || 24,
+    owner: listing.name || listing.User?.fullName || listing.User?.username || "Expert",
+    specialty: listing.specialization || listing.specialty,
+    academicDegree: listing.academicDegree || listing.User?.AgroExpertProfile?.academicDegree || "",
+    experienceYears: listing.experienceYears || listing.User?.AgroExpertProfile?.experienceYears || 0,
+  };
+};
 
 const Experts = () => {
   const navigate = useNavigate();
   const { user, getExpertListings, createExpertListing } = useAuth();
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expertCards, setExpertCards] = useState(FALLBACK_EXPERTS);
+  const [expertCards, setExpertCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createForm, setCreateForm] = useState({
@@ -91,10 +61,15 @@ const Experts = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     const loadListings = async () => {
       try {
         const data = await getExpertListings();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setExpertCards(data.map(normalizeListing));
         }
       } catch (err) {
@@ -105,7 +80,7 @@ const Experts = () => {
     };
 
     loadListings();
-  }, [getExpertListings]);
+  }, [user, navigate, getExpertListings]);
 
   const expertType = user?.role === "AGRO_EXPERT" && user?.isApproved;
   const canCreate = expertType || user?.role === "ADMIN";
@@ -181,7 +156,7 @@ const Experts = () => {
       <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredExperts.map((expert) => (
           <motion.div
-            key={`${expert.id}-${expert.owner}`}
+            key={`${expert.id}-${expert.title}`}
             layoutId={`expert-container-${expert.id}`}
             whileHover={{ y: -8 }}
             className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-gray-100 dark:border-slate-800 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col items-center text-center group cursor-pointer"
@@ -198,10 +173,10 @@ const Experts = () => {
 
             <div className="space-y-1 flex-1">
               <div className="flex items-center justify-center space-x-1">
-                <h3 className="text-2xl font-bold dark:text-white">{expert.owner}</h3>
+                <h3 className="text-2xl font-bold dark:text-white">{expert.title}</h3>
                 <LuBadgeCheck className="text-blue-500" size={20} />
               </div>
-              <p className="text-green-600 dark:text-green-400 font-semibold text-sm uppercase tracking-wide">{expert.specialty}</p>
+              <p className="text-green-600 dark:text-green-400 font-semibold text-sm uppercase tracking-wide">{expert.specialization}</p>
 
               <div className="flex items-center justify-center space-x-2 mt-3 bg-gray-50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full w-fit mx-auto">
                 <LuStar className="text-yellow-500" fill="currentColor" size={14} />
@@ -252,8 +227,8 @@ const Experts = () => {
                 />
                 <div className="flex-1 space-y-4 pt-4">
                   <div>
-                    <h2 className="text-3xl font-black dark:text-white">{selectedExpert.owner}</h2>
-                    <p className="text-green-600 font-bold text-lg">{selectedExpert.specialty}</p>
+                    <h2 className="text-3xl font-black dark:text-white">{selectedExpert.title}</h2>
+                    <p className="text-green-600 font-bold text-lg">{selectedExpert.specialization}</p>
                   </div>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">{selectedExpert.description}</p>
 
@@ -266,12 +241,30 @@ const Experts = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl">
-                      <LuGraduationCap className="text-blue-600" size={24} />
+                      <LuMapPin className="text-emerald-600" size={24} />
                       <div>
                         <p className="text-xs text-gray-400 font-bold uppercase">Location</p>
-                        <p className="font-bold dark:text-white">{selectedExpert.location}</p>
+                        <p className="font-bold dark:text-white">{selectedExpert.location || "-"}</p>
                       </div>
                     </div>
+                    {selectedExpert.academicDegree && (
+                      <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl">
+                        <LuGraduationCap className="text-blue-600" size={24} />
+                        <div>
+                          <p className="text-xs text-gray-400 font-bold uppercase">Degree</p>
+                          <p className="font-bold dark:text-white">{selectedExpert.academicDegree}</p>
+                        </div>
+                      </div>
+                    )}
+                    {selectedExpert.experienceYears > 0 && (
+                      <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-slate-800 rounded-2xl">
+                        <LuAward className="text-yellow-500" size={24} />
+                        <div>
+                          <p className="text-xs text-gray-400 font-bold uppercase">Experience</p>
+                          <p className="font-bold dark:text-white">{selectedExpert.experienceYears} Years</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-4 pt-6">

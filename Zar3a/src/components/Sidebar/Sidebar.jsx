@@ -16,13 +16,13 @@ const Sidebar = () => {
   const { user } = useAuth();
   const menuItems = [];
 
-  // Dashboard: Only for FARMER, BUYER, ADMIN (NOT for EXPERT or SUPPLIER)
-  if (user?.role && !['AGRO_EXPERT', 'SUPPLIER'].includes(user.role)) {
+  // Dashboard: Only for FARMER, ADMIN (NOT for EXPERT, SUPPLIER, or BUYER)
+  if (user?.role && !['AGRO_EXPERT', 'SUPPLIER', 'BUYER'].includes(user.role)) {
     menuItems.push({ path: "/dashboard", label: "Dashboard", icon: <LuLayoutDashboard /> });
   }
 
-  // Track Orders: ONLY for FARMER, SUPPLIER, ADMIN (NOT BUYER or AGRO_EXPERT)
-  if (user?.role && ['FARMER', 'SUPPLIER', 'ADMIN'].includes(user.role)) {
+  // Track Orders: Only for FARMER, SUPPLIER, ADMIN (not AGRO_EXPERT or BUYER)
+  if (user?.role && !['AGRO_EXPERT', 'BUYER'].includes(user.role)) {
     menuItems.push({ path: "/track-orders", label: "Track Orders", icon: <LuListChecks /> });
   }
 

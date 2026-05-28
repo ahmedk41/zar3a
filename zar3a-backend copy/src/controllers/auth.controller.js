@@ -251,12 +251,16 @@ export const completeExpertProfile = async (req, res) => {
     let profile;
 
     if (existingProfile) {
-      await existingProfile.update({
+      const updateData = {
         academicDegree,
         experienceYears: Number(experienceYears),
-        cvFilePath,
         bio,
-      });
+      };
+      // Only overwrite cvFilePath if a new file was actually uploaded
+      if (cvFilePath) {
+        updateData.cvFilePath = cvFilePath;
+      }
+      await existingProfile.update(updateData);
       profile = existingProfile;
     } else {
       profile = await AgroExpertProfile.create({
@@ -266,6 +270,10 @@ export const completeExpertProfile = async (req, res) => {
         cvFilePath,
         bio,
       });
+    }
+
+    if (cvFilePath) {
+      await user.update({ cv: cvFilePath });
     }
 
     return res.status(201).json({ user: safeUser(user), profile });
@@ -281,6 +289,10 @@ export const completeFarmerProfile = async (req, res) => {
   try {
     const { userId } = req.params;
     const { farmSize, soilType, location } = req.body;
+
+    if (!soilType || !soilType.trim() || !location || !location.trim()) {
+      return res.status(400).json({ message: "Soil type and location are required for Farmer registration" });
+    }
 
     const user = await User.findByPk(userId);
     if (!user || user.role !== 'FARMER') {
@@ -310,14 +322,19 @@ export const  completeBuyerProfile = async (req, res) => {
 export const completeSupplierProfile = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { tradeLicense, location } = req.body;
+    const { tradeLicense, location, businessLocation } = req.body;
+    const finalLocation = location || businessLocation;
+
+    if (!tradeLicense || !tradeLicense.trim() || !finalLocation || !finalLocation.trim()) {
+      return res.status(400).json({ message: "Trade license and business location are required for Supplier registration" });
+    }
 
     const user = await User.findByPk(userId);
     if (!user || user.role !== 'SUPPLIER') {
       return res.status(400).json({ message: "Invalid user or role" });
     }
 
-    const profile = await SupplierProfile.create({ tradeLicense, location, userId: Number(userId) });
+    const profile = await SupplierProfile.create({ tradeLicense, location: finalLocation, userId: Number(userId) });
     res.json({ message: "Supplier profile updated", profile });
   } catch (err) {
     res.status(400).json({ error: "Failed to update supplier profile" });

@@ -123,17 +123,23 @@ export default function FarmerProfile() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
         >
           <Link
-            to="/track-orders"
+            to="/products-dashboard"
             className="bg-green-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
           >
-            <FiTrendingUp /> Track Orders
+            <FiTrendingUp /> Product Dashboard
+          </Link>
+          <Link
+            to="/track-orders"
+            className="bg-emerald-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+          >
+            <FiTrendingUp /> Track Order
           </Link>
           <Link
             to="/marketplace"
-            className="bg-emerald-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+            className="bg-teal-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
           >
             <FiTrendingUp /> Browse Marketplace
           </Link>

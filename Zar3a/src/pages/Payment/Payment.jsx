@@ -29,6 +29,7 @@ const Payment = () => {
   }, [authLoading, initialized, user, cart, navigate]);
 
   const handlePay = async () => {
+    if (isSubmitting) return;
     setError('');
     setSuccess('');
     setIsSubmitting(true);
@@ -42,12 +43,20 @@ const Payment = () => {
             item.type ||
             (item.marketplaceType === 'AGRI_MARKET' ? 'agri' : 'crop') ||
             'crop',
+          ownerId: item.ownerId || item.userId,
+          marketplaceType: item.marketplaceType,
         })),
         { shippingAddress: shippingAddress || null },
       );
       clearCart();
       setSuccess('Payment successful! Your order has been placed.');
-      navigate('/track-orders');
+      
+      // Redirect based on role: buyers can't track orders, so send them to marketplace
+      if (user?.role === 'BUYER' || user?.role === 'AGRO_EXPERT' || !user?.role) {
+        navigate('/marketplace');
+      } else {
+        navigate('/track-orders');
+      }
     } catch (err) {
       setError(err?.response?.data?.message || 'Unable to complete payment. Please try again.');
       console.error('Payment error:', err);

@@ -36,7 +36,6 @@ const loginSchema = z.object({
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [apiError, setApiError] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem("theme") === "dark",
@@ -88,12 +87,6 @@ export default function Login() {
         "Login failed. Please check your credentials.";
       setApiError(msg);
     }
-  };
-
-  const handleGoogleLogin = () => {
-    // Google OAuth — coming soon
-    setIsGoogleLoading(true);
-    setTimeout(() => setIsGoogleLoading(false), 1000);
   };
 
   const FloatingLeaf = ({ className, delay, size = "140" }) => (
@@ -181,35 +174,7 @@ export default function Login() {
             </p>
           </header>
 
-          {/* 🌈 Google Login */}
-          <button
-            onClick={handleGoogleLogin}
-            disabled={isGoogleLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 py-4 rounded-2xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all mb-8 group disabled:opacity-50"
-          >
-            {isGoogleLoading ? (
-              <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <>
-                <img
-                  src="https://www.svgrepo.com/show/475656/google-color.svg"
-                  alt="google"
-                  className="w-5 h-5 group-hover:rotate-12 transition-transform"
-                />
-                <span className="font-bold text-slate-700 dark:text-slate-200">
-                  Continue with Google
-                </span>
-              </>
-            )}
-          </button>
 
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px flex-1 bg-slate-100 dark:bg-slate-700"></div>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              Or Sign In
-            </span>
-            <div className="h-px flex-1 bg-slate-100 dark:bg-slate-700"></div>
-          </div>
 
           {/* API Error */}
           <AnimatePresence>
@@ -290,7 +255,7 @@ export default function Login() {
             </div>
 
             <motion.button
-              disabled={isSubmitting || isGoogleLoading}
+              disabled={isSubmitting}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4.5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-3 transition-all mt-4"

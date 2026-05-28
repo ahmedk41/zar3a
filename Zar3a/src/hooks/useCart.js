@@ -119,7 +119,6 @@ export const useCart = (userId) => {
 
   return {
     cart,
-    initialized,
     addToCart,
     removeFromCart,
     updateQuantity,

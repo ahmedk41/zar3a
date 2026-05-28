@@ -148,8 +148,21 @@ export default function Register() {
     if (!form1.fullName.trim()) e.fullName = "Full name is required";
     if (!form1.username.trim()) e.username = "Username is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form1.email)) e.email = "Valid email required";
-    if (!form1.phone.trim()) e.phone = "Phone number is required";
-    if (form1.password.length < 8) e.password = "Password must be at least 8 characters";
+    
+    // Phone must be exactly 12 numeric digits
+    if (!form1.phone.trim()) {
+      e.phone = "Phone number is required";
+    } else if (!/^\d{12}$/.test(form1.phone.trim())) {
+      e.phone = "Phone number must be exactly 12 digits and contain only numbers";
+    }
+    
+    // Password must have >= 8 chars, at least 1 uppercase, 1 lowercase, 1 number
+    if (form1.password.length < 8) {
+      e.password = "Password must be at least 8 characters";
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(form1.password)) {
+      e.password = "Password must include at least 1 uppercase letter, 1 lowercase letter, and 1 number";
+    }
+
     if (form1.password !== form1.confirmPassword) e.confirmPassword = "Passwords do not match";
     setErrors1(e);
     return Object.keys(e).length === 0;
@@ -197,10 +210,30 @@ export default function Register() {
     setApiError("");
     try {
       if (selectedRole === "FARMER") {
+        if (!soilType.trim()) {
+          setApiError("Soil type is required");
+          setLoading(false);
+          return;
+        }
+        if (!location.trim()) {
+          setApiError("Location is required");
+          setLoading(false);
+          return;
+        }
         await completeFarmerProfile(userId, { farmSize, soilType, location });
       } else if (selectedRole === "BUYER") {
         await completeBuyerProfile(userId);
       } else if (selectedRole === "SUPPLIER") {
+        if (!tradeLicense.trim()) {
+          setApiError("Trade license is required");
+          setLoading(false);
+          return;
+        }
+        if (!location.trim()) {
+          setApiError("Business location is required");
+          setLoading(false);
+          return;
+        }
         await completeSupplierProfile(userId, { tradeLicense, location });
       } else if (selectedRole === "AGRO_EXPERT") {
         const fd = new FormData();
@@ -460,13 +493,6 @@ export default function Register() {
 
                 <div className="flex gap-3">
                   <motion.button
-                    whileHover={{ x: -2 }}
-                    onClick={() => setStep(1)}
-                    className="flex items-center gap-2 px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-black hover:border-slate-300 transition-all"
-                  >
-                    <FiArrowLeft /> Back
-                  </motion.button>
-                  <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     disabled={loading || !selectedRole}
@@ -499,10 +525,10 @@ export default function Register() {
                       <input value={farmSize} onChange={e => setFarmSize(e.target.value)} placeholder="Farm Size (e.g. 5 acres)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
                     </Field>
                     <Field icon={FiFileText}>
-                      <input value={soilType} onChange={e => setSoilType(e.target.value)} placeholder="Soil Type (optional)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
+                      <input value={soilType} onChange={e => setSoilType(e.target.value)} placeholder="Soil Type (required)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
                     </Field>
                     <Field icon={FiMapPin}>
-                      <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location (optional)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
+                      <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location (required)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
                     </Field>
                   </>
                 )}
@@ -520,10 +546,10 @@ export default function Register() {
                 {selectedRole === "SUPPLIER" && (
                   <>
                     <Field icon={FiFileText}>
-                      <input value={tradeLicense} onChange={e => setTradeLicense(e.target.value)} placeholder="Trade License (optional)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
+                      <input value={tradeLicense} onChange={e => setTradeLicense(e.target.value)} placeholder="Trade License (required)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
                     </Field>
                     <Field icon={FiMapPin}>
-                      <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Business Location (optional)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
+                      <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Business Location (required)" className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-slate-50/30 dark:bg-slate-950/50 dark:text-white border-slate-100 dark:border-slate-800 focus:border-emerald-500 outline-none font-semibold" />
                     </Field>
                   </>
                 )}

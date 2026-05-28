@@ -1,9 +1,21 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { useRef, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Footer from "../../components/Footer/Footer";
 
 const MainLayout = () => {
+  const { pathname } = useLocation();
+  const mainRef = useRef(null);
+
+  // Scroll the main content area and outer window to top on every route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (mainRef.current) {
+      mainRef.current.scrollTo(0, 0);
+    }
+  }, [pathname]);
+
   return (
     // 1. الحاوية الأساسية h-screen ثابتة
     <div className="flex flex-col h-screen overflow-hidden bg-[#F8FAFC] dark:bg-[#020617] transition-colors">
@@ -16,7 +28,7 @@ const MainLayout = () => {
         <Sidebar />
 
         {/* 3. الجزء اليمين بالكامل هو اللي بيعمل سكرول */}
-        <main className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden pt-6">
+        <main ref={mainRef} className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden pt-6">
           
           {/* 4. كارت المحتوى (المنطقة البيضاء اللي بيظهر فيها الـ Outlet) */}
           <div className="flex-1 px-4 md:px-8 pb-8">

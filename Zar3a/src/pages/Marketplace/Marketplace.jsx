@@ -86,6 +86,20 @@ const TO_SHOP_CATEGORIES = [
   "Equipment",
 ];
 
+const renderProductImage = (imageSrc, title, className = "w-full h-full object-cover rounded-4xl", textClassName = "text-7xl") => {
+  if (!imageSrc) return <span className={textClassName}>🛒</span>;
+  const srcStr = imageSrc.toString().trim();
+  if (srcStr.startsWith("http://") || srcStr.startsWith("https://")) {
+    return <img src={srcStr} className={className} alt={title} />;
+  }
+  if (srcStr.startsWith("/uploads/") || srcStr.startsWith("uploads/")) {
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5002";
+    const fullUrl = srcStr.startsWith("/") ? `${backendUrl}${srcStr}` : `${backendUrl}/${srcStr}`;
+    return <img src={fullUrl} className={className} alt={title} />;
+  }
+  return <span className={textClassName}>{srcStr}</span>;
+};
+
 const normalizeProduct = (product) => {
   const marketplaceType = product.marketplaceType || product.type || "CROP_MARKET";
   return {
@@ -428,7 +442,7 @@ const Marketplace = () => {
                 <div className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-black text-gray-600 dark:text-gray-300 flex items-center gap-1 shadow-sm">
                   <LuMapPin size={12} className="text-green-600" /> {item.region}
                 </div>
-                {item.image}
+                {renderProductImage(item.image, item.title)}
               </div>
 
               <div className="flex-1 flex flex-col">
@@ -533,8 +547,8 @@ const Marketplace = () => {
                       <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-black text-gray-600 dark:text-gray-300 flex items-center gap-1 shadow-sm">
                         <LuMapPin size={14} className="text-green-600" /> {selectedProduct.region}
                       </div>
-                      <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
-                        {selectedProduct.image}
+                      <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-full h-full flex items-center justify-center">
+                        {renderProductImage(selectedProduct.image, selectedProduct.title, "w-full h-full object-cover rounded-4xl", "text-9xl")}
                       </motion.div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
@@ -636,8 +650,8 @@ const Marketplace = () => {
                           key={`${item.productId}-${item.type}`}
                           className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-4xl border border-gray-100 dark:border-slate-700/50 group hover:border-green-200 dark:hover:border-green-900 transition-colors"
                         >
-                          <div className="w-16 h-16 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-3xl shadow-sm">
-                            {item.imageUrl || '🛒'}
+                          <div className="w-16 h-16 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-3xl shadow-sm overflow-hidden">
+                            {renderProductImage(item.imageUrl || '🛒', item.title, "w-full h-full object-cover rounded-2xl", "text-3xl")}
                           </div>
                           <div className="flex-1">
                             <h4 className="font-bold text-sm dark:text-white leading-tight mb-1 line-clamp-1">{item.title}</h4>

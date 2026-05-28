@@ -17,8 +17,12 @@ export const sendMessage = async (req, res) => {
   try {
     const { receiverId, message, attachmentUrl } = req.body;
 
-    if (!receiverId || !message) {
-      return res.status(400).json({ message: 'receiverId and message are required' });
+    if (!receiverId) {
+      return res.status(400).json({ message: 'receiverId is required' });
+    }
+
+    if (!message?.trim() && !attachmentUrl) {
+      return res.status(400).json({ message: 'Message or attachmentUrl is required' });
     }
 
     // Check if receiver exists
@@ -30,7 +34,7 @@ export const sendMessage = async (req, res) => {
     const chatMessage = await ChatMessage.create({
       senderId: req.user.id,
       receiverId,
-      message: message.trim(),
+      message: (message || '').trim(),
       attachmentUrl,
     });
 
@@ -247,8 +251,61 @@ export const deleteMessage = async (req, res) => {
   }
 };
 
+/**
+ * POST /chat/messages/upload
+ * Send a chat message with a file attachment (multipart/form-data)
+ * Body: { receiverId, message? }  File field: attachment
+ */
+export const sendMessageWithAttachment = async (req, res) => {
+  try {
+    const { receiverId, message } = req.body;
+
+    if (!receiverId) {
+      return res.status(400).json({ message: 'receiverId is required' });
+    }
+
+    const receiver = await User.findByPk(receiverId);
+    if (!receiver) {
+      return res.status(404).json({ message: 'Receiver not found' });
+    }
+
+    const attachmentUrl = req.file ? `/uploads/chat/${req.file.filename}` : null;
+
+    if (!message && !req.file) {
+      return res.status(400).json({
+        message: "Message or attachment is required",
+      });
+    }
+
+    const chatMessage = await ChatMessage.create({
+      senderId: req.user.id,
+      receiverId,
+      message: (message || '').trim() || '',
+      attachmentUrl,
+    });
+
+    const populatedMessage = await ChatMessage.findByPk(chatMessage.id, {
+      include: [
+        { model: User, as: 'sender', attributes: ['id', 'fullName', 'email'] },
+        { model: User, as: 'receiver', attributes: ['id', 'fullName', 'email'] },
+      ],
+    });
+
+    console.log(`✅ Message with attachment sent from ${req.user.email} to ${receiver.email}`);
+
+    res.status(201).json({
+      message: 'Message sent',
+      data: populatedMessage,
+    });
+  } catch (err) {
+    console.error('sendMessageWithAttachment error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export default {
   sendMessage,
+  sendMessageWithAttachment,
   getChatHistory,
   getConversations,
   markMessageAsRead,

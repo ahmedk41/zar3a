@@ -79,7 +79,7 @@ const OrderItem = sequelize.define('OrderItem', {
   },
   status: {
     type: DataTypes.ENUM('AVAILABLE', 'SOLD', 'PENDING', 'INQUIRY_PENDING', 'DELETED'),
-    defaultValue: 'AVAILABLE',
+    defaultValue: 'PENDING',
   },
 }, {
   tableName: 'OrderItems',

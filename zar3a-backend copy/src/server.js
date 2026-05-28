@@ -58,7 +58,7 @@ app.use((err, _req, res, _next) => {
 // ── Boot & Database Sync ──────────────────────────────────────────────────────
 const startServer = async () => {
   try {
-    // نستخدم alter: true فقط وقت التطوير لتحديث الجداول تلقائياً
+    // We synchronize tables but avoid alter: true on MySQL to prevent key/index bloat (ER_TOO_MANY_KEYS)
     await sequelize.sync();
     console.log("✅ Database connected & synced");
 
@@ -71,3 +71,4 @@ const startServer = async () => {
   }
 };
 startServer();
+// Nodemon reload trigger 2

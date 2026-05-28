@@ -176,7 +176,10 @@ export default function Admin() {
             <h1 className="text-4xl font-black text-slate-900 dark:text-white">Manage Users & Marketplace</h1>
             <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-400">View every user, change roles, and delete accounts immediately in the database.</p>
           </div>
-          <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white shadow-lg transition hover:bg-slate-700"><FiArrowLeft size={18} /> Back to dashboard</Link>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/products-dashboard" className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-white shadow-lg transition hover:bg-emerald-700 font-bold text-sm">Product Dashboard</Link>
+            <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white shadow-lg transition hover:bg-slate-700 font-bold text-sm"><FiArrowLeft size={18} /> Back to dashboard</Link>
+          </div>
         </header>
 
         <div className="grid gap-6 xl:grid-cols-3">
@@ -281,6 +284,26 @@ export default function Admin() {
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{expert.fullName}</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400">{expert.email}</p>
+                      {expert.AgroExpertProfile && (
+                        <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-3 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
+                          <p><strong>Degree:</strong> {expert.AgroExpertProfile.academicDegree || 'N/A'}</p>
+                          <p><strong>Experience:</strong> {expert.AgroExpertProfile.experienceYears ?? '0'} years</p>
+                          <p><strong>Bio:</strong> {expert.AgroExpertProfile.bio || 'No bio provided.'}</p>
+                          {(expert.AgroExpertProfile.cvFilePath || expert.cv) && (
+                            <p>
+                              <strong>CV:</strong>{' '}
+                              <a
+                                href={`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/${expert.AgroExpertProfile.cvFilePath || expert.cv}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-emerald-500 hover:underline font-bold"
+                              >
+                                View CV file
+                              </a>
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       <button

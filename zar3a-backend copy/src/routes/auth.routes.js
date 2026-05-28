@@ -58,8 +58,8 @@ const registerRules = [
   body("fullName").trim().notEmpty().withMessage("Full name is required"),
   body("username").trim().notEmpty().withMessage("Username is required"),
   body("email").isEmail().normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false }).withMessage("Valid email required"),
-  body("phone").trim().notEmpty().withMessage("Phone is required"),
-  body("password").isLength({ min: 8 }).withMessage("Password must be ≥ 8 characters"),
+  body("phone").trim().matches(/^\d{12}$/).withMessage("Phone number must be exactly 12 digits and contain only numbers"),
+  body("password").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password must be at least 8 characters and include at least 1 uppercase letter, 1 lowercase letter, and 1 number"),
 ];
 
 const chooseRoleRules = [
@@ -94,8 +94,8 @@ router.post("/complete/expert/:userId",
 router.post("/complete/farmer/:userId",
   [
     body("farmSize").optional().trim(),
-    body("soilType").optional().trim(),
-    body("location").optional().trim(),
+    body("soilType").trim().notEmpty().withMessage("Soil type is required"),
+    body("location").trim().notEmpty().withMessage("Location is required"),
   ],
   validate,
   completeFarmerProfile
@@ -107,8 +107,14 @@ router.post("/complete/buyer/:userId", completeBuyerProfile);
 // استكمال بيانات المورد (Supplier)
 router.post("/complete/supplier/:userId",
   [
-    body("tradeLicense").optional().trim(),
-    body("location").optional().trim(),
+    body("tradeLicense").trim().notEmpty().withMessage("Trade license is required"),
+    body("location").custom((value, { req }) => {
+      const loc = value || req.body.businessLocation;
+      if (!loc || !loc.trim()) {
+        throw new Error("Business location is required");
+      }
+      return true;
+    }),
   ],
   validate,
   completeSupplierProfile
@@ -198,7 +204,7 @@ router.put(
   authenticate,
   [
     body("currentPassword").notEmpty().withMessage("Current password is required"),
-    body("newPassword").isLength({ min: 8 }).withMessage("New password must be at least 8 characters"),
+    body("newPassword").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("New password must be at least 8 characters and include at least 1 uppercase letter, 1 lowercase letter, and 1 number"),
   ],
   validate,
   changePassword
@@ -217,7 +223,7 @@ router.post(
   "/reset-password",
   [
     body("token").notEmpty().withMessage("Reset token is required"),
-    body("newPassword").isLength({ min: 8 }).withMessage("New password must be at least 8 characters"),
+    body("newPassword").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("New password must be at least 8 characters and include at least 1 uppercase letter, 1 lowercase letter, and 1 number"),
   ],
   validate,
   resetPassword
@@ -268,7 +274,7 @@ router.post(
   "/forgot-password/reset-password",
   [
     body("verificationToken").notEmpty().withMessage("Verification token is required"),
-    body("newPassword").isLength({ min: 8 }).withMessage("Password must be at least 8 characters"),
+    body("newPassword").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/).withMessage("Password must be at least 8 characters and include at least 1 uppercase letter, 1 lowercase letter, and 1 number"),
     body("confirmPassword").notEmpty().withMessage("Please confirm password"),
   ],
   validate,

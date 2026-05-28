@@ -8,6 +8,32 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser]     = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const refreshNotifications = async () => {
+    if (!localStorage.getItem("accessToken")) return;
+    try {
+      const res = await api.get('/notifications/unread-count');
+      setUnreadCount(res.data.unreadCount || 0);
+
+      const resList = await api.get('/notifications', { params: { limit: 100 } });
+      setNotifications(resList.data.notifications || []);
+    } catch (err) {
+      console.warn("Failed to fetch notifications:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      refreshNotifications();
+      const interval = setInterval(refreshNotifications, 10000); // Poll every 10 seconds
+      return () => clearInterval(interval);
+    } else {
+      setNotifications([]);
+      setUnreadCount(0);
+    }
+  }, [user]);
 
   // Restore session on mount
   useEffect(() => {
@@ -87,12 +113,16 @@ export function AuthProvider({ children }) {
     // formData is a FormData object (includes CV file)
     const { data } = await api.post(
       `/auth/complete/expert/${userId}`,
-      formData
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
     return data;
   };
 
-  /** Login with email + password. Stores tokens and sets user state. */
   const login = async (email, password) => {
     const { data } = await api.post("/auth/login", { email, password });
 
@@ -195,21 +225,46 @@ export function AuthProvider({ children }) {
 
   const markNotificationRead = async (notificationId) => {
     const { data } = await api.put(`/notifications/${notificationId}/read`);
+    setNotifications(prev => prev.map(n => n.id === Number(notificationId) ? { ...n, isRead: true } : n));
+    setUnreadCount(prev => Math.max(0, prev - 1));
     return data;
   };
 
   const markAllNotificationsRead = async () => {
     const { data } = await api.put('/notifications/read-all');
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    setUnreadCount(0);
     return data;
   };
 
   const deleteNotificationById = async (notificationId) => {
     const { data } = await api.delete(`/notifications/${notificationId}`);
+    setNotifications(prev => {
+      const target = prev.find(n => n.id === Number(notificationId));
+      if (target && !target.isRead) {
+        setUnreadCount(u => Math.max(0, u - 1));
+      }
+      return prev.filter(n => n.id !== Number(notificationId));
+    });
     return data;
   };
 
-  const sendChatMessage = async (receiverId, message, attachmentUrl) => {
-    const { data } = await api.post('/chat/messages', { receiverId, message, attachmentUrl });
+  const sendChatMessage = async (receiverId, message, file) => {
+    // If a file is provided, use the multipart upload endpoint
+    if (file) {
+      const formData = new FormData();
+      formData.append('receiverId', receiverId);
+      formData.append('message', message || '');
+      formData.append('file', file);
+      const { data } = await api.post('/chat/messages/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return data;
+    }
+    // Otherwise use the standard JSON endpoint
+    const { data } = await api.post('/chat/messages', { receiverId, message });
     return data;
   };
 
@@ -236,6 +291,55 @@ export function AuthProvider({ children }) {
   const getOrderTracking = async (params = {}) => {
     const { data } = await api.get('/tracking/orders', { params });
     return data;
+  };
+
+  const getTrackingOrders = async (params = {}) => {
+    let url = '/orders/admin';
+    if (user?.role === 'FARMER') {
+      url = '/orders/farmer';
+    } else if (user?.role === 'SUPPLIER') {
+      url = '/orders/supplier';
+    }
+    const { data } = await api.get(url, { params });
+    
+    const items = [];
+    const seenIds = new Set();
+    const ordersList = data.orders || [];
+    
+    ordersList.forEach((order) => {
+      if (order.OrderItems) {
+        order.OrderItems.forEach((item) => {
+          const itemKey = `${item.id}-${order.id}`;
+          if (seenIds.has(itemKey)) return;
+          seenIds.add(itemKey);
+
+          items.push({
+            id: `orderitem-${item.id}`,
+            orderId: order.id,
+            productId: item.productId,
+            type: 'PURCHASE',
+            title: item.title,
+            description: item.description,
+            category: item.category,
+            price: item.price,
+            unit: item.unit,
+            region: item.region,
+            imageUrl: item.imageUrl,
+            marketplaceType: item.marketplaceType,
+            productSource: item.productSource,
+            status: order.status,
+            paymentStatus: order.paymentStatus,
+            quantity: item.quantity,
+            totalPrice: item.totalPrice,
+            User: order.User,
+            Product: item.Product,
+            createdAt: item.createdAt,
+          });
+        });
+      }
+    });
+
+    return { items };
   };
 
   const updateProfile = async (profileData) => {
@@ -277,7 +381,12 @@ export function AuthProvider({ children }) {
   };
 
   const createProduct = async (productData) => {
-    const type = productData.marketplaceType || productData.type;
+    let type = "CROP_MARKET";
+    if (productData instanceof FormData) {
+      type = productData.get("marketplaceType") || productData.get("type") || "CROP_MARKET";
+    } else {
+      type = productData.marketplaceType || productData.type || "CROP_MARKET";
+    }
     let response;
 
     if (type === "AGRI_MARKET" || type === "agri") {
@@ -348,6 +457,9 @@ export function AuthProvider({ children }) {
         deleteUserById,
         getAdminStats,
         // Notifications
+        notifications,
+        unreadCount,
+        refreshNotifications,
         getNotifications,
         getUnreadNotificationCount,
         markNotificationRead,
@@ -361,6 +473,7 @@ export function AuthProvider({ children }) {
         deleteChatMessage,
         // Tracking
         getOrderTracking,
+        getTrackingOrders,
       }}
     >
       {children}

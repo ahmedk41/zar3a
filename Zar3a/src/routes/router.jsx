@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 // Layouts
 import MainLayout from "../layouts/MainLayout/MainLayout";
@@ -30,6 +29,7 @@ import BuyerProfile from "../pages/Profiles/BuyerProfile";
 import SupplierProfile from "../pages/Profiles/SupplierProfile";
 import ExpertProfile from "../pages/Profiles/ExpertProfile";
 import ExpertConsultations from "../pages/Profiles/ExpertConsultations"; 
+import ProductsDashboard from "../pages/Dashboard/ProductsDashboard";
 
 const router = createBrowserRouter([
   // 1. Auth Routes
@@ -70,6 +70,7 @@ const router = createBrowserRouter([
       { path: "payment", element: <Payment /> },
       { path: "settings", element: <Settings /> },
       { path: "admin", element: <Admin /> },
+      { path: "products-dashboard", element: <ProductsDashboard /> },
       // ✅ Role-specific profile pages
       { path: "profile/farmer", element: <FarmerProfile /> },
       { path: "profile/buyer", element: <BuyerProfile /> },

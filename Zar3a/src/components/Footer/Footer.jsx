@@ -121,7 +121,7 @@ const Footer = () => {
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <h3 className="text-slate-900 dark:text-white font-black text-lg mb-6 uppercase tracking-wider">Platform</h3>
             <ul className="space-y-4">
-              {[{ name: "Dashboard", path: "/dashboard" }, { name: "Track Orders", path: "/track-orders" }, { name: "Marketplace", path: "/marketplace" }, { name: "Experts", path: "/experts" }].map((link) => (
+              {[{ name: "Dashboard", path: "/dashboard" }, { name: "Marketplace", path: "/marketplace" }, { name: "Experts", path: "/experts" }].map((link) => (
                 <li key={link.name}>
                   <Link to={link.path} onClick={scrollToTop} className="group flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 font-bold transition-colors">
                     <LuArrowRight className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 group-hover:mr-2 transition-all" size={16} />

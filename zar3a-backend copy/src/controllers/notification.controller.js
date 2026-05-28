@@ -194,6 +194,115 @@ export const notifyUsersOnProductAdded = async (product, addedByUser) => {
   }
 };
 
+export const triggerOrderNotifications = async (order, items) => {
+  try {
+    // Convert Sequelize instances to plain objects if needed
+    const plainItems = items.map(item => 
+      typeof item.get === 'function' ? item.get({ plain: true }) : item
+    );
+
+    const hasCrop = plainItems.some(item => item.marketplaceType === 'CROP_MARKET');
+    const hasAgri = plainItems.some(item => item.marketplaceType === 'AGRI_MARKET');
+
+    const totalQty = plainItems.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+    const cropQty = plainItems.filter(item => item.marketplaceType === 'CROP_MARKET').reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+    const agriQty = plainItems.filter(item => item.marketplaceType === 'AGRI_MARKET').reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+
+    const notificationsToCreate = [];
+
+    // 1. Purchaser (Buyer) notification
+    const itemsListStr = plainItems.map(item => `${item.title} (x${item.quantity})`).join(', ');
+    notificationsToCreate.push({
+      userId: order.userId,
+      orderId: order.id,
+      type: 'order',
+      title: 'Order Placed Successfully',
+      message: `Your order has been successfully placed. Order ID: ${order.id}. Items: ${itemsListStr}.`,
+      quantity: totalQty,
+      isRead: false
+    });
+
+    // 2. Admin notifications
+    const admins = await User.findAll({ where: { role: 'ADMIN' } });
+    admins.forEach(admin => {
+      notificationsToCreate.push({
+        userId: admin.id,
+        orderId: order.id,
+        type: 'order',
+        title: 'New Marketplace Order',
+        message: 'New order has been placed in the marketplace.',
+        quantity: totalQty,
+        isRead: false
+      });
+    });
+
+    // 3. Farmer notifications (if crop items are purchased)
+    if (hasCrop) {
+      const farmers = await User.findAll({ where: { role: 'FARMER' } });
+      farmers.forEach(farmer => {
+        notificationsToCreate.push({
+          userId: farmer.id,
+          orderId: order.id,
+          type: 'order',
+          title: 'New Crop Order Placed',
+          message: 'New Crop Market order has been placed.',
+          quantity: cropQty,
+          isRead: false
+        });
+      });
+    }
+
+    // 4. Supplier notifications (if agri items are purchased)
+    if (hasAgri) {
+      const suppliers = await User.findAll({ where: { role: 'SUPPLIER' } });
+      suppliers.forEach(supplier => {
+        notificationsToCreate.push({
+          userId: supplier.id,
+          orderId: order.id,
+          type: 'order',
+          title: 'New Agri Order Placed',
+          message: 'New Agri Shop order has been placed.',
+          quantity: agriQty,
+          isRead: false
+        });
+      });
+    }
+
+    // Deduplicate by recipient userId so each user gets exactly one notification per order
+    const uniqueNotifications = [];
+    const seenUserIds = new Set();
+
+    // First priority: Buyer notification
+    notificationsToCreate.filter(n => n.userId === order.userId).forEach(n => {
+      if (!seenUserIds.has(n.userId)) {
+        seenUserIds.add(n.userId);
+        uniqueNotifications.push(n);
+      }
+    });
+
+    // Second priority: Farmers / Suppliers
+    notificationsToCreate.filter(n => n.userId !== order.userId && (n.title.includes('Crop') || n.title.includes('Agri'))).forEach(n => {
+      if (!seenUserIds.has(n.userId)) {
+        seenUserIds.add(n.userId);
+        uniqueNotifications.push(n);
+      }
+    });
+
+    // Third priority: Admins
+    notificationsToCreate.filter(n => !seenUserIds.has(n.userId)).forEach(n => {
+      seenUserIds.add(n.userId);
+      uniqueNotifications.push(n);
+    });
+
+    if (uniqueNotifications.length > 0) {
+      await Notification.bulkCreate(uniqueNotifications);
+      console.log(`✅ Dispatched ${uniqueNotifications.length} order notifications for Order #${order.id}`);
+    }
+  } catch (err) {
+    console.error('triggerOrderNotifications error:', err);
+  }
+};
+
 export default {
   createNotification,
   getNotifications,
@@ -202,4 +311,5 @@ export default {
   deleteNotification,
   getUnreadCount,
   notifyUsersOnProductAdded,
+  triggerOrderNotifications,
 };

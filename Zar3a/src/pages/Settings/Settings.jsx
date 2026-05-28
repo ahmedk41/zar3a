@@ -26,6 +26,12 @@ const Settings = () => {
   const fileInputRef = useRef(null);
   const { user, updateProfile, changePassword, refreshUser } = useAuth();
 
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
   const [activeTab, setActiveTab] = useState("profile");
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState("");

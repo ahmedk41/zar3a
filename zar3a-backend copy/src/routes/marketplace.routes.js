@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
+import { uploadProductImage } from '../middlewares/upload.js';
 import authenticate from '../middlewares/authenticate.js';
 import {
   getCropMarketProducts,
@@ -10,6 +11,7 @@ import {
   createExpertListing,
   searchProducts,
   getProductById,
+  deleteProduct,
 } from '../controllers/marketplace.controller.js';
 
 const router = Router();
@@ -33,6 +35,7 @@ router.get('/crop-products', getCropMarketProducts);
 router.post(
   '/crop-products',
   authenticate,
+  uploadProductImage,
   [
     body('title').trim().notEmpty().withMessage('Title is required'),
     body('description').trim().notEmpty().withMessage('Description is required'),
@@ -56,6 +59,7 @@ router.get('/agri-products', getAgriShopProducts);
 router.post(
   '/agri-products',
   authenticate,
+  uploadProductImage,
   [
     body('title').trim().notEmpty().withMessage('Title is required'),
     body('description').trim().notEmpty().withMessage('Description is required'),
@@ -74,6 +78,10 @@ router.post(
 // Search products across both marketplaces
 // Query: ?q=search&marketplace=crop|agri&category=SEEDS
 router.get('/search', searchProducts);
+
+// DELETE /marketplace/products/:productId
+// Delete a product (role checks done in controller)
+router.delete('/products/:productId', authenticate, deleteProduct);
 
 // GET /marketplace/products/:productId
 // Get detailed product info

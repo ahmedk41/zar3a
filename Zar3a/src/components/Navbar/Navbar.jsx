@@ -22,7 +22,7 @@ import { useAuth } from "../../context/AuthContext";
 import Logo from "../../assets/Logo.png"; 
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, unreadCount } = useAuth();
   const [isDark, setIsDark] = useState(localStorage.getItem("theme") === "dark");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -73,21 +73,28 @@ const Navbar = () => {
   const navMap = {
     ADMIN: [
       { path: "/dashboard", label: "Dashboard", icon: <LuLayoutDashboard /> },
+      { path: "/products-dashboard", label: "Product Dashboard", icon: <LuLayoutDashboard /> },
       { path: "/crop-market", label: "Crop Market", icon: <LuShoppingBag /> },
       { path: "/agri-shop", label: "Agri Shop", icon: <LuShoppingBag /> },
       { path: "/experts", label: "Experts", icon: <LuUsers /> },
       { path: "/chatbot", label: "AI Assistant", icon: <LuMessageSquare /> },
+      { path: "/track-orders", label: "Track Order", icon: <LuShoppingBag /> },
       { path: "/admin", label: "Admin", icon: <LuShield /> },
     ],
     FARMER: [
+      { path: "/dashboard", label: "Smart Farming", icon: <LuLayoutDashboard /> },
+      { path: "/products-dashboard", label: "Product Dashboard", icon: <LuLayoutDashboard /> },
       { path: "/crop-market", label: "Crop Market", icon: <LuShoppingBag /> },
       { path: "/agri-shop", label: "Agri Shop", icon: <LuShoppingBag /> },
       { path: "/experts", label: "Experts", icon: <LuUsers /> },
+      { path: "/track-orders", label: "Track Order", icon: <LuShoppingBag /> },
     ],
     SUPPLIER: [
+      { path: "/products-dashboard", label: "Product Dashboard", icon: <LuLayoutDashboard /> },
       { path: "/crop-market", label: "Crop Market", icon: <LuShoppingBag /> },
       { path: "/agri-shop", label: "Agri Shop", icon: <LuShoppingBag /> },
       { path: "/experts", label: "Experts", icon: <LuUsers /> },
+      { path: "/track-orders", label: "Track Order", icon: <LuShoppingBag /> },
     ],
     BUYER: [
       { path: "/crop-market", label: "Crop Market", icon: <LuShoppingBag /> },
@@ -147,7 +154,11 @@ const Navbar = () => {
           {user && (
             <Link to="/notifications" className="p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-blue-600 transition-all">
               <LuBell size={20} />
-              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 animate-pulse">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </Link>
           )}
 

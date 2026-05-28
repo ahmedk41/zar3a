@@ -22,6 +22,7 @@ router.use(authenticate);
 router.get('/', getNotifications);
 router.get('/unread-count', getUnreadCount);
 router.put('/:notificationId/read', markNotificationAsRead);
+router.patch('/:notificationId/read', markNotificationAsRead);
 router.put('/read-all', markAllNotificationsAsRead);
 router.delete('/:notificationId', deleteNotification);
 

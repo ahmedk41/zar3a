@@ -1,4 +1,4 @@
-import { Product, ExpertListing, User, OrderTracking, Order, OrderItem } from '../models/index.js';
+import { Product, ExpertListing, User, AgroExpertProfile, OrderTracking, Order, OrderItem } from '../models/index.js';
 import notificationService from './notification.controller.js';
 
 /**
@@ -42,6 +42,11 @@ export const createCropMarketProduct = async (req, res) => {
       });
     }
 
+    let finalImageUrl = imageUrl || '';
+    if (req.file) {
+      finalImageUrl = `/uploads/products/${req.file.filename}`;
+    }
+
     // Normalize category
     const CATEGORY_MAP = {
       seeds: 'SEEDS',
@@ -65,7 +70,7 @@ export const createCropMarketProduct = async (req, res) => {
       price: Number(price),
       unit: unit || 'unit',
       region: region || '',
-      imageUrl: imageUrl || '',
+      imageUrl: finalImageUrl,
       marketplaceType: 'CROP_MARKET', // ← ALWAYS crop market for this endpoint
       productSource: dbSource,
       isVerified: false,
@@ -141,6 +146,11 @@ export const createAgriShopProduct = async (req, res) => {
       });
     }
 
+    let finalImageUrl = imageUrl || '';
+    if (req.file) {
+      finalImageUrl = `/uploads/products/${req.file.filename}`;
+    }
+
     const CATEGORY_MAP = {
       seeds: 'SEEDS',
       fertilizers: 'FERTILIZERS',
@@ -163,7 +173,7 @@ export const createAgriShopProduct = async (req, res) => {
       price: Number(price),
       unit: unit || 'unit',
       region: region || '',
-      imageUrl: imageUrl || '',
+      imageUrl: finalImageUrl,
       marketplaceType: 'AGRI_MARKET', // ← ALWAYS agri market for this endpoint
       productSource: dbSource,
       isVerified: false,
@@ -212,12 +222,30 @@ export const getExpertListings = async (req, res) => {
         {
           model: User,
           attributes: ['id', 'fullName', 'username', 'email', 'isApproved'],
-          where: { isApproved: true, role: 'AGRO_EXPERT' },
+          where: { isApproved: true, role: ['AGRO_EXPERT', 'ADMIN'] },
+          include: [
+            {
+              model: AgroExpertProfile,
+              attributes: ['academicDegree', 'experienceYears', 'cvFilePath', 'bio'],
+            },
+          ],
         },
       ],
       order: [['createdAt', 'DESC']],
     });
-    return res.json(listings);
+
+    const formattedListings = listings.map((l) => {
+      const data = l.toJSON ? l.toJSON() : l;
+      return {
+        ...data,
+        name: data.User?.fullName || data.User?.username || 'Expert',
+        specialization: data.specialty,
+        academicDegree: data.User?.AgroExpertProfile?.academicDegree || '',
+        experienceYears: data.User?.AgroExpertProfile?.experienceYears || 0,
+      };
+    });
+
+    return res.json(formattedListings);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
@@ -318,6 +346,47 @@ export const getProductById = async (req, res) => {
 
     if (!product) return res.status(404).json({ message: 'Product not found' });
     return res.json(product);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const user = req.user;
+
+    const product = await Product.findByPk(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Admin can delete ANY product
+    if (user.role === 'ADMIN') {
+      await product.destroy();
+      return res.json({ message: 'Product deleted successfully by Admin' });
+    }
+
+    // Farmer can delete ONLY crop products
+    if (user.role === 'FARMER') {
+      if (product.marketplaceType !== 'CROP_MARKET') {
+        return res.status(403).json({ message: 'Farmers can only delete crop products' });
+      }
+      await product.destroy();
+      return res.json({ message: 'Product deleted successfully' });
+    }
+
+    // Supplier can delete ONLY agri products
+    if (user.role === 'SUPPLIER') {
+      if (product.marketplaceType !== 'AGRI_MARKET') {
+        return res.status(403).json({ message: 'Suppliers can only delete agri products' });
+      }
+      await product.destroy();
+      return res.json({ message: 'Product deleted successfully' });
+    }
+
+    return res.status(403).json({ message: 'Unauthorized to delete this product' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });

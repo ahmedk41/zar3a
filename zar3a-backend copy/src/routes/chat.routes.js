@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import authenticate from '../middlewares/authenticate.js';
+import { uploadChatAttachment } from '../middlewares/upload.js';
 import {
   sendMessage,
+  sendMessageWithAttachment,
   getChatHistory,
   getConversations,
   markMessageAsRead,
@@ -23,11 +25,15 @@ router.post(
   '/messages',
   [
     body('receiverId').isInt().withMessage('Receiver ID is required'),
-    body('message').trim().notEmpty().withMessage('Message text is required'),
+    body('message').optional({ checkFalsy: true }).trim(),
   ],
   validate,
   sendMessage
 );
+
+// File/image upload route (multipart/form-data)
+router.post('/messages/upload', uploadChatAttachment, sendMessageWithAttachment);
+
 router.get('/messages/:conversationUserId', getChatHistory);
 router.get('/conversations', getConversations);
 router.put('/messages/:messageId/read', markMessageAsRead);

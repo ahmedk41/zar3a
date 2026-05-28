@@ -29,8 +29,17 @@ const Notification = sequelize.define(
         key: 'id',
       },
     },
+    orderId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Orders',
+        key: 'id',
+      },
+    },
     type: {
-      type: DataTypes.ENUM('PRODUCT_ADDED', 'PRODUCT_DELETED', 'ORDER_STATUS', 'SYSTEM'),
+      type: DataTypes.STRING(50),
+      allowNull: false,
       defaultValue: 'PRODUCT_ADDED',
     },
     title: {
@@ -44,6 +53,11 @@ const Notification = sequelize.define(
     isRead: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 1,
     },
     createdBy: {
       type: DataTypes.INTEGER,

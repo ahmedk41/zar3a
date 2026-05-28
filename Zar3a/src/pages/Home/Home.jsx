@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
   LuBot,
   LuActivity,
@@ -14,6 +15,7 @@ import {
 } from "react-icons/lu";
 
 const Home = () => {
+  const { user } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // تحديث الساعة حياً
@@ -88,12 +90,14 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/login" className="w-full sm:w-auto">
-              <button className="w-full px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 text-lg group">
-                Get Started{" "}
-                <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
+            {!user && (
+              <Link to="/login" className="w-full sm:w-auto">
+                <button className="w-full px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 text-lg group">
+                  Get Started{" "}
+                  <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
+                </button>
+              </Link>
+            )}
             <Link to="/marketplace" className="w-full sm:w-auto">
               <button className="w-full px-8 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 text-slate-700 dark:text-slate-200 font-bold rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 text-lg shadow-sm">
                 Explore Marketplace

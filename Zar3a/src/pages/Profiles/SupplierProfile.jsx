@@ -125,16 +125,16 @@ export default function SupplierProfile() {
           className="grid grid-cols-1 md:grid-cols-3 gap-4"
         >
           <Link
-            to="/marketplace"
+            to="/products-dashboard"
             className="bg-orange-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
           >
-            <FiTrendingUp /> Manage Products
+            <FiTrendingUp /> Product Dashboard
           </Link>
           <Link
-            to="/chat"
+            to="/track-orders"
             className="bg-amber-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
           >
-            <FiTrendingUp /> View Orders
+            <FiTrendingUp /> Track Order
           </Link>
           <Link
             to="/settings"
