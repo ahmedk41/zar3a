@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
+import LiveTicker from "../Dashboard/LiveTicker";
 import {
   LuBot,
   LuActivity,
@@ -42,6 +43,11 @@ const Home = () => {
 
   return (
     <div className="p-6 md:p-8 max-w-350 mx-auto font-sans bg-[#F8FAFC] dark:bg-[#0F172A] min-h-screen">
+      {/* Live Ticker */}
+      <div className="mb-6">
+        <LiveTicker />
+      </div>
+
       {/* 🌟 1. HERO SECTION */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
