@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   LuBell,
   LuUser,
@@ -29,6 +29,33 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
   const { isDarkMode: isDark, toggleTheme } = useTheme();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef(null);
+
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const chatPath = user?.role === 'ADMIN'
+    ? "/admin/chat"
+    : user?.role === 'AGRO_EXPERT'
+    ? "/consultations"
+    : "/messages";
+
+  const handleChatClick = (e) => {
+    e.preventDefault();
+    if (pathname === chatPath) {
+      navigate(-1);
+    } else {
+      navigate(chatPath);
+    }
+  };
+
+  const handleNotificationsClick = (e) => {
+    e.preventDefault();
+    if (pathname === "/notifications") {
+      navigate(-1);
+    } else {
+      navigate("/notifications");
+    }
+  };
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -153,24 +180,28 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
 
           {/* Chat Icon (All logged-in users) */}
           {user && (
-            <Link 
-              to={user.role === 'ADMIN' ? "/admin/chat" : user.role === 'AGRO_EXPERT' ? "/consultations" : "/messages"} 
-              className="hidden sm:flex p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-emerald-600 transition-all" 
+            <button 
+              onClick={handleChatClick}
+              className="hidden sm:flex p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-emerald-600 transition-all cursor-pointer border-none outline-none" 
               title={t("nav.chat") || "Chat"}
             >
               <LuMessageSquare size={20} />
-            </Link>
+            </button>
           )}
 
           {user && (
-            <Link to="/notifications" className="p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-blue-600 transition-all">
+            <button 
+              onClick={handleNotificationsClick}
+              className="p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-blue-600 transition-all cursor-pointer border-none outline-none"
+              title={t("nav.notifications") || "Notifications"}
+            >
               <LuBell size={20} />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 animate-pulse">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </span>
               )}
-            </Link>
+            </button>
           )}
 
           {/* User Profile Dropdown or Login Button */}
