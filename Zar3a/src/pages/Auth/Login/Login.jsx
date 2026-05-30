@@ -123,7 +123,7 @@ export default function Login() {
               <div className="relative group">
                 <FiMail className={`absolute start-4 top-1/2 -translate-y-1/2 z-10 ${errors.email ? "text-red-400" : "text-slate-400 group-focus-within:text-emerald-500"}`} />
                 <input {...register("email")} type="text" placeholder={t("login.emailPlaceholder")}
-                  className="w-full ps-12 pe-4 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/50 dark:text-white border-slate-50 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-medium" />
+                  className="w-full ps-12 pe-4 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 border-slate-50 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-medium" />
               </div>
               {errors.email && <p className="text-xs text-red-500 font-semibold ms-2">{errors.email.message}</p>}
             </div>
@@ -133,7 +133,7 @@ export default function Login() {
               <div className="relative group">
                 <FiLock className={`absolute start-4 top-1/2 -translate-y-1/2 z-10 ${errors.password ? "text-red-400" : "text-slate-400 group-focus-within:text-emerald-500"}`} />
                 <input {...register("password")} type={showPassword ? "text" : "password"} placeholder="••••••••"
-                  className="w-full ps-12 pe-12 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/50 dark:text-white border-slate-50 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all" />
+                  className="w-full ps-12 pe-12 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 border-slate-50 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
                   className="absolute end-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 transition-colors z-10">
                   {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
