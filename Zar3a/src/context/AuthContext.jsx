@@ -87,11 +87,12 @@ export function AuthProvider({ children }) {
   /**
    * Step 3 – Complete role-specific profile.
    */
-  const completeFarmerProfile = async (userId, { farmSize, soilType, location }) => {
+  const completeFarmerProfile = async (userId, { farmSize, soilType, location, sensorId }) => {
     const { data } = await api.post(`/auth/complete/farmer/${userId}`, {
       farmSize,
       soilType,
       location,
+      sensorId,
     });
     return data;
   };

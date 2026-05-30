@@ -15,6 +15,7 @@ import { useAuth } from "../../context/AuthContext";
 import api from "../../API/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
+import DualImageUpload from "../../components/DualImageUpload";
 
 export default function ProductsDashboard() {
   const { t } = useLanguage();
@@ -46,6 +47,10 @@ export default function ProductsDashboard() {
   const [editImagePreview, setEditImagePreview] = useState("");
   const [editError, setEditError] = useState("");
   const [editSuccess, setEditSuccess] = useState("");
+
+  // Reviews Modal
+  const [isReviewsOpen, setIsReviewsOpen] = useState(false);
+  const [currentReviewsProduct, setCurrentReviewsProduct] = useState(null);
 
   // Enforce access: Admin, Supplier, and Farmer only
   useEffect(() => {
@@ -142,6 +147,16 @@ export default function ProductsDashboard() {
     setEditingProduct(null);
     setEditImageFile(null);
     setEditImagePreview("");
+  };
+
+  const handleOpenReviews = (product) => {
+    setCurrentReviewsProduct(product);
+    setIsReviewsOpen(true);
+  };
+
+  const handleCloseReviews = () => {
+    setIsReviewsOpen(false);
+    setCurrentReviewsProduct(null);
   };
 
   const handleEditFormChange = (e) => {
@@ -443,6 +458,13 @@ export default function ProductsDashboard() {
                       {isDeletable ? (
                         <div className="flex gap-2">
                           <button
+                            onClick={() => handleOpenReviews(product)}
+                            className="w-12 h-12 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center hover:bg-amber-500 hover:text-white transition-all active:scale-95 shadow-sm"
+                            title="View Reviews"
+                          >
+                            ⭐
+                          </button>
+                          <button
                             onClick={() => handleOpenEditModal(product)}
                             className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shadow-sm"
                             title="Edit Product"
@@ -621,42 +643,22 @@ export default function ProductsDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.productImage") || "Product Image"}</label>
-                  <div className="mt-2 flex flex-col md:flex-row items-center gap-4">
-                    {(editImagePreview || editForm.imageUrl) && (
-                      <div className="w-24 h-24 rounded-2xl border border-gray-100 dark:border-slate-800 overflow-hidden shrink-0 flex items-center justify-center bg-gray-50 dark:bg-slate-800">
-                        <img src={editImagePreview || editForm.imageUrl} alt="Preview" className="w-full h-full object-cover animate-fade-in" />
-                      </div>
-                    )}
-                    <div className="flex-1 w-full space-y-3">
-                      <input
-                        type="text"
-                        name="imageUrl"
-                        value={editForm.imageUrl}
-                        onChange={(e) => { handleEditFormChange(e); setEditImageFile(null); setEditImagePreview(""); }}
-                        placeholder="Paste External Image URL"
-                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
-                      />
-                      <div className="relative h-12 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-2xl hover:bg-gray-100 dark:hover:bg-slate-800/50 transition">
-                        <span className="absolute text-[10px] font-bold text-gray-400 pointer-events-none">
-                          OR UPLOAD FILE (.JPG/.PNG)
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/png, image/jpeg, image/jpg"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                              setEditImageFile(file);
-                              setEditImagePreview(URL.createObjectURL(file));
-                              setEditForm(prev => ({ ...prev, imageUrl: "" }));
-                            }
-                          }}
-                          className="w-full h-full opacity-0 cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                <div className="mt-2">
+                  <DualImageUpload
+                    label={t("prodDash.productImage") || "Product Image"}
+                    value={editForm.imageUrl}
+                    onChange={(e) => { handleEditFormChange(e); setEditImageFile(null); setEditImagePreview(""); }}
+                    previewImage={editImagePreview || editForm.imageUrl}
+                    onFileChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setEditImageFile(file);
+                        setEditImagePreview(URL.createObjectURL(file));
+                        setEditForm(prev => ({ ...prev, imageUrl: "" }));
+                      }
+                    }}
+                  />
+                </div>
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-gray-50 dark:border-slate-800/50">
@@ -675,6 +677,59 @@ export default function ProductsDashboard() {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* --- REVIEWS MODAL --- */}
+      <AnimatePresence>
+        {isReviewsOpen && currentReviewsProduct && (
+          <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 999999 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCloseReviews}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ y: 50, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 50, opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[3.5rem] p-8 md:p-10 relative shadow-2xl z-10 text-left overflow-y-auto max-h-[90vh] custom-scrollbar"
+            >
+              <button
+                type="button"
+                onClick={handleCloseReviews}
+                className="absolute top-6 right-6 p-3 bg-gray-100 dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
+              >
+                <LuX size={20} className="text-gray-500 hover:text-red-500" />
+              </button>
+
+              <h2 className="text-2xl font-black dark:text-white mb-2 tracking-tight">
+                {currentReviewsProduct.title} Reviews
+              </h2>
+              <div className="flex items-center gap-2 mb-6">
+                <span className="text-3xl text-amber-400">★★★★☆</span>
+                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">(4.2 / 5.0)</span>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { name: "Ahmed K.", rating: 5, text: "Excellent quality, fast delivery! Highly recommended." },
+                  { name: "Sara M.", rating: 4, text: "Good product, but the packaging could be better." },
+                  { name: "Omar H.", rating: 5, text: "Exactly as described. Will buy again from this seller." },
+                ].map((review, idx) => (
+                  <div key={idx} className="p-4 bg-gray-50 dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700/50">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-bold text-sm text-slate-900 dark:text-white">{review.name}</span>
+                      <span className="text-amber-400 text-sm">{"★".repeat(review.rating)}{"☆".repeat(5-review.rating)}</span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-gray-300 font-medium">"{review.text}"</p>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           </div>
         )}

@@ -381,10 +381,6 @@ export const completeFarmerProfile = async (req, res) => {
     const { userId } = req.params;
     const { farmSize, soilType, location, sensorId } = req.body;
 
-    if (!sensorId || !sensorId.trim()) {
-      return res.status(400).json({ message: "Sensor ID is required for Farmer registration" });
-    }
-
     if (!soilType || !soilType.trim() || !location || !location.trim()) {
       return res.status(400).json({ message: "Soil type and location are required for Farmer registration" });
     }
@@ -394,17 +390,21 @@ export const completeFarmerProfile = async (req, res) => {
       return res.status(400).json({ message: "Invalid user or role" });
     }
 
-    // Check if sensorId is already taken
-    const existingSensor = await FarmerProfile.findOne({ where: { sensorId: sensorId.trim() } });
-    if (existingSensor) {
-      return res.status(400).json({ message: "Sensor ID is already assigned to another farmer. Please enter a unique Sensor ID." });
+    let trimmedSensorId = sensorId ? sensorId.trim() : null;
+
+    if (trimmedSensorId) {
+      // Check if sensorId is already taken
+      const existingSensor = await FarmerProfile.findOne({ where: { sensorId: trimmedSensorId } });
+      if (existingSensor) {
+        return res.status(400).json({ message: "Sensor ID is already assigned to another farmer. Please enter a unique Sensor ID." });
+      }
     }
 
     const profile = await FarmerProfile.create({
       farmSize,
       soilType,
       location,
-      sensorId: sensorId.trim(),
+      sensorId: trimmedSensorId,
       userId: Number(userId)
     });
     res.json({ message: "Farmer setup complete", profile });
@@ -648,13 +648,13 @@ export const updateProfile = async (req, res) => {
 
       if (user.FarmerProfile) {
         const updateData = { farmSize, soilType, location };
-        if (trimmedSensor) updateData.sensorId = trimmedSensor;
+        if (trimmedSensor && trimmedSensor !== user.FarmerProfile.sensorId) {
+          updateData.sensorId = trimmedSensor;
+          updateData.sensorStatus = 'PENDING';
+        }
         await FarmerProfile.update(updateData, { where: { userId: req.user.id } });
       } else {
-        if (!trimmedSensor) {
-          return res.status(400).json({ message: "Sensor ID is required for Farmer registration" });
-        }
-        await FarmerProfile.create({ userId: req.user.id, farmSize, soilType, location, sensorId: trimmedSensor });
+        await FarmerProfile.create({ userId: req.user.id, farmSize, soilType, location, sensorId: trimmedSensor || null });
       }
     }
 

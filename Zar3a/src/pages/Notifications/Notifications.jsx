@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LuBell, LuCheck, LuTrash2, LuSettings, LuX,
@@ -13,6 +14,7 @@ const Notifications = () => {
     markNotificationRead, markAllNotificationsRead, deleteNotificationById,
   } = useAuth();
   const { t, lang } = useLanguage();
+  const navigate = useNavigate();
 
   const [activeFilter, setActiveFilter] = useState("all");
   const [showSettings, setShowSettings] = useState(false);
@@ -70,6 +72,19 @@ const Notifications = () => {
 
   const handleMarkAsRead = async (id) => {
     try { await markNotificationRead(id); } catch (err) { console.error(err); }
+  };
+
+  const handleNotificationClick = async (notif) => {
+    if (!notif.isRead) {
+      await handleMarkAsRead(notif.id);
+    }
+    const type = notif.type?.toLowerCase();
+    if (type === "order" || type === "order_update") {
+      navigate("/track-orders");
+    } else if (type === "chat_message" || type === "consultation") {
+      if (notif.referenceId) navigate(`/chat/${notif.referenceId}`);
+      else navigate("/chat");
+    }
   };
 
   const formatTime = (dateStr) => {
@@ -163,7 +178,7 @@ const Notifications = () => {
                 const style = getNotifStyle(notif);
                 return (
                   <motion.div key={notif.id} layout initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-                    onClick={() => !notif.isRead && handleMarkAsRead(notif.id)}
+                    onClick={() => handleNotificationClick(notif)}
                     className={`relative flex items-start gap-5 p-6 mb-4 rounded-2xl border transition-all cursor-pointer ${
                       notif.isRead
                         ? 'bg-white/50 dark:bg-slate-800/30 border-slate-100 dark:border-slate-700 opacity-70'

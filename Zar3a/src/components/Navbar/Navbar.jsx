@@ -87,10 +87,12 @@ const Navbar = () => {
     BUYER: [
       { path: "/crop-market", label: t("nav.cropMarket"), icon: <LuShoppingBag /> },
       { path: "/agri-shop",   label: t("nav.agriShop"),   icon: <LuShoppingBag /> },
+      { path: "/track-orders",label: t("nav.trackOrder"), icon: <LuShoppingBag /> },
     ],
     AGRO_EXPERT: [
       { path: "/crop-market",   label: t("nav.cropMarket"),       icon: <LuShoppingBag /> },
       { path: "/agri-shop",     label: t("nav.agriShop"),         icon: <LuShoppingBag /> },
+      { path: "/track-orders",  label: t("nav.trackOrder"),       icon: <LuShoppingBag /> },
       { path: "/chatbot",       label: t("nav.aiAssistant"),      icon: <LuMessageSquare /> },
       { path: "/consultations", label: t("nav.consultations") || "Consultations", icon: <LuMessageSquare /> },
     ],

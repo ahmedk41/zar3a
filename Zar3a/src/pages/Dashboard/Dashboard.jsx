@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LuThermometer,
-  LuSprout,
-  LuInfo,
   LuMapPin,
   LuCalendar,
   LuZap,
@@ -11,7 +9,6 @@ import {
   LuTrendingUp,
   LuPower,
   LuSearch,
-  LuCloudSun,
   LuBell,
   LuWallet,
   LuDroplet,
@@ -20,8 +17,12 @@ import {
   LuWind,
   LuSettings2,
   LuFlaskConical,
+  LuThermometer,
   LuChevronDown,
   LuPlus,
+  LuInfo,
+  LuSprout,
+  LuCloudSun,
 } from "react-icons/lu";
 import {
   AreaChart,
@@ -381,18 +382,18 @@ const Dashboard = () => {
     { time: "08:30 AM", msg: "System Booted Successfully", type: "info" },
   ]);
   const [data, setData] = useState([
-    { time: "07:00 AM", moisture: 58 },
-    { time: "07:15 AM", moisture: 57 },
-    { time: "07:30 AM", moisture: 56 },
-    { time: "07:45 AM", moisture: 55 },
-    { time: "08:00 AM", moisture: 59 },
-    { time: "08:15 AM", moisture: 64 },
-    { time: "08:30 AM", moisture: 63 },
-    { time: "08:45 AM", moisture: 62 },
-    { time: "09:00 AM", moisture: 61 },
-    { time: "09:15 AM", moisture: 60 },
-    { time: "09:30 AM", moisture: 59 },
-    { time: "09:45 AM", moisture: 58 },
+    { time: "07:00 AM", moisture: 58, ph: 6.2, dosage: 25, consumption: 150, ventState: 0 },
+    { time: "07:15 AM", moisture: 57, ph: 6.2, dosage: 25, consumption: 155, ventState: 1 },
+    { time: "07:30 AM", moisture: 56, ph: 6.3, dosage: 25, consumption: 160, ventState: 1 },
+    { time: "07:45 AM", moisture: 55, ph: 6.3, dosage: 26, consumption: 165, ventState: 0 },
+    { time: "08:00 AM", moisture: 59, ph: 6.4, dosage: 27, consumption: 170, ventState: 1 },
+    { time: "08:15 AM", moisture: 64, ph: 6.4, dosage: 28, consumption: 175, ventState: 1 },
+    { time: "08:30 AM", moisture: 63, ph: 6.5, dosage: 28, consumption: 180, ventState: 1 },
+    { time: "08:45 AM", moisture: 62, ph: 6.5, dosage: 29, consumption: 185, ventState: 0 },
+    { time: "09:00 AM", moisture: 61, ph: 6.6, dosage: 30, consumption: 190, ventState: 0 },
+    { time: "09:15 AM", moisture: 60, ph: 6.6, dosage: 30, consumption: 195, ventState: 1 },
+    { time: "09:30 AM", moisture: 59, ph: 6.5, dosage: 31, consumption: 200, ventState: 1 },
+    { time: "09:45 AM", moisture: 58, ph: 6.4, dosage: 32, consumption: 205, ventState: 0 },
   ]);
 
   const [weather, setWeather] = useState({
@@ -455,6 +456,20 @@ const Dashboard = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleHardwareToggle = (type) => {
+    if (isLocked) {
+      alert("Hardware controls are disabled in Read-Only mode. Please wait for sensor approval.");
+      return;
+    }
+    setHardware((prev) => ({
+      ...prev,
+      [type]: {
+        ...prev[type],
+        status: prev[type].status === "ON" ? "OFF" : "ON",
+      },
+    }));
+  };
+
   const addLog = (msg, type) =>
     setLogs((prev) =>
       [
@@ -494,8 +509,17 @@ const Dashboard = () => {
     const interval = setInterval(() => {
       setData((prev) => {
         const lastVal = prev[prev.length - 1]?.moisture || 50;
+        const lastPh = prev[prev.length - 1]?.ph || 6.5;
+        const lastDosage = prev[prev.length - 1]?.dosage || 20;
+        const lastConsumption = prev[prev.length - 1]?.consumption || 150;
+
         const cropMin = cropsData[activeSector.crop].min;
         let change = 0;
+        let phChange = (Math.random() * 0.2) - 0.1;
+        let dosageChange = hardware.fertilizer ? (Math.random() * 2) : -(Math.random() * 1);
+        let consumptionChange = hardware.pump ? (Math.random() * 10) : (Math.random() * 2);
+        let ventState = hardware.vent ? 1 : 0;
+
         if (activeSector.isAuto) {
           if (lastVal < cropMin) {
             change = 4;
@@ -504,11 +528,32 @@ const Dashboard = () => {
             change = Math.random() * 4 - 2;
             setHardware((h) => ({ ...h, pump: false }));
           }
+          // Auto vent based on temp (simulated via moisture inversely)
+          if (lastVal > cropMin + 15) {
+             setHardware((h) => ({ ...h, vent: true }));
+             ventState = 1;
+          } else {
+             setHardware((h) => ({ ...h, vent: false }));
+             ventState = 0;
+          }
+          // Auto fertilizer if dosage drops
+          if (lastDosage < 15) {
+             setHardware((h) => ({ ...h, fertilizer: true }));
+          } else if (lastDosage > 30) {
+             setHardware((h) => ({ ...h, fertilizer: false }));
+          }
         } else {
           if (hardware.pump) change = 5;
           else change = Math.random() * 4 - 2.5;
+          if (hardware.fertilizer) phChange += 0.05; // Fertilizer makes soil slightly basic or acidic
+          if (hardware.vent) change -= 1; // Venting dries out slightly
         }
+
         const newVal = Math.round(Math.max(10, Math.min(95, lastVal + change)));
+        const newPh = Math.round(Math.max(4.0, Math.min(9.0, lastPh + phChange)) * 10) / 10;
+        const newDosage = Math.round(Math.max(0, lastDosage + dosageChange));
+        const newConsumption = Math.round(lastConsumption + consumptionChange);
+
         const nextData = [
           ...prev,
           {
@@ -517,51 +562,80 @@ const Dashboard = () => {
               minute: "2-digit",
             }),
             moisture: newVal,
+            ph: newPh,
+            dosage: newDosage,
+            consumption: newConsumption,
+            ventState,
           },
         ];
         return nextData.length > 12 ? nextData.slice(1) : nextData;
       });
     }, 3000);
     return () => clearInterval(interval);
-  }, [activeSector.isAuto, activeSector.crop, hardware.pump]);
+  }, [activeSector.isAuto, activeSector.crop, hardware.pump, hardware.fertilizer, hardware.vent]);
 
   const currentMoisture = data[data.length - 1]?.moisture || 0;
+  const currentPh = data[data.length - 1]?.ph || 7.0;
+  const currentDosage = data[data.length - 1]?.dosage || 0;
   const crop = cropsData[activeSector.crop];
   const filteredLocs = Object.keys(locationDB).filter((loc) =>
     loc.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const analyzeStatus = () => {
-    let advice = "";
-    let color = "text-green-500";
-    let pumpStatus = t("pump.idle");
-    const cropNameTranslated = t("crop." + activeSector.crop);
-    
-    if (currentMoisture < crop.min) {
-      color = "text-red-500";
-      pumpStatus = hardware.pump ? t("pump.active") : t("pump.critical");
-      advice = hardware.pump
-        ? `${t("advice.irrigating")} ${crop.min}%.`
-        : `${t("advice.critical")} ${weather.temp}${t("advice.criticalEnd")}`;
-    } else if (currentMoisture > crop.max) {
       color = "text-orange-500";
       pumpStatus = t("pump.halted");
-      advice = t("advice.warning");
+      adviceParts.push(t("advice.warning") || `Moisture too high for ${cropNameTranslated}.`);
     } else {
-      advice = `${t("advice.optimal")} ${cropNameTranslated}${t("advice.optimalEnd")}`;
       pumpStatus = hardware.pump ? t("pump.activeStop") : t("pump.standby");
+      adviceParts.push(`${t("advice.optimal")} ${cropNameTranslated}${t("advice.optimalEnd")}`);
     }
+
+    // pH analysis (basic parsing of "6.0 - 6.8")
+    const phRange = crop.soilPh ? crop.soilPh.split('-').map(n => parseFloat(n.trim())) : [5.5, 7.5];
+    if (phRange.length === 2) {
+      if (currentPh < phRange[0]) adviceParts.push(`Soil is too acidic (pH ${currentPh}). Consider adding lime.`);
+      else if (currentPh > phRange[1]) adviceParts.push(`Soil is too alkaline (pH ${currentPh}). Consider sulfur additives.`);
+    }
+
+    // Vent & Fertilizer Context
+    if (hardware.vent) adviceParts.push(`Active ventilation is cooling the sector.`);
+    if (hardware.fertilizer) adviceParts.push(`Fertilizer pump is active (Dosage: ${currentDosage}kg).`);
+
     return {
       color,
-      advice: (activeSector.isAuto ? `[${t("dash.auto")}] ` : `[${t("dash.manual")}] `) + advice,
+      advice: (activeSector.isAuto ? `[${t("dash.auto")}] ` : `[${t("dash.manual")}] `) + adviceParts.join(" "),
       pumpStatus,
     };
   };
   const aiRes = analyzeStatus();
 
+  // If farmer doesn't have an approved sensor, lock the dashboard
+  const isLocked = user?.role === "FARMER" && user?.FarmerProfile?.sensorStatus !== "APPROVED";
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-16 px-4 text-left relative z-10">
+      {isLocked && (
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-full flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+              <LuZap size={20} />
+            </div>
+            <div>
+              <h3 className="font-bold text-amber-800 dark:text-amber-400">Dashboard is in Read-Only Mode</h3>
+              <p className="text-xs text-amber-700 dark:text-amber-500 font-medium">
+                {user?.FarmerProfile?.sensorId 
+                  ? "Your IoT Sensor is pending approval. You can view data but hardware controls are disabled."
+                  : "Register a Sensor ID in your profile to unlock hardware controls."}
+              </p>
+            </div>
+          </div>
+          <Link to="/profile" className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors text-sm whitespace-nowrap">
+            Go to Profile
+          </Link>
+        </div>
+      )}
+
       {/* Top Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-slate-800 gap-4">
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto no-scrollbar">
@@ -859,7 +933,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className="h-75 w-full">
+          <div className="h-96 min-h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data}>
                 <defs>
@@ -957,19 +1031,11 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="h-75 w-full">
+          <div className="h-96 min-h-[400px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={[
-                { day: "Mon", duration: 120, state: 1 },
-                { day: "Tue", duration: 180, state: 1 },
-                { day: "Wed", duration: 90, state: 0 },
-                { day: "Thu", duration: 240, state: 1 },
-                { day: "Fri", duration: 150, state: 1 },
-                { day: "Sat", duration: 60, state: 0 },
-                { day: "Sun", duration: 210, state: 1 },
-              ]}>
+              <BarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                <XAxis dataKey="day" stroke="#94a3b8" fontSize={10} tickLine={false} />
+                <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fill: '#94a3b8', fontSize: 10 } }} />
                 <Tooltip
                   contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }}
@@ -977,8 +1043,8 @@ const Dashboard = () => {
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 10 }} />
                 <Bar
-                  name="Duration (min)"
-                  dataKey="duration"
+                  name="Vent State (0/1)"
+                  dataKey="ventState"
                   fill="#06b6d4"
                   radius={[10, 10, 0, 0]}
                   maxBarSize={40}
@@ -1004,16 +1070,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="h-75 w-full">
+          <div className="h-96 min-h-[400px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={[
-                { time: "Wk 1", dosage: 25, consumption: 150 },
-                { time: "Wk 2", dosage: 30, consumption: 180 },
-                { time: "Wk 3", dosage: 20, consumption: 140 },
-                { time: "Wk 4", dosage: 35, consumption: 210 },
-                { time: "Wk 5", dosage: 40, consumption: 240 },
-                { time: "Wk 6", dosage: 15, consumption: 110 },
-              ]}>
+              <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
                 <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
@@ -1061,17 +1120,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="h-75 w-full">
+          <div className="h-96 min-h-[400px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={[
-                { time: "00:00", ph: 6.2 },
-                { time: "04:00", ph: 6.3 },
-                { time: "08:00", ph: 6.5 },
-                { time: "12:00", ph: 6.4 },
-                { time: "16:00", ph: 6.6 },
-                { time: "20:00", ph: 6.5 },
-                { time: "24:00", ph: 6.4 },
-              ]}>
+              <AreaChart data={data}>
                 <defs>
                   <linearGradient id="phGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#eab308" stopOpacity={0.4} />

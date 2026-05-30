@@ -21,23 +21,12 @@ const TrackOrders = () => {
       navigate('/login');
       return;
     }
-    if (user.role === 'AGRO_EXPERT' || user.role === 'BUYER') {
-      setError(t('track.deniedDesc'));
-      setLoading(false);
-    }
   }, [user, authLoading, navigate]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
       setError('');
-
-      // If user is AGRO_EXPERT or BUYER, deny access
-      if (user && (user.role === 'AGRO_EXPERT' || user.role === 'BUYER')) {
-        setError(t('track.deniedDesc'));
-        setLoading(false);
-        return;
-      }
 
       const response = await getOrderTracking({ search: query });
       const itemsData = response?.items || [];
@@ -52,33 +41,11 @@ const TrackOrders = () => {
   };
 
   useEffect(() => {
-    if (authLoading || !user || user.role === 'AGRO_EXPERT' || user.role === 'BUYER') {
+    if (authLoading || !user) {
       return;
     }
     fetchOrders();
   }, [query, user, authLoading]);
-
-  if (user && (user.role === 'AGRO_EXPERT' || user.role === 'BUYER')) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-        <div className="max-w-md w-full rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 p-8 text-center">
-          <div className="rounded-full bg-amber-100 dark:bg-amber-900/30 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <FiAlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t('track.denied')}</h2>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">
-            {t('track.deniedDesc')}
-          </p>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="w-full rounded-2xl bg-slate-900 dark:bg-white px-4 py-3 text-white dark:text-slate-900 font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 transition"
-          >
-            {t('track.goDash')}
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div>

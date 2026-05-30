@@ -1,5 +1,5 @@
 import { Op, fn, col } from 'sequelize';
-import { User, Product, Notification } from '../models/index.js';
+import { User, Product, Notification, FarmerProfile } from '../models/index.js';
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════
@@ -262,6 +262,24 @@ export const getAdminStats = async (req, res) => {
   }
 };
 
+export const updateSensorStatus = async (req, res) => {
+  try {
+    const { profileId } = req.params;
+    const { status } = req.body;
+    if (!['APPROVED', 'REJECTED', 'PENDING'].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+    const profile = await FarmerProfile.findByPk(profileId);
+    if (!profile) return res.status(404).json({ message: "Farmer Profile not found" });
+
+    await profile.update({ sensorStatus: status });
+    return res.json({ message: `Sensor status updated to ${status}`, profile });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 export default {
   getAllUsers,
   getUserDetails,
@@ -269,4 +287,5 @@ export default {
   deleteUser,
   deleteProduct,
   getAdminStats,
+  updateSensorStatus,
 };

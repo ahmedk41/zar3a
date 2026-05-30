@@ -7,9 +7,13 @@ import { useLanguage } from "../../context/LanguageContext";
 
 export default function FarmerProfile() {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editingSensor, setEditingSensor] = useState(false);
+  const [newSensorId, setNewSensorId] = useState("");
+  const [sensorError, setSensorError] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -17,13 +21,31 @@ export default function FarmerProfile() {
     setProfile(user);
   }, [user]);
 
-  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
       </div>
     );
   }
+
+  const handleUpdateSensor = async (e) => {
+    e.preventDefault();
+    if (!newSensorId.trim()) {
+      setSensorError("Sensor ID is required.");
+      return;
+    }
+    setIsUpdating(true);
+    setSensorError("");
+    try {
+      await updateProfile({ sensorId: newSensorId.trim() });
+      setEditingSensor(false);
+      // user context will automatically update and trigger useEffect
+    } catch (error) {
+      setSensorError("Failed to update Sensor ID. It may already be in use.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 py-8 px-4">
@@ -116,11 +138,69 @@ export default function FarmerProfile() {
                   <FiMapPin className="text-green-600" /> {profile?.FarmerProfile?.location || t("admin.cvNA")}
                 </p>
               </div>
-              <div>
+              <div className="border-t dark:border-gray-700 pt-4 mt-2">
                 <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.sensorId") || "Sensor ID"}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FiTrendingUp className="text-green-600" /> {profile?.FarmerProfile?.sensorId || t("admin.cvNA")}
-                </p>
+                
+                {(!profile?.FarmerProfile?.sensorId || editingSensor) ? (
+                  <form onSubmit={handleUpdateSensor} className="mt-2 flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={newSensorId}
+                      onChange={(e) => setNewSensorId(e.target.value)}
+                      placeholder="Enter Sensor ID to unlock Dashboard"
+                      className="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      disabled={isUpdating}
+                    />
+                    {sensorError && <p className="text-red-500 text-xs">{sensorError}</p>}
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={isUpdating}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition"
+                      >
+                        {isUpdating ? "Saving..." : "Save Sensor"}
+                      </button>
+                      {profile?.FarmerProfile?.sensorId && (
+                        <button
+                          type="button"
+                          onClick={() => setEditingSensor(false)}
+                          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-bold hover:bg-gray-300 transition"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                ) : (
+                  <div className="flex justify-between items-start mt-1">
+                    <div>
+                      <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                        <FiTrendingUp className="text-green-600" /> {profile.FarmerProfile.sensorId}
+                      </p>
+                      <p className={`text-xs font-bold px-2 py-1 inline-block rounded-full mt-1 ${
+                        profile.FarmerProfile.sensorStatus === "APPROVED" ? "bg-green-100 text-green-700" :
+                        profile.FarmerProfile.sensorStatus === "REJECTED" ? "bg-red-100 text-red-700" :
+                        "bg-yellow-100 text-yellow-700"
+                      }`}>
+                        Status: {profile.FarmerProfile.sensorStatus || "PENDING"}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setNewSensorId(profile.FarmerProfile.sensorId);
+                        setEditingSensor(true);
+                      }}
+                      className="text-sm text-green-600 hover:text-green-700 dark:text-green-400 font-bold"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+                {!profile?.FarmerProfile?.sensorId && (
+                  <p className="text-xs text-amber-600 mt-2">
+                    * Sensor ID is required to access the IoT Dashboard.
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>
