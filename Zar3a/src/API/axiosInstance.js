@@ -106,13 +106,13 @@ export const ordersAPI = {
  * ─────────────────────────────────────────────────────────
  */
 export const paymentsAPI = {
-  // Create Stripe payment intent
-  createPaymentIntent: (orderId) =>
-    api.post('/payments/intent', { orderId }),
+  // Create Order and Initialize Payment Gateway
+  createOrder: (data) =>
+    api.post('/payments/create-order', data),
 
-  // Confirm payment after success
-  confirmPayment: (orderId, paymentIntentId) =>
-    api.post('/payments/confirm', { orderId, paymentIntentId }),
+  // Confirm payment after success callback
+  confirmPayment: (data) =>
+    api.post('/payments/confirm', data),
 
   // Check payment status
   getPaymentStatus: (orderId) =>

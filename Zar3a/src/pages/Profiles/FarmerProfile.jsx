@@ -7,9 +7,13 @@ import { useLanguage } from "../../context/LanguageContext";
 
 export default function FarmerProfile() {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editingSensor, setEditingSensor] = useState(false);
+  const [newSensorId, setNewSensorId] = useState("");
+  const [sensorError, setSensorError] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -24,6 +28,24 @@ export default function FarmerProfile() {
       </div>
     );
   }
+
+  const handleUpdateSensor = async (e) => {
+    e.preventDefault();
+    if (!newSensorId.trim()) {
+      setSensorError("Sensor ID is required.");
+      return;
+    }
+    setIsUpdating(true);
+    setSensorError("");
+    try {
+      await updateProfile({ sensorId: newSensorId.trim() });
+      setEditingSensor(false);
+    } catch (error) {
+      setSensorError(error?.response?.data?.message || "Failed to update Sensor ID. It may already be in use.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 py-8 px-4">
@@ -118,9 +140,51 @@ export default function FarmerProfile() {
               </div>
               <div>
                 <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.sensorId") || "Sensor ID"}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FiTrendingUp className="text-green-600" /> {profile?.FarmerProfile?.sensorId || t("admin.cvNA")}
-                </p>
+                
+                {editingSensor ? (
+                  <form onSubmit={handleUpdateSensor} className="mt-2 flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={newSensorId}
+                      onChange={(e) => setNewSensorId(e.target.value)}
+                      placeholder="Enter Sensor ID"
+                      className="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      disabled={isUpdating}
+                    />
+                    {sensorError && <p className="text-red-500 text-xs">{sensorError}</p>}
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={isUpdating}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition"
+                      >
+                        {isUpdating ? "Saving..." : "Save Sensor"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingSensor(false)}
+                        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-bold hover:bg-gray-300 transition"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="flex justify-between items-center mt-1">
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <FiTrendingUp className="text-green-600" /> {profile?.FarmerProfile?.sensorId || t("admin.cvNA")}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setNewSensorId(profile?.FarmerProfile?.sensorId || "");
+                        setEditingSensor(true);
+                      }}
+                      className="text-sm text-green-600 hover:text-green-700 dark:text-green-400 font-bold"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
