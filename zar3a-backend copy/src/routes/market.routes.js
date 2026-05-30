@@ -8,6 +8,7 @@ import {
   getExpertListings,
   createExpertListing,
 } from '../controllers/market.controller.js';
+import { createInquiry } from '../controllers/inquiry.controller.js';
 
 const router = Router();
 
@@ -26,7 +27,7 @@ router.post(
     body('description').trim().notEmpty().withMessage('Description is required'),
     body('category').trim().notEmpty().withMessage('Category is required'),
     body('price').isFloat({ gt: 0 }).withMessage('Price must be a positive number'),
-    body('marketplaceType').optional().isIn(['CROP_MARKET', 'AGRI_MARKET']).withMessage('Invalid marketplace type'),
+    body('marketplaceType').optional().isIn(['CROP_MARKET', 'AGRI_MARKET', 'SENSOR_MARKET']).withMessage('Invalid marketplace type'),
     body('productSource').optional().isIn(['MANUAL', 'SENSED']).withMessage('Invalid product source'),
   ],
   validate,
@@ -50,6 +51,18 @@ router.post(
   ],
   validate,
   createExpertListing
+);
+
+router.post(
+  '/inquiries',
+  authenticate,
+  [
+    body('productId').isInt().withMessage('Product ID must be an integer'),
+    body('quantity').isInt({ gt: 0 }).withMessage('Quantity must be positive'),
+    body('message').trim().notEmpty().withMessage('Message is required'),
+  ],
+  validate,
+  createInquiry
 );
 
 export default router;

@@ -63,7 +63,7 @@ const Product = sequelize.define('Product', {
   },
 
   marketplaceType: {
-    type: DataTypes.ENUM('CROP_MARKET', 'AGRI_MARKET'),
+    type: DataTypes.ENUM('CROP_MARKET', 'AGRI_MARKET', 'SENSOR_MARKET'),
     defaultValue: 'CROP_MARKET',
   },
 

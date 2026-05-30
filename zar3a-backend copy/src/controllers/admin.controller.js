@@ -289,3 +289,47 @@ export default {
   getAdminStats,
   updateSensorStatus,
 };
+
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SENSOR QUOTE APPROVAL & INSTANT LINKAGE LOGIC
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+export const approveSensorQuote = async (req, res) => {
+  try {
+    const { farmerUserId } = req.body;
+    
+    // 1. Generate a unique IoT Whitelist ID for the physical sensor
+    const generatedSensorId = 'ZAR3A-SENS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    // 2. Locate the Farmer's Profile
+    const farmerProfile = await FarmerProfile.findOne({ where: { userId: farmerUserId } });
+    if (!farmerProfile) {
+      return res.status(404).json({ message: 'Farmer profile not found.' });
+    }
+
+    // 3. Automatically link the Sensor ID for instant activation upon delivery
+    await farmerProfile.update({
+      sensorId: generatedSensorId,
+      sensorStatus: 'WHITELISTED'
+    });
+
+    // 4. Notify the Farmer
+    await Notification.create({
+      userId: farmerUserId,
+      type: 'QUOTE_APPROVED',
+      title: 'Sensor Quote Approved',
+      message: `Your sensor order is approved! Your dedicated Sensor ID (${generatedSensorId}) has been whitelisted to your profile. It will instantly connect when powered on.`,
+      createdBy: req.user.id
+    });
+
+    return res.status(200).json({ 
+      message: 'Quote approved and sensor whitelisted successfully.',
+      sensorId: generatedSensorId
+    });
+  } catch (err) {
+    console.error('approveSensorQuote error:', err);
+    return res.status(500).json({ message: 'Server error during sensor approval.' });
+  }
+};

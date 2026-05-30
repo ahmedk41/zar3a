@@ -33,6 +33,8 @@ export const createProduct = async (req, res) => {
       tools: 'TOOLS',
       produce: 'PRODUCE',
       equipment: 'EQUIPMENT',
+      sensors: 'EQUIPMENT',
+      'iot devices': 'EQUIPMENT',
       other: 'OTHER',
     };
     const normalizedCategory = (category || '').toString().trim().toLowerCase();
@@ -48,8 +50,15 @@ export const createProduct = async (req, res) => {
       agrimarket: 'AGRI_MARKET',
       CROP_MARKET: 'CROP_MARKET',
       AGRI_MARKET: 'AGRI_MARKET',
+      sensors: 'SENSOR_MARKET',
+      sensor_market: 'SENSOR_MARKET',
+      SENSOR_MARKET: 'SENSOR_MARKET',
     };
     const dbMarketplace = MARKETPLACE_MAP[(marketplaceType || '').toString().trim()] || 'CROP_MARKET';
+
+    if (dbMarketplace === 'SENSOR_MARKET' && user.role !== 'ADMIN') {
+      return res.status(403).json({ message: 'Only admins can add sensors to the marketplace.' });
+    }
 
     // Normalize productSource
     const SOURCE_MAP = { manual: 'MANUAL', sensed: 'SENSED', MANUAL: 'MANUAL', SENSED: 'SENSED' };

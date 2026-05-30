@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -121,7 +121,9 @@ const normalizeProduct = (product) => {
     rating: product.rating || 4.5,
     marketplaceType,
     marketType:
-      marketplaceType === "AGRI_MARKET"
+      marketplaceType === "SENSOR_MARKET"
+        ? "sensors"
+        : marketplaceType === "AGRI_MARKET"
         ? "shop"
         : marketplaceType === "CROP_MARKET"
         ? "market"
@@ -129,6 +131,59 @@ const normalizeProduct = (product) => {
         ? "shop"
         : "market",
   };
+};
+
+
+const CustomSelect = ({ value, onChange, options, disabled, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedLabel = options.find(opt => opt.value === value)?.label || placeholder || "Select...";
+
+  return (
+    <div className={`relative w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} ref={dropdownRef}>
+      <div
+        className="w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none cursor-pointer flex justify-between items-center focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <svg className={`w-4 h-4 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden py-1"
+          >
+            {options.map((opt) => (
+              <div
+                key={opt.value}
+                className={`mx-2 my-1 px-4 py-3 text-sm font-bold rounded-xl cursor-pointer transition-colors ${value === opt.value ? 'bg-green-500 text-white dark:bg-green-600' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700/80'}`}
+                onClick={() => {
+                  onChange({ target: { name: opt.name, value: opt.value } });
+                  setIsOpen(false);
+                }}
+              >
+                {opt.label}
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
 const Marketplace = () => {
@@ -141,12 +196,24 @@ const Marketplace = () => {
   const [activeTab, setActiveTab] = useState("shop");
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [quoteProduct, setQuoteProduct] = useState(null);
+  const [quoteQuantity, setQuoteQuantity] = useState(1);
+  const [quoteLocation, setQuoteLocation] = useState("");
+  const [quoteMessage, setQuoteMessage] = useState("");
   const [maxPrice, setMaxPrice] = useState(50000);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("Top Rated");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
+    
+  useEffect(() => {
+    if (activeTab === "sensors" && user && !["FARMER", "BUYER", "ADMIN"].includes(user.role)) {
+      setActiveTab("shop");
+    }
+  }, [activeTab, user]);
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createForm, setCreateForm] = useState({
     title: "",
@@ -381,6 +448,96 @@ const Marketplace = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-20 px-4 text-left">
+
+      {/* Quote Modal */}
+      <AnimatePresence>
+        {showQuoteModal && quoteProduct && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowQuoteModal(false)}
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl p-6 relative z-10 shadow-2xl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-black dark:text-white">Request Quote</h3>
+                <button onClick={() => setShowQuoteModal(false)} className="text-gray-400 hover:text-red-500">
+                  <LuX size={24} />
+                </button>
+              </div>
+              <div className="mb-4 p-4 bg-green-50 dark:bg-slate-800 rounded-2xl flex items-center gap-4">
+                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                  <img src={quoteProduct.image} alt={quoteProduct.title} className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <p className="font-bold dark:text-white">{quoteProduct.title}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{quoteProduct.owner}</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Quantity Required</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quoteQuantity}
+                    onChange={(e) => setQuoteQuantity(Number(e.target.value))}
+                    className="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Farm Location</label>
+                  <input
+                    type="text"
+                    value={quoteLocation}
+                    onChange={(e) => setQuoteLocation(e.target.value)}
+                    placeholder="Enter full address or region..."
+                    className="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Additional Message</label>
+                  <textarea
+                    rows="3"
+                    value={quoteMessage}
+                    onChange={(e) => setQuoteMessage(e.target.value)}
+                    placeholder="Specify any installation requirements or questions..."
+                    className="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white resize-none outline-none"
+                  ></textarea>
+                </div>
+                <button
+                  onClick={async () => {
+                    try {
+                      const res = await api.post('/api/market/inquiries', {
+                        productId: quoteProduct.id,
+                        quantity: quoteQuantity,
+                        location: quoteLocation,
+                        message: quoteMessage
+                      });
+                      alert(res.data.message || 'Quote requested successfully!');
+                      setShowQuoteModal(false);
+                    } catch (err) {
+                      alert('Failed to request quote.');
+                      console.error(err);
+                    }
+                  }}
+                  className="w-full bg-green-600 text-white font-black py-4 rounded-xl hover:bg-green-700 transition-colors shadow-lg mt-2"
+                >
+                  Submit Inquiry
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-slate-800">
         <div className="flex w-full md:w-auto bg-gray-50 dark:bg-slate-800 p-1.5 rounded-full relative">
           <button
@@ -423,6 +580,28 @@ const Marketplace = () => {
               />
             )}
           </button>
+          {(user?.role === "FARMER" || user?.role === "BUYER" || user?.role === "ADMIN") && (
+            <button
+              onClick={() => {
+                setActiveTab("sensors");
+                setSelectedCategory("All");
+                setIsFilterOpen(false);
+              }}
+              className={`relative flex-1 md:flex-none px-6 py-3 rounded-full font-black text-sm transition-all z-10 ${
+                activeTab === "sensors"
+                  ? "text-white"
+                  : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+              }`}
+            >
+              Our Sensors
+              {activeTab === "sensors" && (
+                <motion.div
+                  layoutId="tabBg"
+                  className="absolute inset-0 bg-green-600 rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
+                />
+              )}
+            </button>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
@@ -528,6 +707,7 @@ const Marketplace = () => {
                   {t("common.egp")} {Number(maxPrice).toLocaleString()}
                 </span>
               </div>
+              <input type="range" min="0" max="100000" step="500" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600 dark:bg-slate-700" />
             </div>
           </div>
         </motion.div>
@@ -585,24 +765,46 @@ const Marketplace = () => {
                 </div>
 
                 <div className="mt-auto pt-5 flex items-end justify-between">
-                  <div>
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">{t("market.price")}</p>
-                    <p className="text-xl font-black text-gray-900 dark:text-white">
-                      {t("common.egp")} {item.price.toLocaleString()} <span className="text-[10px] text-gray-400">/ {item.unit === "unit" ? t("market.unit") : item.unit}</span>
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (!user) {
-                        navigate('/login');
-                        return;
-                      }
-                      addToCart(item);
-                    }}
-                    className="w-12 h-12 bg-gray-900 dark:bg-green-600 text-white rounded-[1.2rem] flex items-center justify-center shadow-md hover:shadow-lg hover:bg-green-500 active:scale-95 transition-all"
-                  >
-                    <LuPlus size={22} />
-                  </button>
+                  {item.marketType !== "sensors" ? (
+                    <>
+                      <div>
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">{t("market.price")}</p>
+                        <p className="text-xl font-black text-gray-900 dark:text-white">
+                          {t("common.egp")} {item.price.toLocaleString()} <span className="text-[10px] text-gray-400">/ {item.unit === "unit" ? t("market.unit") : item.unit}</span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (!user) {
+                            navigate('/login');
+                            return;
+                          }
+                          addToCart(item);
+                        }}
+                        className="bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white dark:hover:bg-green-500 transition-colors shadow-sm"
+                        title={t("market.addToCart")}
+                      >
+                        <LuShoppingCart size={20} />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="w-full">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!user) {
+                            navigate('/login');
+                            return;
+                          }
+                          setQuoteProduct(item);
+                          setShowQuoteModal(true);
+                        }}
+                        className="w-full bg-gray-900 dark:bg-green-600 text-white px-4 py-3 rounded-2xl font-black hover:bg-gray-800 dark:hover:bg-green-700 transition-colors shadow-lg flex items-center justify-center gap-2"
+                      >
+                        Request Quote
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -1000,7 +1202,7 @@ const Marketplace = () => {
                 initial={{ y: 25, opacity: 0, scale: 0.95 }}
                 animate={{ y: 0, opacity: 1, scale: 1 }}
                 exit={{ y: 25, opacity: 0, scale: 0.95 }}
-                className="relative z-10 w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] p-8 md:p-12 shadow-2xl"
+                className="relative z-10 w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl shadow-green-900/5 max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-slate-800"
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -1014,121 +1216,130 @@ const Marketplace = () => {
                     <LuX size={26} />
                   </button>
                 </div>
-                <div className="grid grid-cols-1 gap-4">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                   <input
                     type="text"
                     name="title"
                     value={createForm.title}
                     onChange={handleCreateInput}
                     placeholder={t("market.prodTitle")}
-                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
+                    className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
                   />
                   <textarea
                     name="description"
                     value={createForm.description}
                     onChange={handleCreateInput}
                     placeholder={t("market.prodDesc")}
-                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none h-32 resize-none"
+                    className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400 h-28 resize-none"
                   />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <select
-                      name="category"
-                      value={createForm.category}
-                      onChange={handleCreateInput}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    >
-                      <option value="" disabled>{t("market.category") || "Select Category"}</option>
-                      {user?.role !== "SUPPLIER" && <option value="PRODUCE">PRODUCE</option>}
-                      {user?.role !== "FARMER" && (
-                        <>
-                          <option value="SEEDS">SEEDS</option>
-                          <option value="FERTILIZERS">FERTILIZERS</option>
-                          <option value="TOOLS">TOOLS</option>
-                          <option value="EQUIPMENT">EQUIPMENT</option>
-                        </>
-                      )}
-                      <option value="OTHER">OTHER</option>
-                    </select>
-                    <input
-                      type="number"
-                      name="price"
-                      value={createForm.price}
-                      onChange={handleCreateInput}
-                      placeholder={t("market.price")}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <select
-                      name="marketplaceType"
-                      value={user?.role === "FARMER" ? "CROP_MARKET" : user?.role === "SUPPLIER" ? "AGRI_MARKET" : createForm.marketplaceType}
-                      onChange={handleCreateInput}
-                      disabled={user?.role === "FARMER" || user?.role === "SUPPLIER"}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <option value="CROP_MARKET">{t("nav.cropMarket") || "Crop Market"}</option>
-                      <option value="AGRI_MARKET">{t("nav.agriShop") || "Agri Shop"}</option>
-                    </select>
-                    <select
-                      name="productSource"
-                      value={createForm.productSource}
-                      onChange={handleCreateInput}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    >
-                      <option value="MANUAL">{t("market.manual")}</option>
-                      <option value="SENSED">{t("market.sensed")}</option>
-                    </select>
-                    <select
-                      name="status"
-                      value={createForm.status}
-                      onChange={handleCreateInput}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    >
-                      <option value="AVAILABLE">{t("market.available")}</option>
-                      <option value="SOLD">{t("market.sold")}</option>
-                      <option value="DELETED">{t("market.deleted")}</option>
-                    </select>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      name="unit"
-                      value={createForm.unit}
-                      onChange={handleCreateInput}
-                      placeholder="Unit (e.g. kg, Ton)"
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    />
-                    <input
-                      type="text"
-                      name="region"
-                      value={createForm.region}
-                      onChange={handleCreateInput}
-                      placeholder={t("market.region")}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    />
-                  </div>
-                  <DualImageUpload
-                    label={t("market.imageSource") || "Image Source"}
-                    value={createForm.imageUrl}
-                    onChange={(e) => { handleCreateInput(e); setImageFile(null); setImagePreview(""); }}
-                    previewImage={imagePreview}
-                    onFileChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        setImageFile(file);
-                        setImagePreview(URL.createObjectURL(file));
-                        setCreateForm(prev => ({ ...prev, imageUrl: "" }));
-                      }
-                    }}
+                  
+                  <CustomSelect
+                    value={createForm.category}
+                    onChange={handleCreateInput}
+                    placeholder={t("market.category") || "Category"}
+                    options={[
+                      ...(user?.role !== "SUPPLIER" ? [{ label: "PRODUCE", value: "PRODUCE", name: "category" }] : []),
+                      ...(user?.role !== "FARMER" ? [
+                        { label: "SEEDS", value: "SEEDS", name: "category" },
+                        { label: "FERTILIZERS", value: "FERTILIZERS", name: "category" },
+                        { label: "TOOLS", value: "TOOLS", name: "category" },
+                        { label: "EQUIPMENT", value: "EQUIPMENT", name: "category" }
+                      ] : []),
+                      { label: "OTHER", value: "OTHER", name: "category" }
+                    ]}
                   />
-                  {formError && <p className="text-red-600 font-bold">{formError}</p>}
-                  {successMessage && <p className="text-green-600 font-bold">{successMessage}</p>}
-                  <button
-                    onClick={handleCreateProduct}
-                    className="w-full py-4 bg-green-600 text-white rounded-3xl font-black uppercase tracking-widest hover:bg-green-700 transition"
-                  >
-                    {t("market.createListing")}
-                  </button>
+                  
+                  <input
+                    type="number"
+                    name="price"
+                    value={createForm.price}
+                    onChange={handleCreateInput}
+                    placeholder={t("market.price")}
+                    className="w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
+                  />
+                  
+                  <CustomSelect
+                    value={user?.role === "FARMER" ? "CROP_MARKET" : user?.role === "SUPPLIER" ? "AGRI_MARKET" : createForm.marketplaceType}
+                    onChange={handleCreateInput}
+                    disabled={user?.role === "FARMER" || user?.role === "SUPPLIER"}
+                    options={[
+                      { label: t("nav.cropMarket") || "Crop Market", value: "CROP_MARKET", name: "marketplaceType" },
+                      { label: t("nav.agriShop") || "Agri Shop", value: "AGRI_MARKET", name: "marketplaceType" },
+                      ...(user?.role === "ADMIN" ? [{ label: "Our Sensors", value: "SENSOR_MARKET", name: "marketplaceType" }] : [])
+                    ]}
+                    placeholder="Select Market"
+                  />
+                  
+                  <CustomSelect
+                    value={createForm.productSource}
+                    onChange={handleCreateInput}
+                    options={[
+                      { label: t("market.manual") || "Manual", value: "MANUAL", name: "productSource" },
+                      { label: t("market.sensed") || "Sensed", value: "SENSED", name: "productSource" }
+                    ]}
+                    placeholder="Product Source"
+                  />
+                  
+                  <CustomSelect
+                    value={createForm.status}
+                    onChange={handleCreateInput}
+                    options={[
+                      { label: t("market.available") || "Available", value: "AVAILABLE", name: "status" },
+                      { label: t("market.sold") || "Sold", value: "SOLD", name: "status" },
+                      { label: t("market.deleted") || "Deleted", value: "DELETED", name: "status" }
+                    ]}
+                    placeholder="Availability"
+                  />
+                  
+                  <CustomSelect
+                    value={createForm.unit}
+                    onChange={handleCreateInput}
+                    options={[
+                      { label: "Liter (L)", value: "liter", name: "unit" },
+                      { label: "Kilogram (Kg)", value: "kg", name: "unit" },
+                      { label: "Ton", value: "ton", name: "unit" },
+                      { label: "Unit", value: "unit", name: "unit" }
+                    ]}
+                    placeholder="Select Unit"
+                  />
+                  
+                  <input
+                    type="text"
+                    name="region"
+                    value={createForm.region}
+                    onChange={handleCreateInput}
+                    placeholder={t("market.region") || "Region"}
+                    className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
+                  />
+
+                  <div className="md:col-span-2 mt-2">
+                    <DualImageUpload
+                      label={t("market.imageSource") === "market.imageSource" ? "Image Source" : t("market.imageSource")}
+                      value={createForm.imageUrl}
+                      onChange={(e) => { handleCreateInput(e); setImageFile(null); setImagePreview(""); }}
+                      previewImage={imagePreview}
+                      onFileChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setImageFile(file);
+                          setImagePreview(URL.createObjectURL(file));
+                          setCreateForm(prev => ({ ...prev, imageUrl: "" }));
+                        }
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-2 space-y-4 mt-2">
+                    {formError && <p className="text-red-600 text-sm font-bold bg-red-50 p-3 rounded-xl border border-red-100">{formError}</p>}
+                    {successMessage && <p className="text-green-600 text-sm font-bold bg-green-50 p-3 rounded-xl border border-green-100">{successMessage}</p>}
+                    <button
+                      onClick={handleCreateProduct}
+                      className="w-full py-4 bg-green-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-green-500 hover:shadow-lg hover:shadow-green-600/30 active:scale-[0.98] transition-all duration-200"
+                    >
+                      {t("market.createListing")}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>

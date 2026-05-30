@@ -12,7 +12,7 @@ export default function DualImageUpload({
   const { t } = useLanguage();
 
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full mt-1">
       <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{label}</label>
       <div className="flex flex-col md:flex-row items-center gap-4">
         {(previewImage || value) && (
@@ -30,9 +30,9 @@ export default function DualImageUpload({
             value={value}
             onChange={onChange}
             placeholder={placeholder}
-            className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+            className="w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
           />
-          <div className="relative h-12 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-2xl hover:bg-gray-100 dark:hover:bg-slate-800/50 transition cursor-pointer">
+          <div className="relative h-14 flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-2xl hover:bg-green-50 dark:hover:bg-slate-800/50 hover:border-green-500 transition-colors cursor-pointer">
             <span className="absolute text-[10px] font-bold text-gray-400 pointer-events-none">
               OR UPLOAD FILE (.JPG/.PNG)
             </span>
