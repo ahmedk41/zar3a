@@ -13,7 +13,6 @@ const RefreshToken = sequelize.define('RefreshToken', {
   },
   token: {
     type: DataTypes.TEXT,
-    unique: true,
     allowNull: false,
   },
   expiresAt: {
