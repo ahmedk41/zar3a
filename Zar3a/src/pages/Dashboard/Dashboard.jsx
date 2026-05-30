@@ -23,6 +23,8 @@ import {
   LuInfo,
   LuSprout,
   LuCloudSun,
+  LuActivity,
+  LuMaximize2,
 } from "react-icons/lu";
 import {
   AreaChart,
@@ -374,7 +376,10 @@ const Dashboard = () => {
     pump: false,
     vent: false,
     fertilizer: false,
+    ph: false,
   });
+  const [activeModalChart, setActiveModalChart] = useState(null);
+  const [activeDashboardChart, setActiveDashboardChart] = useState("moisture");
   const [logs, setLogs] = useState([
     { time: "09:30 AM", msg: "Mode changed", type: "info" },
     { time: "09:15 AM", msg: "[MANUAL] PUMP turned ON", type: "action" },
@@ -496,6 +501,10 @@ const Dashboard = () => {
   };
 
   const toggleHardware = (device) => {
+    if (isLocked) {
+      alert("Hardware controls are disabled in Read-Only mode. Please wait for sensor approval.");
+      return;
+    }
     if (activeSector.isAuto) return;
     const newState = !hardware[device];
     setHardware((prev) => ({ ...prev, [device]: newState }));
@@ -583,11 +592,22 @@ const Dashboard = () => {
   );
 
   const analyzeStatus = () => {
+    let adviceParts = [];
+    let color = "text-green-500";
+    let pumpStatus = t("pump.idle");
+    const cropNameTranslated = t("crop." + activeSector.crop);
+
+    // Moisture analysis
+    if (currentMoisture < crop.min) {
+      color = "text-red-500";
+      pumpStatus = hardware.pump?.status === "ON" ? t("pump.active") : t("pump.critical");
+      adviceParts.push(hardware.pump?.status === "ON" ? `${t("advice.irrigating")} ${crop.min}%.` : `${t("advice.critical")} ${weather.temp}${t("advice.criticalEnd")}`);
+    } else if (currentMoisture > crop.max) {
       color = "text-orange-500";
       pumpStatus = t("pump.halted");
       adviceParts.push(t("advice.warning") || `Moisture too high for ${cropNameTranslated}.`);
     } else {
-      pumpStatus = hardware.pump ? t("pump.activeStop") : t("pump.standby");
+      pumpStatus = hardware.pump?.status === "ON" ? t("pump.activeStop") : t("pump.standby");
       adviceParts.push(`${t("advice.optimal")} ${cropNameTranslated}${t("advice.optimalEnd")}`);
     }
 
@@ -601,6 +621,7 @@ const Dashboard = () => {
     // Vent & Fertilizer Context
     if (hardware.vent) adviceParts.push(`Active ventilation is cooling the sector.`);
     if (hardware.fertilizer) adviceParts.push(`Fertilizer pump is active (Dosage: ${currentDosage}kg).`);
+    if (hardware.ph) adviceParts.push(`pH modifying agents are being applied.`);
 
     return {
       color,
@@ -805,7 +826,7 @@ const Dashboard = () => {
                 <LuSettings2 className="text-gray-400" /> {t("dash.hardwareControl")}
               </h4>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <button
                 onClick={() => toggleHardware("pump")}
                 className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.pump ? "bg-blue-500 border-blue-600 text-white" : "bg-gray-50 dark:bg-slate-800 text-gray-400"}`}
@@ -840,6 +861,18 @@ const Dashboard = () => {
                 />
                 <span className="text-[10px] font-black uppercase mt-2">
                   {t("dash.fertilizer")}
+                </span>
+              </button>
+              <button
+                onClick={() => toggleHardware("ph")}
+                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.ph ? "bg-yellow-500 border-yellow-600 text-white" : "bg-gray-50 dark:bg-slate-800 text-gray-400"}`}
+              >
+                <LuThermometer
+                  size={24}
+                  className={hardware.ph ? "animate-pulse" : ""}
+                />
+                <span className="text-[10px] font-black uppercase mt-2">
+                  {t("dash.phPump") || "pH Mod"}
                 </span>
               </button>
             </div>
@@ -921,78 +954,188 @@ const Dashboard = () => {
 
       {/* --- CHARTS & AI --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h3 className="text-2xl font-black dark:text-white tracking-tight">
-                {t("dash.moistureTelemetry")}
-              </h3>
-              <p className="text-sm font-bold text-gray-400 uppercase mt-1">
-                {t("dash.pumpStatus")}:{" "}
-                <span className={aiRes.color}>{aiRes.pumpStatus}</span>
-              </p>
-            </div>
+        
+        {/* LEFT COLUMN: GRAPHS STACK */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          
+          {/* TAB BUTTONS */}
+          <div className="flex flex-wrap gap-2 p-2 bg-gray-100 dark:bg-slate-800 rounded-3xl shadow-inner">
+            <button 
+              onClick={() => setActiveDashboardChart("moisture")} 
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "moisture" ? "bg-white dark:bg-slate-900 shadow-md text-emerald-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+            >
+              {t("dash.moistureTelemetry") || "Moisture"}
+            </button>
+            <button 
+              onClick={() => setActiveDashboardChart("vent")} 
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "vent" ? "bg-white dark:bg-slate-900 shadow-md text-cyan-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+            >
+              {t("dash.ventilationTelemetry") || "Ventilation"}
+            </button>
+            <button 
+              onClick={() => setActiveDashboardChart("fertilizer")} 
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "fertilizer" ? "bg-white dark:bg-slate-900 shadow-md text-violet-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+            >
+              {t("dash.fertilizerTelemetry") || "Fertilizer"}
+            </button>
+            <button 
+              onClick={() => setActiveDashboardChart("ph")} 
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "ph" ? "bg-white dark:bg-slate-900 shadow-md text-yellow-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+            >
+              {t("dash.phLevelTelemetry") !== "dash.phLevelTelemetry" ? t("dash.phLevelTelemetry") : "pH Level Telemetry"}
+            </button>
           </div>
-          <div className="h-96 min-h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data}>
-                <defs>
-                  <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  strokeOpacity={0.1}
-                />
-                <XAxis dataKey="time" hide />
-                <YAxis domain={[0, 100]} hide />
-                <Tooltip
-                  contentStyle={{ borderRadius: "20px", border: "none" }}
-                />
-                <ReferenceLine
-                  y={crop.min}
-                  stroke="#94a3b8"
-                  strokeDasharray="5 5"
-                  label={{
-                    value: "Min",
-                    position: "left",
-                    fill: "#94a3b8",
-                    fontSize: 10,
-                  }}
-                />
-                <ReferenceLine
-                  y={crop.max}
-                  stroke="#94a3b8"
-                  strokeDasharray="5 5"
-                  label={{
-                    value: "Max",
-                    position: "left",
-                    fill: "#94a3b8",
-                    fontSize: 10,
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="moisture"
-                  stroke="#10b981"
-                  strokeWidth={5}
-                  fill="url(#g)"
-                  animationDuration={500}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+
+          <div onClick={() => setActiveModalChart(activeDashboardChart)} className="bg-white dark:bg-slate-900 p-8 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm relative cursor-pointer hover:shadow-lg transition-all group">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 rounded-[3.5rem] transition-all flex items-center justify-center z-20 pointer-events-none">
+              <span className="opacity-0 group-hover:opacity-100 bg-white dark:bg-slate-800 text-gray-800 dark:text-white px-6 py-3 rounded-full font-bold shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all"><LuMaximize2 size={20}/> Click to Expand</span>
+            </div>
+            {activeDashboardChart === "moisture" && (
+              <div className="animate-in fade-in zoom-in-95 duration-300">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="text-2xl font-black dark:text-white tracking-tight">
+                      {t("dash.moistureTelemetry")}
+                    </h3>
+                    <p className="text-sm font-bold text-gray-400 uppercase mt-1">
+                      {t("dash.pumpStatus")}:{" "}
+                      <span className={aiRes.color}>{aiRes.pumpStatus}</span>
+                    </p>
+                  </div>
+                  <div className="p-2 bg-emerald-50 dark:bg-slate-800 rounded-2xl text-emerald-600 dark:text-emerald-400">
+                    <LuDroplet size={20} />
+                  </div>
+                </div>
+                <div className="h-96 min-h-[400px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={data}>
+                      <defs>
+                        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" hide />
+                      <YAxis domain={[0, 100]} hide />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }} />
+                      <ReferenceLine y={crop.min} stroke="#94a3b8" strokeDasharray="5 5" label={{ value: "Min", position: "left", fill: "#94a3b8", fontSize: 10 }} />
+                      <ReferenceLine y={crop.max} stroke="#94a3b8" strokeDasharray="5 5" label={{ value: "Max", position: "left", fill: "#94a3b8", fontSize: 10 }} />
+                      <Area type="monotone" dataKey="moisture" stroke="#10b981" strokeWidth={5} fill="url(#g)" animationDuration={500} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
+            {activeDashboardChart === "vent" && (
+              <div className="animate-in fade-in zoom-in-95 duration-300">
+                <div className="mb-6 flex justify-between items-center">
+                  <div>
+                    <h3 className="text-2xl font-black dark:text-white tracking-tight">
+                      {t("dash.ventilationTelemetry") || "Ventilation Telemetry"}
+                    </h3>
+                    <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                      {t("dash.ventilationActive") || "Current State"}:{" "}
+                      <span className={hardware.vent ? "text-emerald-500 font-black" : "text-gray-400 font-black"}>{hardware.vent ? "● ACTIVE" : "○ INACTIVE"}</span>
+                    </p>
+                  </div>
+                  <div className="p-2 bg-cyan-50 dark:bg-slate-800 rounded-2xl text-cyan-600 dark:text-cyan-400">
+                    <LuWind size={20} />
+                  </div>
+                </div>
+                <div className="h-96 min-h-[400px] w-full mt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={data}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
+                      <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fill: '#94a3b8', fontSize: 10 } }} />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }} labelStyle={{ fontWeight: "bold" }} />
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 10 }} />
+                      <Bar name="Vent State (0/1)" dataKey="ventState" fill="#06b6d4" radius={[10, 10, 0, 0]} maxBarSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
+            {activeDashboardChart === "fertilizer" && (
+              <div className="animate-in fade-in zoom-in-95 duration-300">
+                <div className="mb-6 flex justify-between items-center">
+                  <div>
+                    <h3 className="text-2xl font-black dark:text-white tracking-tight">
+                      {t("dash.fertilizerTelemetry") || "Fertilizer Telemetry"}
+                    </h3>
+                    <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                      {t("dash.fertilizerConsumption") || "Usage & Consumption Trends"}
+                    </p>
+                  </div>
+                  <div className="p-2 bg-violet-50 dark:bg-slate-800 rounded-2xl text-violet-600 dark:text-violet-400">
+                    <LuFlaskConical size={20} />
+                  </div>
+                </div>
+                <div className="h-96 min-h-[400px] w-full mt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={data}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
+                      <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }} labelStyle={{ fontWeight: "bold" }} />
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 10 }} />
+                      <Line name="Dosage (kg)" type="monotone" dataKey="dosage" stroke="#10b981" strokeWidth={4} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                      <Line name="Consumption (L)" type="monotone" dataKey="consumption" stroke="#8b5cf6" strokeWidth={4} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
+            {activeDashboardChart === "ph" && (
+              <div className="animate-in fade-in zoom-in-95 duration-300">
+                <div className="mb-6 flex justify-between items-center">
+                  <div>
+                    <h3 className="text-2xl font-black dark:text-white tracking-tight">
+                      {t("dash.phLevelTelemetry") || "pH Level Telemetry"}
+                    </h3>
+                    <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                      {t("dash.soilAcidity") || "Soil Acidity Monitoring"}
+                    </p>
+                  </div>
+                  <div className="p-2 bg-yellow-50 dark:bg-slate-800 rounded-2xl text-yellow-600 dark:text-yellow-400">
+                    <LuThermometer size={20} />
+                  </div>
+                </div>
+                <div className="h-96 min-h-[400px] w-full mt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={data}>
+                      <defs>
+                        <linearGradient id="phGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#eab308" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
+                      <YAxis domain={[4, 9]} stroke="#94a3b8" fontSize={10} tickLine={false} />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }} labelStyle={{ fontWeight: "bold" }} />
+                      <ReferenceLine y={6.0} stroke="#ef4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Min', fill: '#ef4444', fontSize: 10 }} />
+                      <ReferenceLine y={7.5} stroke="#ef4444" strokeDasharray="3 3" label={{ position: 'insideBottomLeft', value: 'Max', fill: '#ef4444', fontSize: 10 }} />
+                      <Area name="pH Level" type="monotone" dataKey="ph" stroke="#eab308" strokeWidth={4} fill="url(#phGradient)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="space-y-6">
-          <motion.div className="bg-white dark:bg-slate-900 p-8 rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl border-t-4 border-t-green-500 h-full flex flex-col justify-between">
+        {/* RIGHT COLUMN: STICKY AI ENGINE */}
+        <div className="space-y-6 lg:sticky lg:top-8 self-start">
+          <motion.div className="bg-white dark:bg-slate-900 p-8 rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl border-t-4 border-t-green-500 flex flex-col justify-between h-auto min-h-[300px]">
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-yellow-100 text-yellow-600 rounded-xl">
-                  <LuZap size={20} className="fill-yellow-600" />
+                  <LuActivity size={20} className="fill-yellow-600" />
                 </div>
                 <h3 className="font-black dark:text-white uppercase text-sm tracking-widest">
                   {t("dash.aiEngine")}
@@ -1012,145 +1155,142 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* --- NEW TELEMETRY GRAPHS ROW --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-        {/* Graph 1: Ventilation Telemetry */}
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-          <div className="mb-6 flex justify-between items-center">
-            <div>
-              <h3 className="text-2xl font-black dark:text-white tracking-tight">
-                {t("dash.ventilationTelemetry") || "Ventilation Telemetry"}
-              </h3>
-              <p className="text-xs font-bold text-gray-400 uppercase mt-1">
-                {t("dash.ventilationActive") || "Current State"}:{" "}
-                <span className="text-emerald-500 font-black">● ACTIVE</span>
-              </p>
-            </div>
-            <div className="p-2 bg-emerald-50 dark:bg-slate-800 rounded-2xl text-emerald-600 dark:text-emerald-400">
-              <LuWind size={20} />
-            </div>
-          </div>
-
-          <div className="h-96 min-h-[400px] w-full mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fill: '#94a3b8', fontSize: 10 } }} />
-                <Tooltip
-                  contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }}
-                  labelStyle={{ fontWeight: "bold" }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 10 }} />
-                <Bar
-                  name="Vent State (0/1)"
-                  dataKey="ventState"
-                  fill="#06b6d4"
-                  radius={[10, 10, 0, 0]}
-                  maxBarSize={40}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Graph 2: Fertilizer Telemetry */}
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-          <div className="mb-6 flex justify-between items-center">
-            <div>
-              <h3 className="text-2xl font-black dark:text-white tracking-tight">
-                {t("dash.fertilizerTelemetry") || "Fertilizer Telemetry"}
-              </h3>
-              <p className="text-xs font-bold text-gray-400 uppercase mt-1">
-                {t("dash.fertilizerConsumption") || "Usage & Consumption Trends"}
-              </p>
-            </div>
-            <div className="p-2 bg-violet-50 dark:bg-slate-800 rounded-2xl text-violet-600 dark:text-violet-400">
-              <LuFlaskConical size={20} />
-            </div>
-          </div>
-
-          <div className="h-96 min-h-[400px] w-full mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }}
-                  labelStyle={{ fontWeight: "bold" }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 10 }} />
-                <Line
-                  name="Dosage (kg)"
-                  type="monotone"
-                  dataKey="dosage"
-                  stroke="#10b981"
-                  strokeWidth={4}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 8 }}
-                />
-                <Line
-                  name="Consumption (L)"
-                  type="monotone"
-                  dataKey="consumption"
-                  stroke="#8b5cf6"
-                  strokeWidth={4}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Graph 3: pH Level Telemetry */}
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-          <div className="mb-6 flex justify-between items-center">
-            <div>
-              <h3 className="text-2xl font-black dark:text-white tracking-tight">
-                {t("dash.phLevelTelemetry") || "pH Level Telemetry"}
-              </h3>
-              <p className="text-xs font-bold text-gray-400 uppercase mt-1">
-                {t("dash.soilAcidity") || "Soil Acidity Monitoring"}
-              </p>
-            </div>
-            <div className="p-2 bg-yellow-50 dark:bg-slate-800 rounded-2xl text-yellow-600 dark:text-yellow-400">
-              <LuThermometer size={20} />
-            </div>
-          </div>
-
-          <div className="h-96 min-h-[400px] w-full mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data}>
-                <defs>
-                  <linearGradient id="phGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#eab308" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
-                <YAxis domain={[4, 9]} stroke="#94a3b8" fontSize={10} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ borderRadius: "20px", border: "none", backgroundColor: "rgba(30, 41, 59, 0.9)", color: "#fff" }}
-                  labelStyle={{ fontWeight: "bold" }}
-                />
-                <ReferenceLine y={6.0} stroke="#ef4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Min', fill: '#ef4444', fontSize: 10 }} />
-                <ReferenceLine y={7.5} stroke="#ef4444" strokeDasharray="3 3" label={{ position: 'insideBottomLeft', value: 'Max', fill: '#ef4444', fontSize: 10 }} />
-                <Area
-                  name="pH Level"
-                  type="monotone"
-                  dataKey="ph"
-                  stroke="#eab308"
-                  strokeWidth={4}
-                  fill="url(#phGradient)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
+      
+      {/* --- CHART EXPAND MODAL --- */}
+      <AnimatePresence>
+        {activeModalChart && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveModalChart(null)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed top-[100px] left-1/2 -translate-x-1/2 w-11/12 max-w-5xl max-h-[calc(100vh-120px)] bg-white dark:bg-slate-900 rounded-[3.5rem] shadow-2xl z-[100] border border-gray-100 dark:border-slate-800 overflow-y-auto flex flex-col"
+            >
+              <div className="p-8 pb-4 flex justify-between items-start">
+                <div>
+                  <h3 className="text-3xl font-black dark:text-white tracking-tight">
+                    {activeModalChart === 'moisture' && (t("dash.moistureTelemetry") || "Moisture Telemetry")}
+                    {activeModalChart === 'vent' && (t("dash.ventilationTelemetry") || "Ventilation Telemetry")}
+                    {activeModalChart === 'fertilizer' && (t("dash.fertilizerTelemetry") || "Fertilizer Telemetry")}
+                    {activeModalChart === 'ph' && (t("dash.phLevelTelemetry") !== "dash.phLevelTelemetry" ? t("dash.phLevelTelemetry") : "pH Level Telemetry")}
+                  </h3>
+                  <div className="text-sm font-medium mt-4 max-w-3xl leading-relaxed space-y-2">
+                    {activeModalChart === 'moisture' && (
+                      <div className="space-y-3">
+                        <p className="text-base font-bold text-gray-700 dark:text-gray-300">Tracks real-time soil moisture percentage relative to the crop's ideal hydration zone.</p>
+                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                          <li><strong>Green Zone:</strong> The optimal moisture range between the Min and Max lines.</li>
+                          <li><strong>Impact:</strong> Keeps roots healthy, preventing dehydration or fungal rot from overwatering.</li>
+                          <li><strong>Automation:</strong> Zar3a AI automatically activates water pumps if levels drop below the threshold.</li>
+                        </ul>
+                      </div>
+                    )}
+                    {activeModalChart === 'vent' && (
+                      <div className="space-y-3">
+                        <p className="text-base font-bold text-gray-700 dark:text-gray-300">Monitors greenhouse ventilation fan activity over time to maintain optimal airflow.</p>
+                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                          <li><strong>Bar Height:</strong> A value of 1 means active (running), while 0 means idle.</li>
+                          <li><strong>Impact:</strong> Proper airflow reduces trapped humidity, preventing airborne diseases.</li>
+                          <li><strong>Automation:</strong> Zar3a AI turns on the vent if the temperature or humidity spikes inside the facility.</li>
+                        </ul>
+                      </div>
+                    )}
+                    {activeModalChart === 'fertilizer' && (
+                      <div className="space-y-3">
+                        <p className="text-base font-bold text-gray-700 dark:text-gray-300">Displays automated fertilizer dosage (kg) applied alongside overall water consumption (L).</p>
+                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                          <li><strong>Nutrient Balance:</strong> Balancing fertilizer with irrigation volume ensures safe absorption.</li>
+                          <li><strong>Impact:</strong> Prevents nutrient lockout and root burn, significantly maximizing crop yield.</li>
+                          <li><strong>Efficiency:</strong> Tracks overall farm consumption to minimize waste and reduce operational costs.</li>
+                        </ul>
+                      </div>
+                    )}
+                    {activeModalChart === 'ph' && (
+                      <div className="space-y-3">
+                        <p className="text-base font-bold text-gray-700 dark:text-gray-300">Monitors the soil pH levels, indicating acidity or alkalinity of the planting environment.</p>
+                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                          <li><strong>Ideal Range:</strong> A slightly acidic to neutral pH (typically 6.0 to 7.5) is ideal for most crops.</li>
+                          <li><strong>Impact:</strong> Correct pH maximizes the availability of essential macro and micro-nutrients in the soil.</li>
+                          <li><strong>Correction:</strong> If pH leaves the optimal zone, immediate soil amendment is recommended to restore balance.</li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveModalChart(null)}
+                  className="w-12 h-12 bg-gray-100 dark:bg-slate-800 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 rounded-full flex items-center justify-center transition-colors shrink-0 text-gray-500"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="p-8 pt-4 h-[60vh] min-h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  {activeModalChart === 'moisture' ? (
+                    <AreaChart data={data}>
+                      <defs>
+                        <linearGradient id="gModal" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" />
+                      <YAxis domain={[0, 100]} stroke="#94a3b8" />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none" }} />
+                      <ReferenceLine y={crop.min} stroke="#94a3b8" strokeDasharray="5 5" label={{ value: "Min", position: "left", fill: "#94a3b8" }} />
+                      <ReferenceLine y={crop.max} stroke="#94a3b8" strokeDasharray="5 5" label={{ value: "Max", position: "left", fill: "#94a3b8" }} />
+                      <Area type="monotone" dataKey="moisture" stroke="#10b981" strokeWidth={5} fill="url(#gModal)" animationDuration={500} />
+                    </AreaChart>
+                  ) : activeModalChart === 'vent' ? (
+                    <BarChart data={data}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" />
+                      <YAxis stroke="#94a3b8" />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none" }} />
+                      <Legend />
+                      <Bar name="Vent State" dataKey="ventState" fill="#06b6d4" radius={[10, 10, 0, 0]} maxBarSize={60} />
+                    </BarChart>
+                  ) : activeModalChart === 'fertilizer' ? (
+                    <LineChart data={data}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" />
+                      <YAxis stroke="#94a3b8" />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none" }} />
+                      <Legend />
+                      <Line name="Dosage (kg)" type="monotone" dataKey="dosage" stroke="#10b981" strokeWidth={5} />
+                      <Line name="Consumption (L)" type="monotone" dataKey="consumption" stroke="#8b5cf6" strokeWidth={5} />
+                    </LineChart>
+                  ) : activeModalChart === 'ph' ? (
+                    <AreaChart data={data}>
+                      <defs>
+                        <linearGradient id="phModal" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#eab308" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                      <XAxis dataKey="time" stroke="#94a3b8" />
+                      <YAxis domain={[4, 9]} stroke="#94a3b8" />
+                      <Tooltip contentStyle={{ borderRadius: "20px", border: "none" }} />
+                      <ReferenceLine y={6.0} stroke="#ef4444" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Min', fill: '#ef4444' }} />
+                      <ReferenceLine y={7.5} stroke="#ef4444" strokeDasharray="3 3" label={{ position: 'insideBottomLeft', value: 'Max', fill: '#ef4444' }} />
+                      <Area name="pH Level" type="monotone" dataKey="ph" stroke="#eab308" strokeWidth={5} fill="url(#phModal)" />
+                    </AreaChart>
+                  ) : null}
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* --- NOTIFICATIONS --- */}
       <AnimatePresence>

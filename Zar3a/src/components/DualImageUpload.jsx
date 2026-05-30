@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function DualImageUpload({ 
   label = "Upload Image",
