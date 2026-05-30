@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>🌱 Zar3a API Tester</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+*,*::before,*::after{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  min-height:100vh;
+  color:#1a2e22;
+  padding:24px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+h1{
+  color:#fff;
+  font-size:2rem;
+  margin-bottom:10px;
+}
+
+.sub{
+  color:#eee;
+  margin-bottom:20px;
+}
+
+/* cards */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#1a7c45;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+}
+
+.res{
+  margin-top:10px;
+  padding:10px;
+  display:none;
+  font-size:12px;
+}
+
+.res.show{display:block;}
+.ok{background:#d1fae5;}
+.err{background:#fee2e2;}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Zar3a API Tester</h1>
+  <p class="sub">Test your API easily</p>
+
+  <input id="baseUrl" value="http://localhost:3000"/>
+
+  <div class="grid">
+
+    <!-- Register -->
+    <div class="card">
+      <h3>Register</h3>
+      <input id="rp_n" placeholder="Name"/>
+      <input id="rp_e" placeholder="Email"/>
+      <input id="rp_p" type="password" placeholder="Password"/>
+
+      <select id="rp_role">
+        <option value="FARMER">Farmer</option>
+        <option value="BUYER">Buyer</option>
+        <option value="SUPPLIER">Supplier</option>
+      </select>
+
+      <button onclick="regUser()">Register</button>
+      <div class="res" id="rp_res"></div>
+    </div>
+
+    <!-- Login -->
+    <div class="card">
+      <h3>Login</h3>
+      <input id="li_e" placeholder="Email"/>
+      <input id="li_p" type="password" placeholder="Password"/>
+
+      <button onclick="doLogin()">Login</button>
+      <div class="res" id="li_r"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="test.js"></script>
+</body>
+</html>

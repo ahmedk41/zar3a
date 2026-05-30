@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO Meta Tags -->
+    <title>Zar3a - Smart Agriculture Platform</title>
+    <meta name="description" content="Smart Agriculture Platform that helps farmers monitor crops, manage farms, receive expert consultations, purchase agricultural products, and track smart farming data." />
+    <meta name="keywords" content="Agriculture, Smart Farming, Crops, Farmers, IoT Sensors, Agriculture Dashboard, Agricultural Marketplace, Expert Consultation, Zar3a" />
+    <meta name="author" content="Zar3a Team" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#059669" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Zar3a - Smart Agriculture Platform" />
+    <meta property="og:description" content="Smart Agriculture Platform that helps farmers monitor crops, manage farms, receive expert consultations, purchase agricultural products, and track smart farming data." />
+    <meta property="og:image" content="https://Zar3a.com/assets/og-image.jpg" />
+    <meta property="og:url" content="https://Zar3a.com" />
+    <meta property="og:site_name" content="Zar3a" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Zar3a - Smart Agriculture Platform" />
+    <meta name="twitter:description" content="Smart Agriculture Platform that helps farmers monitor crops, manage farms, receive expert consultations, purchase agricultural products, and track smart farming data." />
+    <meta name="twitter:image" content="https://Zar3a.com/assets/og-image.jpg" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Dark Mode Flash Prevention -->
+    <script>
+      (function() {
+        try {
+          if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch(e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

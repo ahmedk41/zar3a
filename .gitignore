@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+dist/
+build/
+.venv/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.turbo/
+coverage/
+uploads/
+zar3a-backend copy/uploads/

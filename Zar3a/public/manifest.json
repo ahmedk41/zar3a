@@ -1,0 +1,16 @@
+{
+  "name": "Zar3aa - Smart Agriculture Platform",
+  "short_name": "Zar3aa",
+  "description": "Smart agriculture platform connecting farmers, suppliers, buyers, and agricultural experts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

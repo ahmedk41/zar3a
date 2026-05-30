@@ -1,0 +1,32 @@
+{
+  "name": "zar3a-fullstack",
+  "version": "1.0.0",
+  "description": "Zar3a Agricultural Platform - Full Stack Project",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd \"zar3a-backend copy\" && npm run dev",
+    "dev:frontend": "cd Zar3a && npm run dev",
+    "start": "cd \"zar3a-backend copy\" && npm start",
+    "start:backend": "cd \"zar3a-backend copy\" && npm start",
+    "start:frontend": "cd Zar3a && npm run preview",
+    "install:all": "npm install && cd Zar3a && npm install && cd ../\"zar3a-backend copy\" && npm install",
+    "build": "npm run build:backend",
+    "build:backend": "cd \"zar3a-backend copy\" && npm install && npm run db:generate",
+    "setup": "npm run install:all && echo '✅ Setup complete! Run \"npm run dev\" to start both servers.'",
+    "backend": "cd \"zar3a-backend copy\" && npm run dev",
+    "frontend": "cd Zar3a && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "agriculture",
+    "platform",
+    "react",
+    "express",
+    "fullstack"
+  ],
+  "author": "",
+  "license": "MIT"
+}
