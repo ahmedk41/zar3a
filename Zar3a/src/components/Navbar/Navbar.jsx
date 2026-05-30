@@ -23,11 +23,10 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useTheme } from "../../context/ThemeContext";
 import Logo from "../../assets/Logo.png";
 
-const Navbar = () => {
+const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
   const { user, logout, unreadCount } = useAuth();
   const { t, toggleLang, lang } = useLanguage();
   const { isDarkMode: isDark, toggleTheme } = useTheme();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef(null);
 
@@ -110,12 +109,13 @@ const Navbar = () => {
       <nav className="h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex justify-between items-center sticky top-0 z-100 transition-all duration-500">
 
         <div className="flex items-center gap-4">
-          {/* Mobile Toggle Button */}
+          {/* Menu Toggle Button */}
           <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="md:hidden p-2.5 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all"
+            onClick={onToggleSidebar}
+            className="p-2.5 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all cursor-pointer"
+            title="Toggle Menu"
           >
-            <LuMenu size={24} />
+            {isSidebarOpen ? <LuX size={22} /> : <LuMenu size={22} />}
           </button>
 
           <Link to="/" className="group flex items-center gap-3">
@@ -248,117 +248,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* 📱 Mobile Menu Overlay & Drawer */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-200 md:hidden">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
-            />
-
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="absolute inset-y-0 start-0 w-70 bg-white dark:bg-slate-950 shadow-2xl flex flex-col p-6 border-e border-slate-100 dark:border-slate-800"
-            >
-              <div className="flex items-center justify-between mb-10">
-                <div className="flex items-center gap-3">
-                  <img src={Logo} alt="Logo" className="w-8 h-8 object-contain" />
-                  <span className="font-black text-xl text-slate-900 dark:text-white uppercase tracking-tighter">ZAR3A</span>
-                </div>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500"
-                >
-                  <LuX size={20} />
-                </button>
-              </div>
-
-              <nav className="flex flex-col gap-2">
-                {allNavItems.map((item) => (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center gap-4 p-4 rounded-2xl transition-all border ${
-                        isActive
-                          ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-bold"
-                          : "border-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900"
-                      }`
-                    }
-                  >
-                    <span className="text-xl">{item.icon}</span>
-                    <span className="font-bold">{item.label}</span>
-                  </NavLink>
-                ))}
-              </nav>
-
-              {/* Bottom section */}
-              <div className="mt-auto pt-6 space-y-3 border-t border-slate-100 dark:border-slate-800">
-                {/* Language toggle in mobile menu */}
-                <button
-                  onClick={toggleLang}
-                  className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-                >
-                  <LuLanguages size={22} />
-                  <span className="font-bold">{t("lang.toggle")}</span>
-                </button>
-
-                {user && profileLink && (
-                  <Link
-                    to={profileLink}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 p-4 rounded-2xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-                  >
-                    <LuUser size={22} />
-                    <span className="font-bold">{t("nav.myProfile")}</span>
-                  </Link>
-                )}
-
-                {user && (
-                  <Link
-                    to="/settings"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 p-4 rounded-2xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-                  >
-                    <LuSettings size={22} />
-                    <span className="font-bold">{t("nav.settings")}</span>
-                  </Link>
-                )}
-
-                {user ? (
-                  <button
-                    onClick={async () => {
-                      await logout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full flex items-center justify-center gap-3 py-4 bg-red-600 dark:bg-red-900 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-transform"
-                  >
-                    <LuLogOut size={20} />
-                    <span>{t("nav.logout")}</span>
-                  </button>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center gap-3 py-4 bg-slate-900 dark:bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-500/20 active:scale-95 transition-transform"
-                  >
-                    <LuUser size={20} />
-                    <span>{t("nav.accessAccount")}</span>
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
