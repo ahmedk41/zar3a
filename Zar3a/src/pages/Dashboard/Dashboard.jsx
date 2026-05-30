@@ -632,7 +632,7 @@ const Dashboard = () => {
   const aiRes = analyzeStatus();
 
   // If farmer doesn't have an approved sensor, lock the dashboard
-  const isLocked = user?.role === "FARMER" && user?.FarmerProfile?.sensorStatus !== "APPROVED";
+  const isLocked = user?.role === "FARMER" && !user?.FarmerProfile?.sensorId;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-16 px-4 text-left relative z-10">

@@ -15,7 +15,7 @@ import { FiAlertTriangle } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../hooks/useCart';
 import { useLanguage } from '../../context/LanguageContext';
-import api from '../../API/axiosInstance';
+import api, { paymentsAPI } from '../../API/axiosInstance';
 
 const Payment = () => {
   const { t, isArabic } = useLanguage();
@@ -85,7 +85,7 @@ const Payment = () => {
     setError('');
 
     try {
-      await api.post('/payments/confirm', data);
+      await paymentsAPI.confirmPayment(data);
       
       // Clear local cart storage since the order is successfully finalized
       clearCart();
@@ -141,7 +141,7 @@ const Payment = () => {
       }));
 
       // Call Backend to generate Payment URL
-      const response = await api.post('/payments/create-order', {
+      const response = await paymentsAPI.createOrder({
         items: checkoutItems,
         shippingAddress,
         paymentMethod,
