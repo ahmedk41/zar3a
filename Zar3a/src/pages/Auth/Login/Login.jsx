@@ -42,7 +42,7 @@ export default function Login() {
       const user = await login(data.email, data.password);
       const redirectMap = {
         'FARMER': '/profile/farmer', 'BUYER': '/profile/buyer',
-        'SUPPLIER': '/profile/supplier', 'AGRO_EXPERT': '/profile/expert', 'ADMIN': '/admin',
+        'SUPPLIER': '/profile/supplier', 'AGRO_EXPERT': '/profile/expert', 'ADMIN': '/profile/admin',
       };
       const redirectPath = user.pendingRole === 'AGRO_EXPERT' ? '/profile/expert' : redirectMap[user.role] || '/dashboard';
       navigate(redirectPath);

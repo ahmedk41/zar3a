@@ -66,7 +66,7 @@ import BuyerProfile from "../pages/Profiles/BuyerProfile";
 import SupplierProfile from "../pages/Profiles/SupplierProfile";
 import ExpertProfile from "../pages/Profiles/ExpertProfile";
 import AdminProfile from "../pages/Profiles/AdminProfile";
-import ExpertConsultations from "../pages/Profiles/ExpertConsultations"; 
+import ExpertConsultations from "../pages/Profiles/ExpertConsultations";
 import AdminChat from "../pages/Chat/AdminChat";
 import UserChat from "../pages/Chat/UserChat";
 import ProductsDashboard from "../pages/Dashboard/ProductsDashboard";
