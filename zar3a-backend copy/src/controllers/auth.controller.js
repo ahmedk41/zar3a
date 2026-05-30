@@ -456,24 +456,61 @@ export const login = async (req, res) => {
     const isEmail = identifier.includes("@");
     const normalizedEmail = identifier.toLowerCase();
 
+    console.log(`[login] Attempt — identifier: "${normalizedEmail}", type: ${isEmail ? "email" : "username"}`);
+
     const whereClause = isEmail
       ? { email: normalizedEmail }
       : { username: identifier };
 
-    const user = await User.findOne({
-      where: whereClause,
-      include: [FarmerProfile, AgroExpertProfile, SupplierProfile, BuyerProfile],
-    });
+    let user;
+    try {
+      user = await User.findOne({
+        where: whereClause,
+        include: [FarmerProfile, AgroExpertProfile, SupplierProfile, BuyerProfile],
+      });
+      console.log(`[login] DB lookup complete — user found: ${!!user}, userId: ${user?.id ?? "N/A"}, hasPasswordHash: ${!!user?.passwordHash}`);
+    } catch (dbErr) {
+      console.error("[login] DB error during user lookup:", dbErr.message);
+      console.error("[login] DB error stack:", dbErr.stack);
+      console.error("[login] Full DB error object:", JSON.stringify(dbErr, Object.getOwnPropertyNames(dbErr)));
+      throw dbErr;
+    }
 
-    if (!user || !user.passwordHash || !(await verifyPassword(password, user.passwordHash)))
+    if (!user) {
+      console.log(`[login] Rejected — no user found for identifier: "${normalizedEmail}"`);
       return res.status(401).json({ message: "Invalid email/username or password" });
+    }
 
-    if (!user.isActive)
+    if (!user.passwordHash) {
+      console.log(`[login] Rejected — user ${user.id} has no passwordHash (possibly a Google-only account)`);
+      return res.status(401).json({ message: "Invalid email/username or password" });
+    }
+
+    let passwordValid;
+    try {
+      passwordValid = await verifyPassword(password, user.passwordHash);
+      console.log(`[login] Password verification for user ${user.id}: ${passwordValid ? "passed" : "failed"}`);
+    } catch (hashErr) {
+      console.error(`[login] Error during password verification for user ${user.id}:`, hashErr.message);
+      console.error("[login] Hash error stack:", hashErr.stack);
+      throw hashErr;
+    }
+
+    if (!passwordValid) {
+      return res.status(401).json({ message: "Invalid email/username or password" });
+    }
+
+    if (!user.isActive) {
+      console.log(`[login] Rejected — user ${user.id} account is deactivated`);
       return res.status(403).json({ message: "Account deactivated" });
+    }
 
+    console.log(`[login] Success — issuing tokens for user ${user.id} (role: ${user.role})`);
     return res.json({ user: safeUser(user), ...(await issueTokens(user)) });
   } catch (err) {
-    console.error(err);
+    console.error("[login] Unhandled error — message:", err.message);
+    console.error("[login] Unhandled error — stack:", err.stack);
+    console.error("[login] Unhandled error — full object:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
     return res.status(500).json({ message: "Server error" });
   }
 };
