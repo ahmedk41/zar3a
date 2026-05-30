@@ -12,7 +12,7 @@ const RefreshToken = sequelize.define('RefreshToken', {
     allowNull: false,
   },
   token: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.TEXT,
     unique: true,
     allowNull: false,
   },
