@@ -10,6 +10,18 @@ const NoBuyerGuard = ({ children }) => {
   return children;
 };
 
+// Guard: blocks users without an approved role (pending-role users)
+const ApprovedUserGuard = ({ children }) => {
+  const { user } = useAuth();
+  // If user has no approved role, they are still pending
+  if (!user?.role || !user?.isApproved) {
+    // Admin is always approved
+    if (user?.role === 'ADMIN') return children;
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
 // Layouts
 import MainLayout from "../layouts/MainLayout/MainLayout";
 
@@ -38,7 +50,10 @@ import FarmerProfile from "../pages/Profiles/FarmerProfile";
 import BuyerProfile from "../pages/Profiles/BuyerProfile";
 import SupplierProfile from "../pages/Profiles/SupplierProfile";
 import ExpertProfile from "../pages/Profiles/ExpertProfile";
+import AdminProfile from "../pages/Profiles/AdminProfile";
 import ExpertConsultations from "../pages/Profiles/ExpertConsultations"; 
+import AdminChat from "../pages/Chat/AdminChat";
+import UserChat from "../pages/Chat/UserChat";
 import ProductsDashboard from "../pages/Dashboard/ProductsDashboard";
 
 const router = createBrowserRouter([
@@ -72,9 +87,11 @@ const router = createBrowserRouter([
       { path: "crop-market", element: <CropMarket /> },
       { path: "agri-shop", element: <AgriShop /> },
       { path: "experts", element: <NoBuyerGuard><Experts /></NoBuyerGuard> },
-      { path: "chatbot", element: <AIAssistant /> },
-      { path: "chat", element: <Chat /> },
+      { path: "chatbot", element: <ApprovedUserGuard><AIAssistant /></ApprovedUserGuard> },
+      { path: "chat", element: <UserChat /> },
       { path: "chat/:expertId", element: <Chat /> },
+      { path: "admin/chat", element: <AdminChat /> },
+      { path: "messages", element: <UserChat /> },
       { path: "notifications", element: <Notifications /> },
       { path: "track-orders", element: <TrackOrders /> },
       { path: "payment", element: <Payment /> },
@@ -86,6 +103,7 @@ const router = createBrowserRouter([
       { path: "profile/buyer", element: <BuyerProfile /> },
       { path: "profile/supplier", element: <SupplierProfile /> },
       { path: "profile/expert", element: <ExpertProfile /> },
+      { path: "profile/admin", element: <AdminProfile /> },
       { path: "profile", element: <ExpertProfile /> },
       { path: "consultations", element: <ExpertConsultations /> },
     ],

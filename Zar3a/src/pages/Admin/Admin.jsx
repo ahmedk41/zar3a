@@ -292,8 +292,8 @@ export default function Admin() {
           ) : (
             <div className="space-y-4 p-6">
               {pendingUsers.map((item) => {
-                const isFarmer = item.role === "FARMER";
-                const isSupplier = item.role === "SUPPLIER";
+                const isFarmer = item.role === "FARMER" || item.pendingRole === "FARMER";
+                const isSupplier = item.role === "SUPPLIER" || item.pendingRole === "SUPPLIER";
                 const isExpert = item.role === "AGRO_EXPERT" || item.pendingRole === "AGRO_EXPERT";
 
                 return (

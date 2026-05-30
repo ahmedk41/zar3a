@@ -9,12 +9,12 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 
 const Notifications = () => {
+  const navigate = useNavigate();
   const {
-    notifications, unreadCount, refreshNotifications,
+    user, notifications, unreadCount, refreshNotifications,
     markNotificationRead, markAllNotificationsRead, deleteNotificationById,
   } = useAuth();
   const { t, lang } = useLanguage();
-  const navigate = useNavigate();
 
   const [activeFilter, setActiveFilter] = useState("all");
   const [showSettings, setShowSettings] = useState(false);
@@ -79,11 +79,17 @@ const Notifications = () => {
       await handleMarkAsRead(notif.id);
     }
     const type = notif.type?.toLowerCase();
-    if (type === "order" || type === "order_update") {
+    if (type === "order") {
       navigate("/track-orders");
-    } else if (type === "chat_message" || type === "consultation") {
-      if (notif.referenceId) navigate(`/chat/${notif.referenceId}`);
-      else navigate("/chat");
+    } else if (type === "chat_message" && notif.createdBy) {
+      // Route to the appropriate chat page based on role
+      if (user?.role === "ADMIN") {
+        navigate(`/admin/chat?userId=${notif.createdBy}`);
+      } else if (user?.role === "AGRO_EXPERT") {
+        navigate(`/chat/${notif.createdBy}`);
+      } else {
+        navigate(`/messages?userId=${notif.createdBy}`);
+      }
     }
   };
 

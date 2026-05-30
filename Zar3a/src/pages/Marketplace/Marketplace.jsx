@@ -6,7 +6,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../hooks/useCart";
 import { useLanguage } from "../../context/LanguageContext";
 import api from "../../API/axiosInstance";
-import DualImageUpload from "../../components/DualImageUpload";
 import {
   LuSearch,
   LuShoppingCart,
@@ -1031,24 +1030,14 @@ const Marketplace = () => {
                     className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none h-32 resize-none"
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <select
+                    <input
+                      type="text"
                       name="category"
                       value={createForm.category}
                       onChange={handleCreateInput}
+                      placeholder={t("market.category")}
                       className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
-                    >
-                      <option value="" disabled>{t("market.category") || "Select Category"}</option>
-                      {user?.role !== "SUPPLIER" && <option value="PRODUCE">PRODUCE</option>}
-                      {user?.role !== "FARMER" && (
-                        <>
-                          <option value="SEEDS">SEEDS</option>
-                          <option value="FERTILIZERS">FERTILIZERS</option>
-                          <option value="TOOLS">TOOLS</option>
-                          <option value="EQUIPMENT">EQUIPMENT</option>
-                        </>
-                      )}
-                      <option value="OTHER">OTHER</option>
-                    </select>
+                    />
                     <input
                       type="number"
                       name="price"
@@ -1107,20 +1096,44 @@ const Marketplace = () => {
                       className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none"
                     />
                   </div>
-                  <DualImageUpload
-                    label={t("market.imageSource") || "Image Source"}
-                    value={createForm.imageUrl}
-                    onChange={(e) => { handleCreateInput(e); setImageFile(null); setImagePreview(""); }}
-                    previewImage={imagePreview}
-                    onFileChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        setImageFile(file);
-                        setImagePreview(URL.createObjectURL(file));
-                        setCreateForm(prev => ({ ...prev, imageUrl: "" }));
-                      }
-                    }}
-                  />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("market.imageSource") || "Image Source"}</label>
+                    <div className="flex flex-col md:flex-row items-center gap-4">
+                      {(imagePreview || createForm.imageUrl) && (
+                        <div className="w-24 h-24 rounded-2xl border border-gray-100 dark:border-slate-800 overflow-hidden shrink-0 bg-gray-50 dark:bg-slate-800">
+                          <img src={imagePreview || createForm.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="flex-1 w-full space-y-3">
+                        <input
+                          type="text"
+                          name="imageUrl"
+                          value={createForm.imageUrl}
+                          onChange={(e) => { handleCreateInput(e); setImageFile(null); setImagePreview(""); }}
+                          placeholder="Paste External Image URL"
+                          className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl px-5 py-3 text-sm font-bold text-slate-900 dark:text-white outline-none"
+                        />
+                        <div className="relative h-12 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-2xl hover:bg-gray-100 dark:hover:bg-slate-800/50 transition">
+                          <span className="absolute text-[10px] font-bold text-gray-400 pointer-events-none">
+                            OR UPLOAD FILE (.JPG/.PNG)
+                          </span>
+                          <input
+                            type="file"
+                            accept="image/png, image/jpeg, image/jpg"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                setImageFile(file);
+                                setImagePreview(URL.createObjectURL(file));
+                                setCreateForm(prev => ({ ...prev, imageUrl: "" }));
+                              }
+                            }}
+                            className="w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   {formError && <p className="text-red-600 font-bold">{formError}</p>}
                   {successMessage && <p className="text-green-600 font-bold">{successMessage}</p>}
                   <button

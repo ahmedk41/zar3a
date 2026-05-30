@@ -23,8 +23,8 @@ const Sidebar = () => {
     menuItems.push({ path: "/dashboard", label: t("nav.dashboard"), icon: <LuLayoutDashboard /> });
   }
 
-  // Track Orders: Only for FARMER, SUPPLIER, ADMIN (not AGRO_EXPERT or BUYER)
-  if (user?.role && !['AGRO_EXPERT', 'BUYER'].includes(user.role)) {
+  // Track Orders: For all registered users
+  if (user?.role) {
     menuItems.push({ path: "/track-orders", label: t("nav.trackOrders"), icon: <LuListChecks /> });
   }
 

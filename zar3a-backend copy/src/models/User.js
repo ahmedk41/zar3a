@@ -33,7 +33,7 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   pendingRole: {
-    type: DataTypes.ENUM('AGRO_EXPERT'),
+    type: DataTypes.ENUM('FARMER', 'SUPPLIER', 'AGRO_EXPERT'),
     allowNull: true,
   },
   authProvider: {

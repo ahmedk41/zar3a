@@ -294,7 +294,7 @@ export const chooseRole = async (req, res) => {
       await AgroExpertProfile.create({ userId });
       await User.update({ pendingRole: role, isApproved: false }, { where: { id: userId } });
     } else if (role === 'FARMER' || role === 'SUPPLIER') {
-      await User.update({ role, isApproved: false }, { where: { id: userId } });
+      await User.update({ pendingRole: role, role: null, isApproved: false }, { where: { id: userId } });
     } else {
       await User.update({ role, isApproved: true }, { where: { id: userId } });
     }
@@ -381,30 +381,30 @@ export const completeFarmerProfile = async (req, res) => {
     const { userId } = req.params;
     const { farmSize, soilType, location, sensorId } = req.body;
 
+    if (!sensorId || !sensorId.trim()) {
+      return res.status(400).json({ message: "Sensor ID is required for Farmer registration" });
+    }
+
     if (!soilType || !soilType.trim() || !location || !location.trim()) {
       return res.status(400).json({ message: "Soil type and location are required for Farmer registration" });
     }
 
     const user = await User.findByPk(userId);
-    if (!user || user.role !== 'FARMER') {
+    if (!user || (user.role !== 'FARMER' && user.pendingRole !== 'FARMER')) {
       return res.status(400).json({ message: "Invalid user or role" });
     }
 
-    let trimmedSensorId = sensorId ? sensorId.trim() : null;
-
-    if (trimmedSensorId) {
-      // Check if sensorId is already taken
-      const existingSensor = await FarmerProfile.findOne({ where: { sensorId: trimmedSensorId } });
-      if (existingSensor) {
-        return res.status(400).json({ message: "Sensor ID is already assigned to another farmer. Please enter a unique Sensor ID." });
-      }
+    // Check if sensorId is already taken
+    const existingSensor = await FarmerProfile.findOne({ where: { sensorId: sensorId.trim() } });
+    if (existingSensor) {
+      return res.status(400).json({ message: "Sensor ID is already assigned to another farmer. Please enter a unique Sensor ID." });
     }
 
     const profile = await FarmerProfile.create({
       farmSize,
       soilType,
       location,
-      sensorId: trimmedSensorId,
+      sensorId: sensorId.trim(),
       userId: Number(userId)
     });
     res.json({ message: "Farmer setup complete", profile });
@@ -437,7 +437,7 @@ export const completeSupplierProfile = async (req, res) => {
     }
 
     const user = await User.findByPk(userId);
-    if (!user || user.role !== 'SUPPLIER') {
+    if (!user || (user.role !== 'SUPPLIER' && user.pendingRole !== 'SUPPLIER')) {
       return res.status(400).json({ message: "Invalid user or role" });
     }
 
@@ -623,7 +623,7 @@ export const updateProfile = async (req, res) => {
 
     await User.update({ fullName, username, phone, email }, { where: { id: req.user.id } });
 
-    if (user.role === 'SUPPLIER') {
+    if (user.role === 'SUPPLIER' || user.pendingRole === 'SUPPLIER') {
       if (user.SupplierProfile) {
         await SupplierProfile.update({ tradeLicense, location }, { where: { userId: req.user.id } });
       } else {
@@ -631,7 +631,7 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-    if (user.role === 'FARMER') {
+    if (user.role === 'FARMER' || user.pendingRole === 'FARMER') {
       const trimmedSensor = sensorId ? sensorId.trim() : "";
       if (trimmedSensor) {
         // Check uniqueness but exclude this farmer's own current profile
@@ -648,13 +648,13 @@ export const updateProfile = async (req, res) => {
 
       if (user.FarmerProfile) {
         const updateData = { farmSize, soilType, location };
-        if (trimmedSensor && trimmedSensor !== user.FarmerProfile.sensorId) {
-          updateData.sensorId = trimmedSensor;
-          updateData.sensorStatus = 'PENDING';
-        }
+        if (trimmedSensor) updateData.sensorId = trimmedSensor;
         await FarmerProfile.update(updateData, { where: { userId: req.user.id } });
       } else {
-        await FarmerProfile.create({ userId: req.user.id, farmSize, soilType, location, sensorId: trimmedSensor || null });
+        if (!trimmedSensor) {
+          return res.status(400).json({ message: "Sensor ID is required for Farmer registration" });
+        }
+        await FarmerProfile.create({ userId: req.user.id, farmSize, soilType, location, sensorId: trimmedSensor });
       }
     }
 
@@ -852,10 +852,8 @@ export const getPendingUsers = async (req, res) => {
       where: {
         isApproved: false,
         [Op.or]: [
-          { role: 'FARMER' },
-          { role: 'SUPPLIER' },
-          { pendingRole: 'AGRO_EXPERT' },
-          { role: 'AGRO_EXPERT' },
+          { role: { [Op.in]: ['FARMER', 'SUPPLIER', 'AGRO_EXPERT'] } },
+          { pendingRole: { [Op.in]: ['FARMER', 'SUPPLIER', 'AGRO_EXPERT'] } },
         ],
       },
       include: [
@@ -880,8 +878,8 @@ export const approveUser = async (req, res) => {
     const user = await User.findByPk(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.pendingRole === 'AGRO_EXPERT') {
-      await User.update({ role: 'AGRO_EXPERT', pendingRole: null, isApproved: true }, { where: { id: userId } });
+    if (user.pendingRole) {
+      await User.update({ role: user.pendingRole, pendingRole: null, isApproved: true }, { where: { id: userId } });
     } else {
       await User.update({ isApproved: true }, { where: { id: userId } });
     }

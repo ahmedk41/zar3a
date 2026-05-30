@@ -22,7 +22,10 @@ const authenticate = async (req, res, next) => {
   if (!user || !user.isActive)
     return res.status(401).json({ message: "User not found or inactive" });
 
-  if (user.role !== 'ADMIN' && (user.role === 'AGRO_EXPERT' || user.pendingRole === 'AGRO_EXPERT') && !user.isApproved)
+  const approvalRequiredRoles = ['FARMER', 'SUPPLIER', 'AGRO_EXPERT'];
+  const hasApprovalRole = approvalRequiredRoles.includes(user.role) || approvalRequiredRoles.includes(user.pendingRole);
+
+  if (user.role !== 'ADMIN' && hasApprovalRole && !user.isApproved)
     return res.status(403).json({ message: "Account pending approval" });
 
   req.user = user;

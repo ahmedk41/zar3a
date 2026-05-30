@@ -11,9 +11,6 @@ import { OrderTracking, Product, User, Order, OrderItem } from '../models/index.
 export const getOrderTracking = async (req, res) => {
   try {
     const user = req.user;
-    if (user.role === 'BUYER' || user.role === 'AGRO_EXPERT') {
-      return res.status(403).json({ message: 'Access denied for your role' });
-    }
 
     const { page, limit, status, marketplaceType, search } = req.query;
 
@@ -201,6 +198,14 @@ export const getOrderTracking = async (req, res) => {
           return item.paymentStatus === 'PAID';
         }
 
+        return false;
+      });
+    } else if (user.role === 'BUYER' || user.role === 'AGRO_EXPERT') {
+      filtered = combined.filter((item) => {
+        // Show if it's a purchase they made
+        if (item.type === 'PURCHASE') {
+          return item.User?.id === user.id && item.paymentStatus === 'PAID';
+        }
         return false;
       });
     }

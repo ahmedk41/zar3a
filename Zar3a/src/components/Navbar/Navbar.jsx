@@ -51,7 +51,7 @@ const Navbar = () => {
       'BUYER': '/profile/buyer',
       'SUPPLIER': '/profile/supplier',
       'AGRO_EXPERT': '/profile/expert',
-      'ADMIN': '/admin',
+      'ADMIN': '/profile/admin',
     };
     return profileMap[roleToUse] || null;
   };
@@ -66,6 +66,7 @@ const Navbar = () => {
       { path: "/agri-shop",          label: t("nav.agriShop"),         icon: <LuShoppingBag /> },
       { path: "/experts",            label: t("nav.experts"),          icon: <LuUsers /> },
       { path: "/chatbot",            label: t("nav.aiAssistant"),      icon: <LuMessageSquare /> },
+      { path: "/admin/chat",         label: t("admin.chatTitle") || "Messages", icon: <LuMessageSquare /> },
       { path: "/track-orders",       label: t("nav.trackOrder"),       icon: <LuShoppingBag /> },
       { path: "/admin",              label: t("nav.admin"),            icon: <LuShield /> },
     ],
@@ -87,14 +88,14 @@ const Navbar = () => {
     BUYER: [
       { path: "/crop-market", label: t("nav.cropMarket"), icon: <LuShoppingBag /> },
       { path: "/agri-shop",   label: t("nav.agriShop"),   icon: <LuShoppingBag /> },
-      { path: "/track-orders",label: t("nav.trackOrder"), icon: <LuShoppingBag /> },
+      { path: "/track-orders", label: t("nav.trackOrder"), icon: <LuShoppingBag /> },
     ],
     AGRO_EXPERT: [
       { path: "/crop-market",   label: t("nav.cropMarket"),       icon: <LuShoppingBag /> },
       { path: "/agri-shop",     label: t("nav.agriShop"),         icon: <LuShoppingBag /> },
-      { path: "/track-orders",  label: t("nav.trackOrder"),       icon: <LuShoppingBag /> },
       { path: "/chatbot",       label: t("nav.aiAssistant"),      icon: <LuMessageSquare /> },
       { path: "/consultations", label: t("nav.consultations") || "Consultations", icon: <LuMessageSquare /> },
+      { path: "/track-orders",  label: t("nav.trackOrder"),       icon: <LuShoppingBag /> },
     ],
   };
 
@@ -150,9 +151,13 @@ const Navbar = () => {
             {isDark ? <LuSun size={20} className="text-yellow-400" /> : <LuMoon size={20} />}
           </motion.button>
 
-          {/* Consultation Chat Icon (Only for Expert/Admin) */}
-          {user && (user.role === 'AGRO_EXPERT' || user.role === 'ADMIN') && (
-            <Link to="/consultations" className="hidden sm:flex p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-emerald-600 transition-all" title="Consultation Chat">
+          {/* Chat Icon (All logged-in users) */}
+          {user && (
+            <Link 
+              to={user.role === 'ADMIN' ? "/admin/chat" : user.role === 'AGRO_EXPERT' ? "/consultations" : "/messages"} 
+              className="hidden sm:flex p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-emerald-600 transition-all" 
+              title={t("nav.chat") || "Chat"}
+            >
               <LuMessageSquare size={20} />
             </Link>
           )}
