@@ -28,6 +28,8 @@ const TrackOrders = () => {
       setLoading(true);
       setError('');
 
+
+
       const response = await getOrderTracking({ search: query });
       const itemsData = response?.items || [];
       setItems(itemsData);
@@ -46,6 +48,8 @@ const TrackOrders = () => {
     }
     fetchOrders();
   }, [query, user, authLoading]);
+
+
 
   return (
     <div>

@@ -6,7 +6,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../hooks/useCart";
 import { useLanguage } from "../../context/LanguageContext";
 import api from "../../API/axiosInstance";
-import DualImageUpload from "../../components/DualImageUpload";
 import {
   LuSearch,
   LuShoppingCart,
@@ -1233,7 +1232,6 @@ const Marketplace = () => {
                     placeholder={t("market.prodDesc")}
                     className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400 h-28 resize-none"
                   />
-                  
                   <CustomSelect
                     value={createForm.category}
                     onChange={handleCreateInput}

@@ -17,7 +17,7 @@ if (GROQ_API_KEY) {
 }
 
 const AIAssistant = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -82,10 +82,11 @@ const AIAssistant = () => {
     }
   };
 
-  const handleSend = async () => {
-    if (!inputText.trim() || isTyping) return;
+  const handleSend = async (messageOverride) => {
+    const textToSend = typeof messageOverride === 'string' ? messageOverride : inputText;
+    if (!textToSend.trim() || isTyping) return;
 
-    const userMsg = inputText;
+    const userMsg = textToSend;
     setMessages(prev => [...prev, { id: Date.now(), sender: "user", text: userMsg }]);
     setInputText("");
     setIsTyping(true);
@@ -212,6 +213,41 @@ const AIAssistant = () => {
             </motion.div>
           ))}
         </AnimatePresence>
+ 
+        {/* Suggestion Cards */}
+        {messages.length === 1 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6"
+          >
+            {(lang === 'ar' ? [
+              { text: "كيف أعالج اللفحة المبكرة في الطماطم؟ 🍅", icon: "🍅" },
+              { text: "ما هو أفضل جدول تسميد للقمح؟ 🌾", icon: "🌾" },
+              { text: "كيف يمكنني ضبط مياه ري التربة الطينية؟ 💧", icon: "💧" },
+              { text: "ما هي أعراض نقص الفوسفور في النبات؟ 🍃", icon: "🍃" }
+            ] : [
+              { text: "How do I treat Early Blight in tomatoes? 🍅", icon: "🍅" },
+              { text: "What is the best fertilizer schedule for wheat? 🌾", icon: "🌾" },
+              { text: "How to optimize watering for clay soil? 💧", icon: "💧" },
+              { text: "What are the symptoms of Nitrogen deficiency? 🍃", icon: "🍃" }
+            ]).map((s, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSend(s.text)}
+                className="p-5 text-start bg-white dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 border border-slate-200/60 dark:border-slate-700/50 hover:border-emerald-500/50 rounded-3xl shadow-xs transition-all duration-300 group cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-900 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-950/40 flex items-center justify-center text-xl mb-3.5 transition duration-300">
+                  {s.icon}
+                </div>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 leading-relaxed group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition">
+                  {s.text}
+                </p>
+              </button>
+            ))}
+          </motion.div>
+        )}
 
         {/* Typing Indicator */}
         {isTyping && (

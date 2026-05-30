@@ -49,10 +49,9 @@ model User {
 
 model FarmerProfile {
   id        Int     @id @default(autoincrement())
-  userId       Int     @unique
-  sensorId     String? @unique @db.VarChar(255)
-  sensorStatus String  @default("PENDING") @db.VarChar(50)
-  farmSize     String? @db.VarChar(255)
+  userId    Int     @unique
+  sensorId  String  @unique @db.VarChar(255)
+  farmSize  String? @db.VarChar(255)
   soilType  String? @db.VarChar(255)
   location  String? @db.VarChar(255)
   

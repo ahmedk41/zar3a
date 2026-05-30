@@ -22,7 +22,7 @@ app.use(cors({
 }));
 
 // Important: Parse raw body for Stripe webhook verification
-app.use('/payments/webhook', express.raw({ type: 'application/json' }));
+app.use(['/payments/webhook', '/api/payments/webhook'], express.raw({ type: 'application/json' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
@@ -36,6 +36,7 @@ app.use("/chat", chatRoutes);
 app.use("/tracking", trackingRoutes);
 app.use("/orders", ordersRoutes);
 app.use("/payments", paymentRoutes);
+app.use("/api/payments", paymentRoutes);
 app.use("/cart", cartRoutes);
 
 app.get("/", (_req, res) =>

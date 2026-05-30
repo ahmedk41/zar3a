@@ -249,7 +249,9 @@ export default function Register() {
       } else if (location.trim().length > 100) {
         e.location = "Location must be at most 100 characters";
       }
-      if (sensorId.trim() && sensorId.trim().length < 3) {
+      if (!sensorId.trim()) {
+        e.sensorId = "Sensor ID is required for Farmer registration";
+      } else if (sensorId.trim().length < 3) {
         e.sensorId = "Sensor ID must be at least 3 characters";
       }
     } else if (selectedRole === "SUPPLIER") {

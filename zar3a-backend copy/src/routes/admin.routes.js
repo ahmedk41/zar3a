@@ -9,7 +9,6 @@ import {
   deleteUser,
   deleteProduct,
   getAdminStats,
-  updateSensorStatus,
 } from '../controllers/admin.controller.js';
 
 const router = Router();
@@ -33,6 +32,5 @@ router.post(
 router.delete('/users/:userId', deleteUser);
 router.delete('/products/:productId', deleteProduct);
 router.get('/stats', getAdminStats);
-router.put('/sensors/:profileId', updateSensorStatus);
 
 export default router;

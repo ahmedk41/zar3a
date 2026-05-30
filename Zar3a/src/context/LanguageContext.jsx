@@ -626,6 +626,16 @@ const translations = {
   "pay.confirmPay":         { en: "Confirm & Pay",           ar: "تأكيد ودفع" },
   "pay.paymentSuccess":     { en: "Payment successful! Your order has been placed.", ar: "نجحت عملية الدفع! تم تقديم طلبك." },
   "pay.paymentError":       { en: "Unable to complete payment. Please try again.", ar: "تعذر إتمام عملية الدفع. يرجى المحاولة مرة أخرى." },
+  "pay.method.stripe":      { en: "Credit / Debit Card (Stripe)", ar: "بطاقة ائتمان / خصم (سترايب)" },
+  "pay.method.paymob_card": { en: "Credit / Debit Card (Paymob)", ar: "بطاقة ائتمان / خصم (بيموب)" },
+  "pay.method.vodafone":    { en: "Vodafone Cash (Mobile Wallet)", ar: "فودافون كاش (محفظة هاتف)" },
+  "pay.method.cod":         { en: "Cash on Delivery (COD)",  ar: "الدفع عند الاستلام (COD)" },
+  "pay.walletNumber":       { en: "Mobile Wallet Number",    ar: "رقم محفظة الهاتف" },
+  "pay.walletNumberPlaceholder": { en: "Enter your 11-digit mobile wallet number", ar: "أدخل رقم محفظة الهاتف المكون من 11 رقمًا" },
+  "pay.walletNumberError":  { en: "Please enter a valid Egyptian mobile wallet number (e.g. 010...)", ar: "يرجى إدخال رقم محفظة هاتف مصري صحيح (مثال: 010...)" },
+  "pay.confirming":         { en: "Verifying payment status...", ar: "جاري التحقق من حالة عملية الدفع..." },
+  "pay.redirecting":        { en: "Redirecting to secure gateway...", ar: "جاري تحويلك لبوابة الدفع الآمنة..." },
+  "pay.simulatedAlert":     { en: "DEVELOPER SANDBOX MODE — Simulation active", ar: "وضع المطور التجريبي — المحاكاة نشطة" },
 
 
   // ── Not Found ────────────────────────────────────────────────────────────────
