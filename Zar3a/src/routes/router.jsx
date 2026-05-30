@@ -22,6 +22,21 @@ const ApprovedUserGuard = ({ children }) => {
   return children;
 };
 
+// Redirect: routes "/profile" to the user's role-specific profile page
+const ProfileRedirect = () => {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  const profileMap = {
+    FARMER: "/profile/farmer",
+    BUYER: "/profile/buyer",
+    SUPPLIER: "/profile/supplier",
+    AGRO_EXPERT: "/profile/expert",
+    ADMIN: "/profile/admin",
+  };
+  const target = profileMap[user.role] || "/";
+  return <Navigate to={target} replace />;
+};
+
 // Layouts
 import MainLayout from "../layouts/MainLayout/MainLayout";
 
@@ -98,13 +113,12 @@ const router = createBrowserRouter([
       { path: "settings", element: <Settings /> },
       { path: "admin", element: <Admin /> },
       { path: "products-dashboard", element: <ProductsDashboard /> },
-      // ✅ Role-specific profile pages
       { path: "profile/farmer", element: <FarmerProfile /> },
       { path: "profile/buyer", element: <BuyerProfile /> },
       { path: "profile/supplier", element: <SupplierProfile /> },
       { path: "profile/expert", element: <ExpertProfile /> },
       { path: "profile/admin", element: <AdminProfile /> },
-      { path: "profile", element: <ExpertProfile /> },
+      { path: "profile", element: <ProfileRedirect /> },
       { path: "consultations", element: <ExpertConsultations /> },
     ],
   },
