@@ -44,6 +44,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
+import LiveTicker from "./LiveTicker";
 
 const Dashboard = () => {
   const { t } = useLanguage();
@@ -636,6 +637,9 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-16 px-4 text-left relative z-10">
+      {/* Live Ticker */}
+      <LiveTicker />
+
       {isLocked && (
         <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 shadow-sm">
           <div className="flex items-center gap-3">

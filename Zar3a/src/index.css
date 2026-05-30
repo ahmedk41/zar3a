@@ -7,6 +7,12 @@ body {
 @theme {
   --color-brand-green: #22c55e;
   --color-brand-dark: #16a34a;
+  --animate-ticker: ticker 22s linear infinite;
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }
 
 
