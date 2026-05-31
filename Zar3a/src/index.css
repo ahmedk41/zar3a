@@ -98,7 +98,12 @@ html {
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(71, 85, 105, 0.8);
-}
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(100, 116, 139, 1);
+}
+
+/* Hide default Edge/IE password reveal icon since we use custom icons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
 }
