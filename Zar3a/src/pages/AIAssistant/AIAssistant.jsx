@@ -194,11 +194,11 @@ const AIAssistant = () => {
                   dir={msg.sender === "ai" ? "auto" : "auto"}
                 >
                   {msg.sender === "user" ? (
-                    <p className="font-medium">{msg.text}</p>
+                    <p className="font-medium break-words whitespace-pre-wrap" style={{ overflowWrap: 'anywhere' }}>{msg.text}</p>
                   ) : (
                     /* 🎨 Pro Markdown Styling (Fixed className issue) */
-                    <div className="markdown-body font-medium text-slate-700 dark:text-slate-200 
-                      [&>h3]:text-xl [&>h3]:font-black [&>h3]:text-emerald-700 dark:[&>h3]:text-emerald-400 [&>h3]:mb-4 [&>h3]:mt-2
+                    <div className="markdown-body font-medium text-slate-700 dark:text-slate-200 break-words whitespace-pre-wrap" style={{ overflowWrap: 'anywhere' }}
+                      className="[&>h3]:text-xl [&>h3]:font-black [&>h3]:text-emerald-700 dark:[&>h3]:text-emerald-400 [&>h3]:mb-4 [&>h3]:mt-2
                       [&>ul]:list-disc [&>ul]:mx-5 [&>ul]:mb-4 [&>ul]:space-y-2 [&>ul>li]:pl-1
                       [&>ol]:list-decimal [&>ol]:mx-5 [&>ol]:mb-4 [&>ol]:space-y-2
                       [&>p]:mb-4 last:[&>p]:mb-0

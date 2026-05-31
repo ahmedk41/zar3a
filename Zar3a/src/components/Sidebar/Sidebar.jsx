@@ -30,6 +30,18 @@ const Sidebar = ({ isOpen, onClose }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Lock body scroll on mobile when open
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobile, isOpen]);
+
   const getProfileLink = () => {
     if (!user?.role && !user?.pendingRole) return null;
     const roleToUse = user.role || user.pendingRole;

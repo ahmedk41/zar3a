@@ -318,7 +318,7 @@ const Chat = () => {
 
                     {/* Only show text if it's not just the attachment placeholder */}
                     {msg.text && msg.text !== '📎 Attachment' && (
-                      <p className="text-[15px] font-medium leading-relaxed">
+                      <p className="text-[15px] font-medium leading-relaxed break-words whitespace-pre-wrap" style={{ overflowWrap: 'anywhere' }}>
                         {msg.text}
                       </p>
                     )}
