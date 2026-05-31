@@ -273,24 +273,35 @@ export default function ProductsDashboard() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 relative z-10">
-          <h1 className="text-3xl font-black text-text-main dark:text-white uppercase tracking-tight flex items-center gap-3">
-            <LuPackage className="text-primary-base" /> {t("prodDash.title")}
-          </h1>
-          <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-card/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm relative z-10">
+          <div>
+            <h1 className="text-4xl font-[1000] text-text-main dark:text-white tracking-tighter uppercase flex items-center gap-3">
+              <LuPackage className="text-primary-base" /> {t("prodDash.title")}
+            </h1>
+            <p className="text-sm font-bold text-primary-base dark:text-emerald-400 mt-1 uppercase tracking-widest">
+              {t("prodDash.manageOffer")}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {filteredProducts.length > 0 && (
               <button
                 onClick={handleBoostAll}
-                className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:scale-95 uppercase tracking-wider"
+                className="flex-1 md:flex-none px-6 py-3 rounded-2xl font-black text-xs text-white bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all active:scale-95 uppercase tracking-wider"
               >
                 Boost All Products ✨
               </button>
             )}
             <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex-1 md:flex-none bg-primary-base text-white px-6 py-3.5 rounded-2xl font-black hover:bg-primary-hover shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:scale-95 text-sm uppercase tracking-wider"
+              onClick={loadProducts}
+              className="flex-1 md:flex-none px-6 py-3 bg-surface-secondary dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold text-xs hover:bg-gray-200 transition"
             >
-              <LuPlus size={20} /> {t("prodDash.addNew")}
+              {t("prodDash.refresh")}
+            </button>
+            <button
+              onClick={() => navigate("/marketplace")}
+              className="flex-1 md:flex-none px-6 py-3 bg-primary-base text-white rounded-2xl font-black text-xs hover:bg-primary-hover transition shadow-lg shadow-green-200 dark:shadow-none"
+            >
+              {t("prodDash.browseMarket")}
             </button>
           </div>
         </div>
