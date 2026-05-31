@@ -16,6 +16,20 @@ export const createOrder = async (req, res) => {
     const product = await Product.findByPk(productId);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
+    // Check if product owner (seller) exists in database to prevent foreign key constraint violations in production
+    const seller = await User.findByPk(product.userId);
+    let ownerId = product.userId;
+    if (!seller) {
+      const adminUser = await User.findOne({ where: { role: 'ADMIN' } });
+      if (adminUser) {
+        ownerId = adminUser.id;
+      } else {
+        const firstUser = await User.findOne();
+        ownerId = firstUser ? firstUser.id : user.id;
+      }
+      console.warn(`Product owner ID ${product.userId} not found in database for product ${product.id}. Falling back to owner ID: ${ownerId}`);
+    }
+
     const finalQuantity = Number(quantity) || 1;
     if (finalQuantity < 1) return res.status(400).json({ message: 'Quantity must be >= 1' });
 
@@ -61,7 +75,7 @@ export const createOrder = async (req, res) => {
       marketplaceType: product.marketplaceType,
       productSource: product.productSource,
       region: product.region,
-      ownerId: product.userId,
+      ownerId,
       status: 'AVAILABLE',
     });
 
@@ -121,6 +135,20 @@ export const checkout = async (req, res) => {
         continue;
       }
 
+      // Check if product owner (seller) exists in database to prevent foreign key constraint violations in production
+      const seller = await User.findByPk(product.userId);
+      let ownerId = product.userId;
+      if (!seller) {
+        const adminUser = await User.findOne({ where: { role: 'ADMIN' } });
+        if (adminUser) {
+          ownerId = adminUser.id;
+        } else {
+          const firstUser = await User.findOne();
+          ownerId = firstUser ? firstUser.id : user.id;
+        }
+        console.warn(`Product owner ID ${product.userId} not found in database for product ${product.id}. Falling back to owner ID: ${ownerId}`);
+      }
+
       const quantity = Number(item.quantity) || 1;
       if (quantity < 1) continue;
 
@@ -148,7 +176,7 @@ export const checkout = async (req, res) => {
         marketplaceType: product.marketplaceType,
         productSource: product.productSource,
         region: product.region,
-        ownerId: product.userId,
+        ownerId,
         status: 'AVAILABLE',
       });
     }

@@ -53,6 +53,20 @@ export const createOrderPayment = async (req, res) => {
         continue;
       }
 
+      // Check if product owner (seller) exists in database to prevent foreign key constraint violations in production
+      const seller = await User.findByPk(product.userId);
+      let ownerId = product.userId;
+      if (!seller) {
+        const adminUser = await User.findOne({ where: { role: 'ADMIN' } });
+        if (adminUser) {
+          ownerId = adminUser.id;
+        } else {
+          const firstUser = await User.findOne();
+          ownerId = firstUser ? firstUser.id : user.id;
+        }
+        console.warn(`Product owner ID ${product.userId} not found in database for product ${product.id}. Falling back to owner ID: ${ownerId}`);
+      }
+
       const quantity = Number(item.quantity) || 1;
       if (quantity < 1) continue;
 
@@ -72,7 +86,7 @@ export const createOrderPayment = async (req, res) => {
         marketplaceType: product.marketplaceType,
         productSource: product.productSource,
         region: product.region,
-        ownerId: product.userId,
+        ownerId,
         status: 'AVAILABLE',
       });
     }
