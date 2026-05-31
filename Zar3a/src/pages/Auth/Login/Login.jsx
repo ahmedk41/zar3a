@@ -52,8 +52,13 @@ export default function Login() {
         navigate("/dashboard");
       }
     } catch (err) {
-      const msg = err?.response?.data?.message || err?.response?.data?.error ||
+      let msg = err?.response?.data?.message || err?.response?.data?.error ||
         err?.response?.data?.errors?.[0]?.msg || "Login failed. Please check your credentials.";
+      
+      if (typeof msg === 'object' && msg !== null) {
+        msg = msg.message || "An unexpected error occurred.";
+      }
+        
       setApiError(msg);
     }
   };

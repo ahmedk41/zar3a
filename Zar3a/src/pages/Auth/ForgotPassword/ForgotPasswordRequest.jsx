@@ -28,7 +28,11 @@ const ForgotPasswordRequest = ({ onOTPRequested, onCancel }) => {
       setMessage(response.data.message);
       setSent(true);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+      
+      let msg = err.response?.data?.message || err.response?.data?.error || 'Failed to send OTP. Please try again.';
+      if (typeof msg === 'object' && msg !== null) msg = msg.message || 'Failed to send OTP. Please try again.';
+      setError(msg);
+      
     } finally {
       setLoading(false);
     }

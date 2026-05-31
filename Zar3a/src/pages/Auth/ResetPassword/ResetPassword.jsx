@@ -77,10 +77,13 @@ export default function ResetPassword() {
       setSuccess(true);
       setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
-      const msg =
+      let msg =
         err?.response?.data?.message ||
         err?.response?.data?.error ||
         "Failed to reset password. Please try again.";
+      if (typeof msg === 'object' && msg !== null) {
+        msg = msg.message || "Failed to reset password. Please try again.";
+      }
       setApiError(msg);
     }
   };

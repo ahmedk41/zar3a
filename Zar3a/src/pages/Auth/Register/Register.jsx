@@ -112,6 +112,14 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
 
+  const parseError = (err, fallback) => {
+    let msg = err?.response?.data?.message || err?.response?.data?.error || err?.response?.data?.errors?.[0]?.msg || fallback;
+    if (typeof msg === 'object' && msg !== null) {
+      msg = msg.message || fallback;
+    }
+    return msg;
+  };
+
   // Step 1 data
   const [form1, setForm1] = useState({
     fullName: "", username: "", email: "", phone: "", password: "", confirmPassword: "",
@@ -309,11 +317,7 @@ export default function Register() {
       setUserId(data.userId);
       setStep(2);
     } catch (err) {
-      setApiError(
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Registration failed. Please try again."
-      );
+      setApiError(parseError(err, "Registration failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -327,10 +331,7 @@ export default function Register() {
       await chooseRole(userId, selectedRole);
       setStep(3);
     } catch (err) {
-      setApiError(
-        err?.response?.data?.message ||
-        "Failed to set role. Please try again."
-      );
+      setApiError(parseError(err, "Failed to set role. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -357,11 +358,7 @@ export default function Register() {
       }
       setStep(4);
     } catch (err) {
-      setApiError(
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Profile completion failed."
-      );
+      setApiError(parseError(err, "Profile completion failed."));
     } finally {
       setLoading(false);
     }
