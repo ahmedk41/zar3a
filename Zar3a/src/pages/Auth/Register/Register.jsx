@@ -119,6 +119,7 @@ export default function Register() {
   const [errors1, setErrors1] = useState({});
   const [errors3, setErrors3] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Step 2 data
   const [selectedRole, setSelectedRole] = useState("");
@@ -539,10 +540,17 @@ export default function Register() {
                     <input
                       value={form1.confirmPassword}
                       onChange={(e) => setForm1({ ...form1, confirmPassword: e.target.value })}
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       placeholder={t("reg.confirmPassword")}
-                      className="w-full pl-12 pr-5 py-4 rounded-2xl border-2 bg-surface-secondary/30 dark:bg-slate-950/50 dark:text-white border-border-default dark:border-slate-800 focus:border-emerald-500 outline-none transition-all font-semibold"
+                      className="w-full pl-12 pr-12 py-4 rounded-2xl border-2 bg-surface-secondary/30 dark:bg-slate-950/50 dark:text-white border-border-default dark:border-slate-800 focus:border-emerald-500 outline-none transition-all font-semibold"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-text-disabled hover:text-primary-base transition-colors"
+                    >
+                      {showConfirmPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                    </button>
                   </Field>
                 </div>
 
