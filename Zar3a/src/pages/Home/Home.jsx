@@ -42,9 +42,9 @@ const Home = () => {
   const locale = lang === "ar" ? "ar-EG" : "en-US";
 
   return (
-    <div className="p-6 md:p-8 max-w-350 mx-auto font-sans bg-[#F8FAFC] dark:bg-[#0F172A] min-h-screen">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto font-sans bg-[#F8FAFC] dark:bg-[#0F172A] min-h-screen">
       {/* Live Ticker */}
-      <div className="mb-6">
+      <div className="mb-6 overflow-hidden">
         <LiveTicker />
       </div>
 
@@ -53,7 +53,7 @@ const Home = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 md:p-20 text-center border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden mb-12"
+        className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 sm:p-10 md:p-20 text-center border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden mb-12"
       >
         {/* Glow Backgrounds */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-64 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-[100%] blur-3xl pointer-events-none"></div>
@@ -64,8 +64,8 @@ const Home = () => {
           transition={{ delay: 0.2 }}
           className="relative z-10"
         >
-          <div className="inline-flex items-center gap-4 px-4 py-2 rounded-full bg-slate-900 dark:bg-white/5 text-white dark:text-slate-300 font-bold text-xs mb-8 border border-white/10 shadow-xl">
-            <div className="flex items-center gap-2 border-e border-white/20 pe-4">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-4 py-2 rounded-full bg-slate-900 dark:bg-white/5 text-white dark:text-slate-300 font-bold text-[10px] sm:text-xs mb-8 border border-white/10 shadow-xl">
+            <div className="flex items-center gap-2 sm:border-e border-white/20 sm:pe-4">
               <LuCalendar size={14} className="text-emerald-400" />
               {currentTime.toLocaleDateString(locale, { month: "short", day: "numeric" })}
             </div>

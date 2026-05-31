@@ -374,7 +374,7 @@ export default function Register() {
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-[#fdfcf8] dark:bg-[#020617] font-sans transition-colors duration-700" dir="auto">
 
       {/* Navigation bar */}
-      <div className="absolute top-8 left-8 right-8 z-50 flex justify-between items-center">
+      <div className="absolute top-4 left-4 right-4 sm:top-8 sm:left-8 sm:right-8 z-50 flex justify-between items-center">
         <motion.button
           whileHover={{ x: -5 }}
           onClick={() => navigate("/")}
@@ -414,9 +414,9 @@ export default function Register() {
         layout
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl z-10 mt-20"
+        className="w-full max-w-2xl z-10 mt-24 sm:mt-20"
       >
-        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/50 dark:border-slate-800 rounded-[3.5rem] shadow-2xl p-8 md:p-14 relative overflow-hidden">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/50 dark:border-slate-800 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl p-6 sm:p-8 md:p-14 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-emerald-400 via-green-500 to-lime-400" />
 
           {/* Header */}
@@ -437,8 +437,8 @@ export default function Register() {
                 const active = step === num;
                 const done = step > num;
                 return (
-                  <div key={label} className="flex items-center gap-2">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-black transition-all ${
+                  <div key={label} className="flex items-center gap-1 sm:gap-2">
+                    <div className={`flex shrink-0 items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-xs font-black transition-all ${
                       done
                         ? "bg-emerald-500 text-white"
                         : active
@@ -447,11 +447,11 @@ export default function Register() {
                     }`}>
                       {done ? <FiCheckCircle size={14} /> : num}
                     </div>
-                    <span className={`text-xs font-black hidden sm:block ${
+                    <span className={`text-[10px] sm:text-xs font-black hidden sm:block ${
                       active ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
                     }`}>{label}</span>
                     {i < STEPS.length - 1 && (
-                      <div className={`w-8 h-0.5 mx-1 ${step > num ? "bg-emerald-400" : "bg-slate-200 dark:bg-slate-700"}`} />
+                      <div className={`w-4 sm:w-8 h-0.5 mx-0.5 sm:mx-1 ${step > num ? "bg-emerald-400" : "bg-slate-200 dark:bg-slate-700"}`} />
                     )}
                   </div>
                 );

@@ -1306,14 +1306,14 @@ const Dashboard = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsLogOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-90"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90]"
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed top-0 right-0 h-full w-full max-w-sm bg-white dark:bg-slate-900 shadow-2xl z-100 p-6 overflow-y-auto border-l border-gray-100 dark:border-slate-800"
+              className="fixed top-0 right-0 h-full w-full max-w-sm bg-white dark:bg-slate-900 shadow-2xl z-[100] p-6 overflow-y-auto border-l border-gray-100 dark:border-slate-800"
             >
               <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100 dark:border-slate-800">
                 <h2 className="text-2xl font-black dark:text-white flex items-center gap-2">
@@ -1373,7 +1373,7 @@ const Dashboard = () => {
       {/* --- CROP PROFILE MODAL --- */}
       <AnimatePresence>
         {isReportOpen && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -1431,7 +1431,7 @@ const Dashboard = () => {
       {createPortal(
         <AnimatePresence>
           {isAddSensorOpen && (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pt-[100px]">
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -1444,7 +1444,7 @@ const Dashboard = () => {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 overflow-hidden text-left"
+                className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 overflow-y-auto text-left max-h-[calc(100vh-120px)] custom-scrollbar"
               >
                 <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-emerald-400 via-green-500 to-lime-400" />
                 

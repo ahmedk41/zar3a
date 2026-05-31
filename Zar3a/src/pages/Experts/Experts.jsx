@@ -214,9 +214,9 @@ const Experts = () => {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setSelectedExpert(null)}
-              className="fixed inset-0 bg-gray-900/60 backdrop-blur-md z-60" />
+              className="fixed inset-0 bg-gray-900/60 backdrop-blur-md z-[60]" />
             <motion.div layoutId={`expert-container-${selectedExpert.id}`}
-              className="fixed inset-0 m-auto w-[95%] max-w-2xl h-fit max-h-[90vh] bg-white dark:bg-slate-900 z-70 rounded-[3rem] p-10 overflow-y-auto border border-gray-100 dark:border-slate-800 shadow-2xl">
+              className="fixed inset-0 m-auto w-[95%] max-w-2xl h-fit max-h-[90vh] bg-white dark:bg-slate-900 z-[70] rounded-[3rem] p-10 overflow-y-auto border border-gray-100 dark:border-slate-800 shadow-2xl">
               <button onClick={() => setSelectedExpert(null)}
                 className="absolute top-8 end-8 p-3 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors dark:text-white">
                 <LuX size={24} />
@@ -283,7 +283,7 @@ const Experts = () => {
       {showCreateModal && (
         <AnimatePresence>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-60 flex items-center justify-center p-4">
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[60] flex items-center justify-center p-4">
             <motion.div initial={{ y: 20, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.95 }}
               className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] p-8 md:p-12 shadow-2xl">
               <div className="flex items-center justify-between mb-6">

@@ -98,8 +98,8 @@ export default function Login() {
       <div className="absolute top-[-10%] start-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-100/40 dark:bg-emerald-900/20 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] end-[-10%] w-[50%] h-[50%] rounded-full bg-green-200/20 dark:bg-green-900/10 blur-[120px] pointer-events-none" />
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-120 z-10">
-        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white dark:border-slate-800 rounded-[3rem] shadow-2xl p-8 md:p-12 relative overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md sm:max-w-lg z-10 mt-16 sm:mt-0">
+        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white dark:border-slate-800 rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl p-6 sm:p-8 md:p-12 relative overflow-hidden">
           <div className="absolute top-0 start-0 w-full h-2 bg-linear-to-r from-emerald-400 via-green-500 to-lime-400" />
 
           <header className="text-center mb-10">
