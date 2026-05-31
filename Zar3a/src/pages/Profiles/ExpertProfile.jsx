@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FiEdit2, FiDownload, FiAward, FiUser, FiPhone, FiMail, FiClipboard } from "react-icons/fi";
+import { 
+  LuUser, 
+  LuPhone, 
+  LuMail, 
+  LuSettings,
+  LuBookOpen,
+  LuAward,
+  LuClock,
+  LuFileText,
+  LuMessageSquare
+} from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -12,188 +22,168 @@ export default function ExpertProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      setProfile(user);
-      setLoading(false);
-    }
+    setLoading(false);
+    setProfile(user);
   }, [user]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
       </div>
     );
   }
 
-  const handleDownloadCV = () => {
-    if (profile?.AgroExpertProfile?.cvFilePath) {
-      window.open(`/${profile.AgroExpertProfile.cvFilePath}`, "_blank");
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900 py-12 px-4 md:px-8 text-left">
+      <div className="max-w-5xl mx-auto space-y-8">
+        
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="bg-surface-card/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm relative overflow-hidden"
         >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              {profile?.fullName?.charAt(0)}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
+          
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
+            <div className="w-24 h-24 bg-gradient-to-br from-violet-400 to-violet-600 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black shadow-lg shadow-violet-500/20 -rotate-3 transition-transform hover:rotate-0">
+              {profile?.fullName?.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <h1 className="text-4xl font-bold text-text-main dark:text-white">
+            <div className="text-center md:text-left flex-1">
+              <h1 className="text-4xl font-[1000] text-text-main dark:text-white tracking-tight">
                 {profile?.fullName}
               </h1>
-              <p className="text-purple-600 dark:text-purple-400 font-semibold">🎓 {t("profile.expert")}</p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-3">
+                <span className="bg-violet-100 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-1.5">
+                  <LuAward size={14} /> {t("profile.expert")}
+                </span>
+                <span className="text-sm font-bold text-text-disabled flex items-center gap-1.5">
+                  <LuUser size={14} /> @{profile?.username}
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <Link
+                to="/settings"
+                className="px-6 py-3 bg-surface-secondary dark:bg-slate-800 text-text-main dark:text-white rounded-2xl font-black text-xs hover:bg-gray-200 dark:hover:bg-slate-700 transition flex items-center gap-2 uppercase tracking-widest"
+              >
+                <LuSettings size={16} /> Edit Profile
+              </Link>
             </div>
           </div>
         </motion.div>
 
-        {/* Approval Status Messages */}
-        {!profile?.isApproved ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-400 dark:border-yellow-600 rounded-lg p-4 mb-8"
-          >
-            <p className="text-yellow-800 dark:text-yellow-200 font-semibold">
-              ⏳ {t("profile.pendingMessage")}
-            </p>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 rounded-lg p-4 mb-8"
-          >
-            <p className="text-green-800 dark:text-green-200 font-semibold">
-              ✅ {t("profile.approvedMessage")}
-            </p>
-          </motion.div>
-        )}
-
-        {/* Profile Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
           {/* Personal Information */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-8 border border-border-default dark:border-slate-800 shadow-sm"
           >
-            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
-              <FiUser className="text-purple-600" /> {t("profile.personalInfo")}
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.fullName")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white">
-                  {profile?.fullName}
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-violet-50 dark:bg-violet-900/20 text-violet-600 rounded-xl flex items-center justify-center">
+                <LuUser size={20} />
+              </div>
+              <h2 className="text-xl font-black text-text-main dark:text-white uppercase tracking-wider">
+                {t("profile.personalInfo")}
+              </h2>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex flex-col">
+                <label className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">{t("profile.email")}</label>
+                <p className="text-lg font-bold text-text-main dark:text-white flex items-center gap-3 bg-surface-secondary dark:bg-slate-800 px-4 py-3 rounded-2xl">
+                  <LuMail className="text-text-muted" /> {profile?.email}
                 </p>
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.username")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white">
-                  @{profile?.username}
+              <div className="flex flex-col">
+                <label className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">{t("profile.phone")}</label>
+                <p className="text-lg font-bold text-text-main dark:text-white flex items-center gap-3 bg-surface-secondary dark:bg-slate-800 px-4 py-3 rounded-2xl">
+                  <LuPhone className="text-text-muted" /> {profile?.phone}
                 </p>
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.email")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
-                  <FiMail className="text-purple-600" /> {profile?.email}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.phone")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
-                  <FiPhone className="text-purple-600" /> {profile?.phone}
+              <div className="flex flex-col">
+                <label className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">Bio</label>
+                <p className="text-sm font-medium text-text-main dark:text-gray-300 leading-relaxed bg-surface-secondary dark:bg-slate-800 px-4 py-4 rounded-2xl min-h-[100px]">
+                  {profile?.ExpertProfile?.bio || t("admin.cvNA")}
                 </p>
               </div>
             </div>
           </motion.div>
 
-          {/* Expert Credentials */}
+          {/* Professional Credentials */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-8 border border-border-default dark:border-slate-800 shadow-sm"
           >
-            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
-              <FiAward className="text-purple-600" /> {t("profile.credentials")}
-            </h2>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-fuchsia-50 dark:bg-fuchsia-900/20 text-fuchsia-600 rounded-xl flex items-center justify-center">
+                <LuBookOpen size={20} />
+              </div>
+              <h2 className="text-xl font-black text-text-main dark:text-white uppercase tracking-wider">
+                Professional Info
+              </h2>
+            </div>
+            
             <div className="space-y-4">
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.degree")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white">
-                  {profile?.AgroExpertProfile?.academicDegree || t("admin.cvNA")}
+              <div className="bg-surface-secondary dark:bg-slate-800 p-4 rounded-2xl">
+                <label className="text-[9px] font-black text-text-disabled uppercase tracking-widest block mb-1">Specialization</label>
+                <p className="text-lg font-bold text-text-main dark:text-white">
+                  {profile?.ExpertProfile?.specialization || t("admin.cvNA")}
                 </p>
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.experience")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
-                  <FiClipboard className="text-purple-600" />
-                  {profile?.AgroExpertProfile?.experienceYears || "0"} {t("admin.cvYears")}
+              
+              <div className="bg-surface-secondary dark:bg-slate-800 p-4 rounded-2xl">
+                <label className="text-[9px] font-black text-text-disabled uppercase tracking-widest block mb-1">Years of Experience</label>
+                <p className="text-lg font-bold text-text-main dark:text-white flex items-center gap-2">
+                  <LuClock className="text-fuchsia-600 shrink-0" /> {profile?.ExpertProfile?.yearsOfExperience || "0"} Years
                 </p>
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.status")}</label>
-                <p className="text-lg font-semibold">
-                  {profile?.isApproved ? (
-                    <span className="text-primary-base dark:text-green-400">✅ {t("profile.verifiedExpert")}</span>
-                  ) : (
-                    <span className="text-yellow-600 dark:text-yellow-400">⏳ {t("profile.pendingApproval")}</span>
-                  )}
-                </p>
+
+              <div className="bg-surface-secondary dark:bg-slate-800 p-4 rounded-2xl">
+                <label className="text-[9px] font-black text-text-disabled uppercase tracking-widest block mb-2">CV / Resume</label>
+                {profile?.ExpertProfile?.cv ? (
+                  <a
+                    href={"http://localhost:5000" + profile.ExpertProfile.cv}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 rounded-xl text-xs font-bold hover:bg-violet-200 transition"
+                  >
+                    <LuFileText size={16} /> View CV Document
+                  </a>
+                ) : (
+                  <p className="text-sm font-bold text-text-disabled">{t("admin.cvNA")}</p>
+                )}
               </div>
-              {profile?.AgroExpertProfile?.cvFilePath && (
-                <button
-                  onClick={handleDownloadCV}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2 w-full justify-center"
-                >
-                  <FiDownload /> {t("profile.downloadCv")}
-                </button>
-              )}
             </div>
           </motion.div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions Panel */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1"
         >
-          {profile?.isApproved && (
-            <>
-              <Link
-                to="/experts"
-                className="bg-purple-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
-              >
-                <FiAward /> {t("experts.viewProfile")}
-              </Link>
-              {/* CHANGED LINK ROUTE TO NEW DEDICATED PAGE */}
-              <Link
-                to="/consultations"
-                className="bg-pink-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
-              >
-                <FiClipboard /> {t("profile.consultations")}
-              </Link>
-            </>
-          )}
           <Link
-            to="/settings"
-            className="bg-gray-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+            to="/consultations-expert"
+            className="group relative overflow-hidden bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-[2rem] p-6 text-white shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-40"
           >
-            <FiEdit2 /> {t("profile.editProfile")}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+            <LuMessageSquare size={32} className="opacity-80" />
+            <div>
+              <h3 className="text-lg font-black uppercase tracking-wider">Consultations</h3>
+              <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1">Manage Advice Requests</p>
+            </div>
           </Link>
         </motion.div>
+        
       </div>
     </div>
   );

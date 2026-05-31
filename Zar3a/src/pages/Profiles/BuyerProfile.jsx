@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FiEdit2, FiShoppingCart, FiTrendingUp, FiUser, FiPhone, FiMail } from "react-icons/fi";
+import { 
+  LuUser, 
+  LuMapPin, 
+  LuPhone, 
+  LuMail, 
+  LuPackage, 
+  LuSettings,
+  LuShoppingCart,
+  LuStore
+} from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -25,126 +34,118 @@ export default function BuyerProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-950 dark:to-slate-900 py-12 px-4 md:px-8 text-left">
+      <div className="max-w-5xl mx-auto space-y-8">
+        
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="bg-surface-card/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm relative overflow-hidden"
         >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              {profile?.fullName?.charAt(0)}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
+          
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black shadow-lg shadow-blue-500/20 rotate-3 transition-transform hover:rotate-0">
+              {profile?.fullName?.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <h1 className="text-4xl font-bold text-text-main dark:text-white">
+            <div className="text-center md:text-left flex-1">
+              <h1 className="text-4xl font-[1000] text-text-main dark:text-white tracking-tight">
                 {profile?.fullName}
               </h1>
-              <p className="text-blue-600 dark:text-blue-400 font-semibold">🛒 {t("profile.buyer")}</p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-3">
+                <span className="bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-1.5">
+                  <LuShoppingCart size={14} /> {t("profile.buyer")}
+                </span>
+                <span className="text-sm font-bold text-text-disabled flex items-center gap-1.5">
+                  <LuUser size={14} /> @{profile?.username}
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <Link
+                to="/settings"
+                className="px-6 py-3 bg-surface-secondary dark:bg-slate-800 text-text-main dark:text-white rounded-2xl font-black text-xs hover:bg-gray-200 dark:hover:bg-slate-700 transition flex items-center gap-2 uppercase tracking-widest"
+              >
+                <LuSettings size={16} /> Edit Profile
+              </Link>
             </div>
           </div>
         </motion.div>
 
-        {/* Profile Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-8">
+          
           {/* Personal Information */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-8 border border-border-default dark:border-slate-800 shadow-sm"
           >
-            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
-              <FiUser className="text-blue-600" /> {t("profile.personalInfo")}
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.fullName")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white">
-                  {profile?.fullName}
-                </p>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center">
+                <LuUser size={20} />
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.username")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white">
-                  @{profile?.username}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.email")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
-                  <FiMail className="text-blue-600" /> {profile?.email}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.phone")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
-                  <FiPhone className="text-blue-600" /> {profile?.phone}
-                </p>
-              </div>
+              <h2 className="text-xl font-black text-text-main dark:text-white uppercase tracking-wider">
+                {t("profile.personalInfo")}
+              </h2>
             </div>
-          </motion.div>
-
-          {/* Account Status */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
-          >
-            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
-              <FiShoppingCart className="text-blue-600" /> {t("profile.accStatus")}
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.role")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white bg-blue-100 dark:bg-blue-900/30 px-3 py-2 rounded-md w-fit">
-                  {t("profile.buyer")}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col">
+                <label className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">{t("profile.email")}</label>
+                <p className="text-lg font-bold text-text-main dark:text-white flex items-center gap-3 bg-surface-secondary dark:bg-slate-800 px-4 py-3 rounded-2xl">
+                  <LuMail className="text-text-muted" /> {profile?.email}
                 </p>
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.accStatus")}</label>
-                <p className="text-lg font-semibold text-primary-base dark:text-green-400">
-                  ✅ {t("profile.active")}
+              <div className="flex flex-col">
+                <label className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">{t("profile.phone")}</label>
+                <p className="text-lg font-bold text-text-main dark:text-white flex items-center gap-3 bg-surface-secondary dark:bg-slate-800 px-4 py-3 rounded-2xl">
+                  <LuPhone className="text-text-muted" /> {profile?.phone}
                 </p>
               </div>
-              <div>
-                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.memberSince")}</label>
-                <p className="text-lg font-semibold text-text-main dark:text-white">
-                  {new Date(profile?.createdAt).toLocaleDateString()}
+              <div className="flex flex-col md:col-span-2">
+                <label className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">{t("profile.location")}</label>
+                <p className="text-lg font-bold text-text-main dark:text-white flex items-center gap-3 bg-surface-secondary dark:bg-slate-800 px-4 py-3 rounded-2xl">
+                  <LuMapPin className="text-text-muted" /> {profile?.BuyerProfile?.location || t("admin.cvNA")}
                 </p>
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions Panel */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
           <Link
             to="/marketplace"
-            className="bg-blue-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+            className="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-[2rem] p-6 text-white shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-40"
           >
-            <FiShoppingCart /> {t("profile.browseProducts")}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+            <LuStore size={32} className="opacity-80" />
+            <div>
+              <h3 className="text-lg font-black uppercase tracking-wider">{t("profile.browseMarket")}</h3>
+              <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1">Explore Products</p>
+            </div>
           </Link>
+
           <Link
-            to="/experts"
-            className="bg-cyan-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+            to="/track-orders"
+            className="group relative overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-[2rem] p-6 text-white shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-40"
           >
-            <FiTrendingUp /> {t("profile.consultExperts")}
-          </Link>
-          <Link
-            to="/settings"
-            className="bg-gray-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
-          >
-            <FiEdit2 /> {t("profile.editProfile")}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+            <LuPackage size={32} className="opacity-80" />
+            <div>
+              <h3 className="text-lg font-black uppercase tracking-wider">{t("profile.trackOrder")}</h3>
+              <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1">View Purchases</p>
+            </div>
           </Link>
         </motion.div>
+        
       </div>
     </div>
   );

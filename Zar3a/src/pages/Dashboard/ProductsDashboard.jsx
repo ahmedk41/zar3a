@@ -263,7 +263,8 @@ export default function ProductsDashboard() {
       const allProductIds = filteredProducts.map(p => p.id);
       const newBoosted = [...new Set([...prev, ...allProductIds])];
       localStorage.setItem("boosted_products", JSON.stringify(newBoosted));
-      alert("✨ Success! Your products have been Premium Boosted and are now at the top of the Marketplace.");
+      setMessage("✨ Success! Your products have been Premium Boosted and are now at the top of the Marketplace.");
+      setTimeout(() => setMessage(null), 3500);
       return newBoosted;
     });
   };
