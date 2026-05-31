@@ -39,14 +39,14 @@ export default function Login() {
   const onSubmit = async (data) => {
     setApiError("");
     try {
-      const res = await login(data.email, data.password);
-      const roleToUse = res.user.role || res.user.pendingRole;
+      const user = await login(data.email, data.password);
+      const roleToUse = user.role || user.pendingRole;
           
-      if (roleToUse === "AGRO_EXPERT" && res.user.status === "PENDING") {
+      if (roleToUse === "AGRO_EXPERT" && user.status === "PENDING") {
         navigate("/profile/expert");
-      } else if (roleToUse === "FARMER" && res.user.status === "PENDING") {
+      } else if (roleToUse === "FARMER" && user.status === "PENDING") {
         navigate("/profile/farmer");
-      } else if (roleToUse === "SUPPLIER" && res.user.status === "PENDING") {
+      } else if (roleToUse === "SUPPLIER" && user.status === "PENDING") {
         navigate("/profile/supplier");
       } else {
         navigate("/dashboard");

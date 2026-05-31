@@ -1012,7 +1012,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="h-96 min-h-[400px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="99%" height="100%" minHeight={400}>
                     <AreaChart data={data}>
                       <defs>
                         <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
@@ -1050,7 +1050,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="h-96 min-h-[400px] w-full mt-4">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="99%" height="100%" minHeight={400}>
                     <BarChart data={data}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
                       <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
@@ -1080,7 +1080,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="h-96 min-h-[400px] w-full mt-4">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="99%" height="100%" minHeight={400}>
                     <LineChart data={data}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
                       <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
@@ -1111,7 +1111,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="h-96 min-h-[400px] w-full mt-4">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="99%" height="100%" minHeight={400}>
                     <AreaChart data={data}>
                       <defs>
                         <linearGradient id="phGradient" x1="0" y1="0" x2="0" y2="1">
@@ -1237,7 +1237,7 @@ const Dashboard = () => {
                 </button>
               </div>
               <div className="p-8 pt-4 h-[60vh] min-h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="99%" height="100%" minHeight={400}>
                   {activeModalChart === 'moisture' ? (
                     <AreaChart data={data}>
                       <defs>
