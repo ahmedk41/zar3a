@@ -446,7 +446,118 @@ const Marketplace = () => {
 
   const canCreate = user?.role === "SUPPLIER" || user?.role === "FARMER" || user?.role === "ADMIN";
 
+  const boostedIds = JSON.parse(localStorage.getItem("boosted_products") || "[]");
+  const featuredProducts = filteredData.filter((item) => boostedIds.includes(item.id));
+  const regularProducts = filteredData.filter((item) => !boostedIds.includes(item.id));
+
+  const renderProductCard = (item, isPremium = false) => (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      key={`${item.id}-${item.title}`}
+      className={`bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-5 border shadow-sm transition-all duration-300 group flex flex-col relative ${
+        isPremium
+          ? "border-amber-400 dark:border-amber-500 shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 scale-[1.02]"
+          : "border-border-default dark:border-slate-800 hover:shadow-xl hover:-translate-y-1"
+      }`}
+    >
+      {isPremium && (
+        <div className="absolute -top-3 -right-3 z-20">
+          <span className="bg-gradient-to-r from-yellow-400 to-amber-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase shadow-lg shadow-amber-500/30">
+            Premium Boosted ✨
+          </span>
+        </div>
+      )}
+      <div
+        onClick={() => {
+          setSelectedProduct(item);
+        }}
+        className="bg-surface-secondary dark:bg-slate-800 h-48 rounded-4xl mb-5 flex items-center justify-center text-7xl cursor-pointer group-hover:scale-[1.02] transition-transform relative overflow-hidden"
+      >
+        <div className="absolute top-3 left-3 bg-surface-card/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-black text-text-subtle dark:text-gray-300 flex items-center gap-1 shadow-sm">
+          <LuMapPin size={12} className="text-primary-base" /> {item.region}
+        </div>
+        {renderProductImage(item.image, item.title)}
+      </div>
+
+      <div className="flex-1 flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-[9px] font-black uppercase tracking-widest text-primary-base bg-primary-light dark:bg-green-900/30 px-3 py-1 rounded-full">
+            {item.category}
+          </span>
+          <div className="flex items-center gap-1 text-xs font-bold dark:text-gray-300">
+            <LuStar className="text-yellow-400 fill-yellow-400" /> {item.rating}
+          </div>
+        </div>
+
+        <h3
+          onClick={() => {
+            setSelectedProduct(item);
+          }}
+          className="text-lg font-black dark:text-white cursor-pointer hover:text-primary-base transition-colors leading-tight line-clamp-2 mt-1"
+        >
+          {item.title}
+        </h3>
+
+        <div className="flex items-center gap-1.5 mt-2">
+          <p className="text-[11px] font-bold text-text-disabled truncate">{item.owner}</p>
+          {item.isVerified && (
+            <div className="bg-blue-500 rounded-full p-0.5 flex items-center justify-center shrink-0" title="Verified Provider">
+              <LuCheck size={10} className="text-white" strokeWidth={4} />
+            </div>
+          )}
+        </div>
+
+        <div className="mt-auto pt-5 flex items-end justify-between">
+          {item.marketType !== "sensors" ? (
+            <>
+              <div>
+                <p className="text-[9px] font-black text-text-disabled uppercase tracking-widest mb-0.5">{t("market.price")}</p>
+                <p className="text-xl font-black text-text-main dark:text-white">
+                  {t("common.egp")} {item.price.toLocaleString()} <span className="text-[10px] text-text-disabled">/ {item.unit === "unit" ? t("market.unit") : item.unit}</span>
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  if (!user) {
+                    navigate('/login');
+                    return;
+                  }
+                  addToCart(item);
+                }}
+                className="bg-surface-secondary dark:bg-slate-800 text-text-main dark:text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-primary-base hover:text-white dark:hover:bg-green-500 transition-colors shadow-sm"
+                title={t("market.addToCart")}
+              >
+                <LuShoppingCart size={20} />
+              </button>
+            </>
+          ) : (
+            <div className="w-full">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!user) {
+                    navigate('/login');
+                    return;
+                  }
+                  setQuoteProduct(item);
+                  setShowQuoteModal(true);
+                }}
+                className="w-full bg-gray-900 dark:bg-primary-base text-white px-4 py-3 rounded-2xl font-black hover:bg-gray-800 dark:hover:bg-primary-hover transition-colors shadow-lg flex items-center justify-center gap-2"
+              >
+                Request Quote
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+
   return (
+
     <div className="max-w-7xl mx-auto space-y-6 pb-20 px-4 text-left">
 
       {/* Quote Modal */}

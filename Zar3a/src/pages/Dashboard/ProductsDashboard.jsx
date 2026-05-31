@@ -23,6 +23,10 @@ export default function ProductsDashboard() {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
+  const [boostedProducts, setBoostedProducts] = useState(() => {
+    const saved = localStorage.getItem("boosted_products");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTypeFilter, setActiveTypeFilter] = useState("ALL"); // "ALL" | "CROP" | "AGRI"
@@ -112,6 +116,19 @@ export default function ProductsDashboard() {
       setErrorMsg(err?.response?.data?.message || t("prodDash.deleteFailed"));
       setTimeout(() => setErrorMsg(null), 4000);
     }
+  };
+
+  const handleBoost = (productId) => {
+    setBoostedProducts((prev) => {
+      let newBoosted;
+      if (prev.includes(productId)) {
+        newBoosted = prev.filter(id => id !== productId);
+      } else {
+        newBoosted = [...prev, productId];
+      }
+      localStorage.setItem("boosted_products", JSON.stringify(newBoosted));
+      return newBoosted;
+    });
   };
 
   const handleOpenEditModal = (product) => {
@@ -370,6 +387,7 @@ export default function ProductsDashboard() {
               {filteredProducts.map((product) => {
                 const isCrop = product.marketplaceType === "CROP_MARKET";
                 const isDeletable = canDeleteProduct(product);
+                const isBoosted = boostedProducts.includes(product.id);
 
                 return (
                   <motion.div
@@ -441,7 +459,18 @@ export default function ProductsDashboard() {
                       </div>
 
                       {isDeletable ? (
-                        <div className="flex gap-2">
+                        <div className="flex flex-col gap-2 w-full md:w-auto">
+                          <button
+                            onClick={() => handleBoost(product.id)}
+                            className={`w-full px-4 py-2 text-[10px] uppercase font-black tracking-widest rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm ${
+                              isBoosted 
+                                ? "bg-surface-secondary dark:bg-slate-800 text-text-disabled cursor-default shadow-none" 
+                                : "bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-white shadow-amber-500/20"
+                            }`}
+                          >
+                            {isBoosted ? "Boosted ✨" : "Premium Boost (500)"}
+                          </button>
+                          <div className="flex gap-2 w-full">
                           <button
                             onClick={() => handleOpenEditModal(product)}
                             className="w-12 h-12 bg-primary-light dark:bg-emerald-950/20 text-primary-base dark:text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shadow-sm"
@@ -456,6 +485,7 @@ export default function ProductsDashboard() {
                           >
                             <LuTrash2 size={18} />
                           </button>
+                          </div>
                         </div>
                       ) : (
                         <span className="text-[10px] text-text-disabled dark:text-text-muted font-bold bg-surface-secondary dark:bg-slate-800/40 px-3 py-2 rounded-xl">
