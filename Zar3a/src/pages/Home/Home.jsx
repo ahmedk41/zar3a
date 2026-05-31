@@ -53,7 +53,7 @@ const Home = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 sm:p-10 md:p-20 text-center border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden mb-12"
+        className="relative bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-6 sm:p-10 md:p-20 text-center border border-border-default dark:border-slate-800 shadow-2xl overflow-hidden mb-12"
       >
         {/* Glow Backgrounds */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-64 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-[100%] blur-3xl pointer-events-none"></div>
@@ -64,7 +64,7 @@ const Home = () => {
           transition={{ delay: 0.2 }}
           className="relative z-10"
         >
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-4 py-2 rounded-full bg-slate-900 dark:bg-white/5 text-white dark:text-slate-300 font-bold text-[10px] sm:text-xs mb-8 border border-white/10 shadow-xl">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-4 py-2 rounded-full bg-slate-900 dark:bg-surface-card/5 text-white dark:text-slate-300 font-bold text-[10px] sm:text-xs mb-8 border border-white/10 shadow-xl">
             <div className="flex items-center gap-2 sm:border-e border-white/20 sm:pe-4">
               <LuCalendar size={14} className="text-emerald-400" />
               {currentTime.toLocaleDateString(locale, { month: "short", day: "numeric" })}
@@ -78,28 +78,28 @@ const Home = () => {
             </div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-black text-text-main dark:text-white tracking-tight mb-6 leading-tight">
             {t("home.hero.title1")} <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-teal-400">
               {t("home.hero.title2")}
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+          <p className="text-lg md:text-xl text-text-muted dark:text-text-disabled max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
             {t("home.hero.subtitle")}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {!user && (
               <Link to="/login" className="w-full sm:w-auto">
-                <button className="w-full px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 text-lg group">
+                <button className="w-full px-8 py-4 bg-primary-base hover:bg-primary-hover text-white font-black rounded-2xl shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 text-lg group">
                   {t("home.hero.getStarted")}{" "}
                   <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
             )}
             <Link to="/marketplace" className="w-full sm:w-auto">
-              <button className="w-full px-8 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 text-slate-700 dark:text-slate-200 font-bold rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 text-lg shadow-sm">
+              <button className="w-full px-8 py-4 bg-surface-card dark:bg-slate-800 border-2 border-border-default dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 text-slate-700 dark:text-slate-200 font-bold rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 text-lg shadow-sm">
                 {t("home.hero.explore")}
               </button>
             </Link>
@@ -123,13 +123,13 @@ const Home = () => {
           <motion.div
             key={idx}
             variants={itemVariants}
-            className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center shadow-sm hover:border-emerald-500/50 transition-colors group"
+            className="bg-surface-card dark:bg-slate-800 p-6 rounded-3xl border border-border-default dark:border-slate-700 flex flex-col items-center justify-center text-center shadow-sm hover:border-emerald-500/50 transition-colors group"
           >
             <div className={`mb-2 transition-transform group-hover:scale-110 ${stat.color === "emerald" ? "text-emerald-500" : "text-blue-500"}`}>
               {stat.icon}
             </div>
-            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">{stat.value}</h3>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">{stat.label}</p>
+            <h3 className="text-3xl font-black text-text-main dark:text-white tracking-tighter">{stat.value}</h3>
+            <p className="text-[10px] font-black text-text-disabled uppercase tracking-[0.2em] mt-1">{stat.label}</p>
           </motion.div>
         ))}
       </motion.div>
@@ -137,10 +137,10 @@ const Home = () => {
       {/* 🍱 3. BENTO GRID CAPABILITIES */}
       <div className="mb-8">
         <div className="flex justify-between items-end mb-8 px-2">
-          <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-3xl font-black text-text-main dark:text-white tracking-tight">
             {t("home.modules")}
           </h2>
-          <Link to="/settings" className="text-sm font-bold text-emerald-600 hover:underline">
+          <Link to="/settings" className="text-sm font-bold text-primary-base hover:underline">
             {t("home.sysPrefs")}
           </Link>
         </div>
@@ -166,7 +166,7 @@ const Home = () => {
                   <LuBot size={28} />
                 </div>
                 <h3 className="text-4xl font-black mb-4">{t("home.ai.title")}</h3>
-                <p className="text-slate-400 font-medium max-w-md text-lg leading-relaxed">
+                <p className="text-text-disabled font-medium max-w-md text-lg leading-relaxed">
                   {t("home.ai.desc")}
                 </p>
               </div>
@@ -179,22 +179,22 @@ const Home = () => {
           {/* Telemetry Module */}
           <motion.div
             variants={itemVariants}
-            className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group relative overflow-hidden"
+            className="bg-surface-card dark:bg-slate-800 rounded-[2.5rem] p-8 border border-border-default dark:border-slate-700 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group relative overflow-hidden"
           >
             <div className="relative z-10">
               <div className="w-14 h-14 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
                 <LuActivity size={28} />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
+              <h3 className="text-2xl font-black text-text-main dark:text-white mb-3 tracking-tight">
                 {t("home.telemetry.title")}
               </h3>
-              <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed">
+              <p className="text-text-muted dark:text-text-disabled font-medium text-sm leading-relaxed">
                 {t("home.telemetry.desc")}
               </p>
             </div>
             <Link
               to="/track-orders"
-              className="w-full py-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl text-center font-black text-sm text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-all shadow-inner"
+              className="w-full py-4 bg-surface-secondary dark:bg-slate-900/50 rounded-2xl text-center font-black text-sm text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-all shadow-inner"
             >
               {t("home.telemetry.cta")}
             </Link>
@@ -203,16 +203,16 @@ const Home = () => {
           {/* Marketplace Module */}
           <motion.div
             variants={itemVariants}
-            className="bg-emerald-50 dark:bg-emerald-900/10 rounded-[2.5rem] p-8 border border-emerald-100 dark:border-emerald-800/30 flex flex-col justify-between group"
+            className="bg-primary-light dark:bg-emerald-900/10 rounded-[2.5rem] p-8 border border-emerald-100 dark:border-emerald-800/30 flex flex-col justify-between group"
           >
             <div>
-              <div className="w-12 h-12 bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center mb-5 shadow-sm">
+              <div className="w-12 h-12 bg-surface-card dark:bg-slate-800 text-primary-base dark:text-emerald-400 rounded-xl flex items-center justify-center mb-5 shadow-sm">
                 <LuStore size={24} />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
+              <h3 className="text-2xl font-black text-text-main dark:text-white mb-2 tracking-tight">
                 {t("home.store.title")}
               </h3>
-              <p className="text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed">
+              <p className="text-text-subtle dark:text-text-disabled text-sm font-medium leading-relaxed">
                 {t("home.store.desc")}
               </p>
             </div>
@@ -224,21 +224,21 @@ const Home = () => {
           {/* Experts Module (Wide) */}
           <motion.div
             variants={itemVariants}
-            className="md:col-span-2 bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm hover:shadow-lg transition-shadow"
+            className="md:col-span-2 bg-surface-card dark:bg-slate-800 rounded-[2.5rem] p-8 border border-border-default dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm hover:shadow-lg transition-shadow"
           >
             <div className="flex-1">
               <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-black text-[10px] uppercase tracking-widest mb-4">
                 <LuCpu /> {t("home.expert.label")}
               </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+              <h3 className="text-2xl font-black text-text-main dark:text-white mb-2">
                 {t("home.expert.title")}
               </h3>
-              <p className="text-slate-500 dark:text-slate-400 font-medium text-sm max-w-md">
+              <p className="text-text-muted dark:text-text-disabled font-medium text-sm max-w-md">
                 {t("home.expert.desc")}
               </p>
             </div>
             <Link to="/experts">
-              <button className="w-full sm:w-auto px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:opacity-90 transition-all shadow-md">
+              <button className="w-full sm:w-auto px-8 py-3 bg-slate-900 dark:bg-surface-card text-white dark:text-text-main font-bold rounded-xl hover:opacity-90 transition-all shadow-md">
                 {t("home.expert.cta")}
               </button>
             </Link>

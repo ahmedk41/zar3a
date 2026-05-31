@@ -138,11 +138,11 @@ export default function Admin() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-surface-secondary dark:bg-slate-900">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-slate-600 dark:text-slate-300 mb-2">{t("admin.loading")}</h2>
-          <p className="text-slate-500 dark:text-slate-400">{t("admin.loadingDesc")}</p>
+          <h2 className="text-2xl font-bold text-text-subtle dark:text-slate-300 mb-2">{t("admin.loading")}</h2>
+          <p className="text-text-muted dark:text-text-disabled">{t("admin.loadingDesc")}</p>
         </div>
       </div>
     );
@@ -150,11 +150,11 @@ export default function Admin() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-surface-secondary dark:bg-slate-900">
         <div className="text-center">
-          <FiShield className="mx-auto h-16 w-16 text-slate-400 mb-4" />
-          <h2 className="text-2xl font-bold text-slate-600 dark:text-slate-300 mb-2">{t("admin.authRequired")}</h2>
-          <p className="text-slate-500 dark:text-slate-400">{t("admin.loginToAccess")}</p>
+          <FiShield className="mx-auto h-16 w-16 text-text-disabled mb-4" />
+          <h2 className="text-2xl font-bold text-text-subtle dark:text-slate-300 mb-2">{t("admin.authRequired")}</h2>
+          <p className="text-text-muted dark:text-text-disabled">{t("admin.loginToAccess")}</p>
         </div>
       </div>
     );
@@ -162,76 +162,76 @@ export default function Admin() {
 
   if (user.role !== "ADMIN") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-surface-secondary dark:bg-slate-900">
         <div className="text-center">
           <FiAlertCircle className="mx-auto h-16 w-16 text-red-400 mb-4" />
-          <h2 className="text-2xl font-bold text-slate-600 dark:text-slate-300 mb-2">{t("admin.accessDenied")}</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">{t("admin.noPermission")}</p>
-          <Link to="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors"><FiArrowLeft /> {t("admin.backToDashboard")}</Link>
+          <h2 className="text-2xl font-bold text-text-subtle dark:text-slate-300 mb-2">{t("admin.accessDenied")}</h2>
+          <p className="text-text-muted dark:text-text-disabled mb-6">{t("admin.noPermission")}</p>
+          <Link to="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-primary-base transition-colors"><FiArrowLeft /> {t("admin.backToDashboard")}</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
+    <div className="min-h-screen bg-surface-secondary dark:bg-slate-900 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-8">
         <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.title")}</p>
-            <h1 className="text-4xl font-black text-slate-900 dark:text-white">{t("admin.manageUsers")}</h1>
-            <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-400">{t("admin.manageDesc")}</p>
+            <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.title")}</p>
+            <h1 className="text-4xl font-black text-text-main dark:text-white">{t("admin.manageUsers")}</h1>
+            <p className="mt-2 max-w-2xl text-text-subtle dark:text-text-disabled">{t("admin.manageDesc")}</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link to="/products-dashboard" className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-white shadow-lg transition hover:bg-emerald-700 font-bold text-sm">{t("admin.prodDash")}</Link>
+            <Link to="/products-dashboard" className="inline-flex items-center gap-2 rounded-2xl bg-primary-base px-5 py-3 text-white shadow-lg transition hover:bg-primary-hover font-bold text-sm">{t("admin.prodDash")}</Link>
             <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white shadow-lg transition hover:bg-slate-700 font-bold text-sm"><FiArrowLeft size={18} /> {t("admin.backDash")}</Link>
           </div>
         </header>
 
         <div className="grid gap-6 xl:grid-cols-3">
-          <div className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+          <div className="rounded-3xl bg-surface-card p-6 shadow-sm border border-border-default dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-4 mb-4">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"><FiUsers size={20} /></div>
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-primary-base dark:bg-emerald-900/20 dark:text-emerald-400"><FiUsers size={20} /></div>
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.totalUsers")}</p>
-                <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats?.totalUsers ?? '-'}</p>
+                <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.totalUsers")}</p>
+                <p className="text-3xl font-bold text-text-main dark:text-white">{stats?.totalUsers ?? '-'}</p>
               </div>
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.usersDesc")}</p>
+            <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.usersDesc")}</p>
           </div>
-          <div className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+          <div className="rounded-3xl bg-surface-card p-6 shadow-sm border border-border-default dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-4 mb-4">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"><FiFileText size={20} /></div>
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.activeProducts")}</p>
-                <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats?.totalProducts ?? '-'}</p>
+                <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.activeProducts")}</p>
+                <p className="text-3xl font-bold text-text-main dark:text-white">{stats?.totalProducts ?? '-'}</p>
               </div>
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.prodDesc")}</p>
+            <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.prodDesc")}</p>
           </div>
-          <div className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+          <div className="rounded-3xl bg-surface-card p-6 shadow-sm border border-border-default dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-4 mb-4">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"><FiClock size={20} /></div>
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.pending")}</p>
-                <p className="text-3xl font-bold text-slate-900 dark:text-white">{pendingUsers.length}</p>
+                <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.pending")}</p>
+                <p className="text-3xl font-bold text-text-main dark:text-white">{pendingUsers.length}</p>
               </div>
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.pendingDesc")}</p>
+            <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.pendingDesc")}</p>
           </div>
         </div>
 
         {error && <div className="rounded-3xl bg-rose-50 p-5 text-rose-700 border border-rose-100">{error}</div>}
-        {success && <div className="rounded-3xl bg-emerald-50 p-5 text-emerald-700 border border-emerald-100">{success}</div>}
+        {success && <div className="rounded-3xl bg-primary-light p-5 text-emerald-700 border border-emerald-100">{success}</div>}
 
-        <section className="rounded-3xl overflow-hidden bg-white shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-          <div className="border-b border-slate-200 px-6 py-5 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("admin.usersTable")}</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.usersTableDesc")}</p>
+        <section className="rounded-3xl overflow-hidden bg-surface-card shadow-sm border border-border-default dark:bg-slate-800 dark:border-slate-700">
+          <div className="border-b border-border-default px-6 py-5 dark:border-slate-700 bg-surface-secondary dark:bg-slate-900">
+            <h2 className="text-xl font-bold text-text-main dark:text-white">{t("admin.usersTable")}</h2>
+            <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.usersTableDesc")}</p>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm text-slate-600 dark:text-slate-300">
-              <thead className="bg-slate-50 text-slate-500 uppercase tracking-[0.2em] text-xs dark:bg-slate-900 dark:text-slate-400">
+            <table className="min-w-full text-left text-sm text-text-subtle dark:text-slate-300">
+              <thead className="bg-surface-secondary text-text-muted uppercase tracking-[0.2em] text-xs dark:bg-slate-900 dark:text-text-disabled">
                 <tr>
                   <th className="px-6 py-4">{t("admin.tableName")}</th>
                   <th className="px-6 py-4">{t("admin.tableEmail")}</th>
@@ -242,8 +242,8 @@ export default function Admin() {
               </thead>
               <tbody>
                 {users.map((item) => (
-                  <tr key={item.id} className="border-t border-slate-100 dark:border-slate-700">
-                    <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">{item.fullName}</td>
+                  <tr key={item.id} className="border-t border-border-default dark:border-slate-700">
+                    <td className="px-6 py-4 font-semibold text-text-main dark:text-white">{item.fullName}</td>
                     <td className="px-6 py-4">{item.email}</td>
                     <td className="px-6 py-4">
                       {item.role === "ADMIN" ? t("admin.roleAdmin") :
@@ -258,7 +258,7 @@ export default function Admin() {
                       <select
                         value={item.role || ''}
                         onChange={(e) => handleRoleChange(item.id, e.target.value)}
-                        className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                        className="rounded-2xl border border-border-default bg-surface-card px-3 py-2 text-sm text-slate-700 outline-none transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                       >
                         <option value="">{t("admin.selectRole")}</option>
                         <option value="ADMIN">{t("admin.roleAdmin")}</option>
@@ -282,13 +282,13 @@ export default function Admin() {
           </div>
         </section>
 
-        <section className="rounded-3xl overflow-hidden bg-white shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-          <div className="border-b border-slate-200 px-6 py-5 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t("admin.pendingRequests")}</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("admin.pendingTableDesc")}</p>
+        <section className="rounded-3xl overflow-hidden bg-surface-card shadow-sm border border-border-default dark:bg-slate-800 dark:border-slate-700">
+          <div className="border-b border-border-default px-6 py-5 dark:border-slate-700 bg-surface-secondary dark:bg-slate-900">
+            <h2 className="text-xl font-bold text-text-main dark:text-white">{t("admin.pendingRequests")}</h2>
+            <p className="text-sm text-text-muted dark:text-text-disabled">{t("admin.pendingTableDesc")}</p>
           </div>
           {pendingUsers.length === 0 ? (
-            <div className="p-10 text-center text-slate-500 dark:text-slate-400">{t("admin.noPending")}</div>
+            <div className="p-10 text-center text-text-muted dark:text-text-disabled">{t("admin.noPending")}</div>
           ) : (
             <div className="space-y-4 p-6">
               {pendingUsers.map((item) => {
@@ -297,11 +297,11 @@ export default function Admin() {
                 const isExpert = item.role === "AGRO_EXPERT" || item.pendingRole === "AGRO_EXPERT";
 
                 return (
-                  <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900">
+                  <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl border border-border-default bg-surface-secondary p-5 dark:border-slate-700 dark:bg-slate-900">
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{item.fullName}</h3>
+                          <h3 className="text-lg font-semibold text-text-main dark:text-white">{item.fullName}</h3>
                           <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
                             isFarmer ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400" :
                             isSupplier ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-400" :
@@ -310,11 +310,11 @@ export default function Admin() {
                             {isFarmer ? "Farmer 🌾" : isSupplier ? "Supplier 📦" : "Expert 🎓"}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">{item.email} | {item.phone}</p>
+                        <p className="text-sm text-text-muted dark:text-text-disabled">{item.email} | {item.phone}</p>
                         
                         {isFarmer && item.FarmerProfile && (
-                          <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-3 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
-                            <p><strong>Sensor ID:</strong> <span className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 px-2 py-0.5 rounded font-mono font-bold">{item.FarmerProfile.sensorId || "N/A"}</span></p>
+                          <div className="mt-3 space-y-1.5 border-t border-border-default pt-3 text-xs text-text-subtle dark:border-slate-800 dark:text-text-disabled">
+                            <p><strong>Sensor ID:</strong> <span className="bg-primary-light text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 px-2 py-0.5 rounded font-mono font-bold">{item.FarmerProfile.sensorId || "N/A"}</span></p>
                             <p><strong>Location:</strong> {item.FarmerProfile.location || "N/A"}</p>
                             <p><strong>Soil Type:</strong> {item.FarmerProfile.soilType || "N/A"}</p>
                             <p><strong>Farm Size:</strong> {item.FarmerProfile.farmSize || "N/A"}</p>
@@ -322,14 +322,14 @@ export default function Admin() {
                         )}
 
                         {isSupplier && item.SupplierProfile && (
-                          <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-3 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
+                          <div className="mt-3 space-y-1.5 border-t border-border-default pt-3 text-xs text-text-subtle dark:border-slate-800 dark:text-text-disabled">
                             <p><strong>Trade License:</strong> <span className="bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-400 px-2 py-0.5 rounded font-mono font-bold">{item.SupplierProfile.tradeLicense || "N/A"}</span></p>
                             <p><strong>Business Location:</strong> {item.SupplierProfile.location || "N/A"}</p>
                           </div>
                         )}
 
                         {isExpert && item.AgroExpertProfile && (
-                          <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-3 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
+                          <div className="mt-3 space-y-1.5 border-t border-border-default pt-3 text-xs text-text-subtle dark:border-slate-800 dark:text-text-disabled">
                             <p><strong>{t("admin.degree")}:</strong> {item.AgroExpertProfile.academicDegree || t("admin.cvNA")}</p>
                             <p><strong>{t("admin.experience")}:</strong> {item.AgroExpertProfile.experienceYears ?? '0'} {t("admin.cvYears")}</p>
                             <p><strong>{t("admin.bio")}:</strong> {item.AgroExpertProfile.bio || t("admin.noBio")}</p>
@@ -353,7 +353,7 @@ export default function Admin() {
                         <button
                           disabled={actionLoading === item.id}
                           onClick={() => handleApprove(item.id)}
-                          className="rounded-2xl bg-emerald-500 px-4 py-2 text-white transition hover:bg-emerald-600 disabled:opacity-50 font-bold text-xs"
+                          className="rounded-2xl bg-emerald-500 px-4 py-2 text-white transition hover:bg-primary-base disabled:opacity-50 font-bold text-xs"
                         >
                           {t("admin.approve")}
                         </button>

@@ -46,7 +46,7 @@ export default function ExpertProfile() {
               {profile?.fullName?.charAt(0)}
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-4xl font-bold text-text-main dark:text-white">
                 {profile?.fullName}
               </h1>
               <p className="text-purple-600 dark:text-purple-400 font-semibold">🎓 {t("profile.expert")}</p>
@@ -84,33 +84,33 @@ export default function ExpertProfile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
           >
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
               <FiUser className="text-purple-600" /> {t("profile.personalInfo")}
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.fullName")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.fullName")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   {profile?.fullName}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.username")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.username")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   @{profile?.username}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.email")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.email")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
                   <FiMail className="text-purple-600" /> {profile?.email}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.phone")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.phone")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
                   <FiPhone className="text-purple-600" /> {profile?.phone}
                 </p>
               </div>
@@ -122,30 +122,30 @@ export default function ExpertProfile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
           >
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
               <FiAward className="text-purple-600" /> {t("profile.credentials")}
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.degree")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.degree")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   {profile?.AgroExpertProfile?.academicDegree || t("admin.cvNA")}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.experience")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.experience")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
                   <FiClipboard className="text-purple-600" />
                   {profile?.AgroExpertProfile?.experienceYears || "0"} {t("admin.cvYears")}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.status")}</label>
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.status")}</label>
                 <p className="text-lg font-semibold">
                   {profile?.isApproved ? (
-                    <span className="text-green-600 dark:text-green-400">✅ {t("profile.verifiedExpert")}</span>
+                    <span className="text-primary-base dark:text-green-400">✅ {t("profile.verifiedExpert")}</span>
                   ) : (
                     <span className="text-yellow-600 dark:text-yellow-400">⏳ {t("profile.pendingApproval")}</span>
                   )}

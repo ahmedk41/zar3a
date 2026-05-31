@@ -152,7 +152,7 @@ const CustomSelect = ({ value, onChange, options, disabled, placeholder }) => {
   return (
     <div className={`relative w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} ref={dropdownRef}>
       <div
-        className="w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none cursor-pointer flex justify-between items-center focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm"
+        className="w-full bg-surface-secondary dark:bg-slate-800/50 border-2 border-border-default/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-text-main dark:text-white outline-none cursor-pointer flex justify-between items-center focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm"
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span className="truncate">{selectedLabel}</span>
@@ -164,12 +164,12 @@ const CustomSelect = ({ value, onChange, options, disabled, placeholder }) => {
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden py-1"
+            className="absolute z-50 w-full mt-2 bg-surface-card dark:bg-slate-800 border-2 border-border-default dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden py-1"
           >
             {options.map((opt) => (
               <div
                 key={opt.value}
-                className={`mx-2 my-1 px-4 py-3 text-sm font-bold rounded-xl cursor-pointer transition-colors ${value === opt.value ? 'bg-green-500 text-white dark:bg-green-600' : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700/80'}`}
+                className={`mx-2 my-1 px-4 py-3 text-sm font-bold rounded-xl cursor-pointer transition-colors ${value === opt.value ? 'bg-green-500 text-white dark:bg-primary-base' : 'text-text-subtle dark:text-slate-300 hover:bg-surface-secondary dark:hover:bg-slate-700/80'}`}
                 onClick={() => {
                   onChange({ target: { name: opt.name, value: opt.value } });
                   setIsOpen(false);
@@ -463,21 +463,21 @@ const Marketplace = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl p-6 relative z-10 shadow-2xl"
+              className="bg-surface-card dark:bg-slate-900 w-full max-w-lg rounded-3xl p-6 relative z-10 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-black dark:text-white">Request Quote</h3>
-                <button onClick={() => setShowQuoteModal(false)} className="text-gray-400 hover:text-red-500">
+                <button onClick={() => setShowQuoteModal(false)} className="text-text-disabled hover:text-red-500">
                   <LuX size={24} />
                 </button>
               </div>
-              <div className="mb-4 p-4 bg-green-50 dark:bg-slate-800 rounded-2xl flex items-center gap-4">
+              <div className="mb-4 p-4 bg-primary-light dark:bg-slate-800 rounded-2xl flex items-center gap-4">
                 <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
                   <img src={quoteProduct.image} alt={quoteProduct.title} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <p className="font-bold dark:text-white">{quoteProduct.title}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{quoteProduct.owner}</p>
+                  <p className="text-sm text-text-muted dark:text-text-disabled">{quoteProduct.owner}</p>
                 </div>
               </div>
               <div className="space-y-4">
@@ -488,7 +488,7 @@ const Marketplace = () => {
                     min="1"
                     value={quoteQuantity}
                     onChange={(e) => setQuoteQuantity(Number(e.target.value))}
-                    className="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white outline-none"
+                    className="w-full bg-surface-secondary dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white outline-none"
                   />
                 </div>
                 <div>
@@ -498,7 +498,7 @@ const Marketplace = () => {
                     value={quoteLocation}
                     onChange={(e) => setQuoteLocation(e.target.value)}
                     placeholder="Enter full address or region..."
-                    className="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white outline-none"
+                    className="w-full bg-surface-secondary dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white outline-none"
                   />
                 </div>
                 <div>
@@ -508,7 +508,7 @@ const Marketplace = () => {
                     value={quoteMessage}
                     onChange={(e) => setQuoteMessage(e.target.value)}
                     placeholder="Specify any installation requirements or questions..."
-                    className="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white resize-none outline-none"
+                    className="w-full bg-surface-secondary dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 dark:text-white resize-none outline-none"
                   ></textarea>
                 </div>
                 <button
@@ -527,7 +527,7 @@ const Marketplace = () => {
                       console.error(err);
                     }
                   }}
-                  className="w-full bg-green-600 text-white font-black py-4 rounded-xl hover:bg-green-700 transition-colors shadow-lg mt-2"
+                  className="w-full bg-primary-base text-white font-black py-4 rounded-xl hover:bg-primary-hover transition-colors shadow-lg mt-2"
                 >
                   Submit Inquiry
                 </button>
@@ -537,8 +537,8 @@ const Marketplace = () => {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-slate-800">
-        <div className="flex w-full md:w-auto bg-gray-50 dark:bg-slate-800 p-1.5 rounded-full relative">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-surface-card dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-border-default dark:border-slate-800">
+        <div className="flex w-full md:w-auto bg-surface-secondary dark:bg-slate-800 p-1.5 rounded-full relative">
           <button
             onClick={() => {
               setActiveTab("shop");
@@ -548,14 +548,14 @@ const Marketplace = () => {
             className={`relative flex-1 md:flex-none px-6 py-3 rounded-full font-black text-sm transition-all z-10 ${
               activeTab === "shop"
                 ? "text-white"
-                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                : "text-text-muted hover:text-text-main dark:hover:text-white"
             }`}
           >
             {t("nav.agriShop")}
             {activeTab === "shop" && (
               <motion.div
                 layoutId="tabBg"
-                className="absolute inset-0 bg-green-600 rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
+                className="absolute inset-0 bg-primary-base rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
               />
             )}
           </button>
@@ -568,14 +568,14 @@ const Marketplace = () => {
             className={`relative flex-1 md:flex-none px-6 py-3 rounded-full font-black text-sm transition-all z-10 ${
               activeTab === "market"
                 ? "text-white"
-                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                : "text-text-muted hover:text-text-main dark:hover:text-white"
             }`}
           >
             {t("nav.cropMarket")}
             {activeTab === "market" && (
               <motion.div
                 layoutId="tabBg"
-                className="absolute inset-0 bg-green-600 rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
+                className="absolute inset-0 bg-primary-base rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
               />
             )}
           </button>
@@ -589,14 +589,14 @@ const Marketplace = () => {
               className={`relative flex-1 md:flex-none px-6 py-3 rounded-full font-black text-sm transition-all z-10 ${
                 activeTab === "sensors"
                   ? "text-white"
-                  : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                  : "text-text-muted hover:text-text-main dark:hover:text-white"
               }`}
             >
               Our Sensors
               {activeTab === "sensors" && (
                 <motion.div
                   layoutId="tabBg"
-                  className="absolute inset-0 bg-green-600 rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
+                  className="absolute inset-0 bg-primary-base rounded-full -z-10 shadow-lg shadow-green-200 dark:shadow-none"
                 />
               )}
             </button>
@@ -621,7 +621,7 @@ const Marketplace = () => {
           {canCreate && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center justify-center gap-2 bg-green-600 text-white px-8 py-4 rounded-full font-black hover:bg-green-700 transition-transform shadow-xl w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 bg-primary-base text-white px-8 py-4 rounded-full font-black hover:bg-primary-hover transition-transform shadow-xl w-full sm:w-auto"
             >
               <LuPlus size={20} /> {t("market.addProduct")}
             </button>
@@ -630,8 +630,8 @@ const Marketplace = () => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 relative z-40">
-        <div className="flex-1 relative bg-white dark:bg-slate-900 rounded-4xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center p-2 focus-within:ring-2 ring-green-500/50 transition-all">
-          <div className="p-3 text-gray-400 bg-gray-50 dark:bg-slate-800 rounded-2xl">
+        <div className="flex-1 relative bg-surface-card dark:bg-slate-900 rounded-4xl shadow-sm border border-border-default dark:border-slate-800 flex items-center p-2 focus-within:ring-2 ring-green-500/50 transition-all">
+          <div className="p-3 text-text-disabled bg-surface-secondary dark:bg-slate-800 rounded-2xl">
             <LuSearch size={22} />
           </div>
           <input
@@ -647,8 +647,8 @@ const Marketplace = () => {
           onClick={() => setIsFilterOpen(!isFilterOpen)}
           className={`p-4 px-6 rounded-4xl shadow-sm border transition-all flex items-center justify-center gap-3 font-bold ${
             isFilterOpen
-              ? "bg-green-600 border-green-600 text-white shadow-lg"
-              : "bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 text-gray-600 hover:text-green-600"
+              ? "bg-primary-base border-green-600 text-white shadow-lg"
+              : "bg-surface-card dark:bg-slate-900 border-border-default dark:border-slate-800 text-text-subtle hover:text-primary-base"
           }`}
         >
           <LuFilter size={24} />
@@ -660,11 +660,11 @@ const Marketplace = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-xl p-8 relative z-30"
+          className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-xl p-8 relative z-30"
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <p className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-3 flex items-center gap-2">
                 <LuLayoutGrid /> {t("market.category")}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -674,8 +674,8 @@ const Marketplace = () => {
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                       selectedCategory === cat
-                        ? "bg-green-600 text-white shadow-md"
-                        : "bg-gray-50 dark:bg-slate-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700"
+                        ? "bg-primary-base text-white shadow-md"
+                        : "bg-surface-secondary dark:bg-slate-800 text-text-muted hover:bg-gray-200 dark:hover:bg-slate-700"
                     }`}
                   >
                     {cat === "All" ? t("market.all") : cat}
@@ -684,13 +684,13 @@ const Marketplace = () => {
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <p className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-3 flex items-center gap-2">
                 <LuSlidersHorizontal /> {t("market.sortBy")}
               </p>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full p-4 bg-gray-50 dark:bg-slate-800 border-none rounded-2xl font-bold dark:text-white outline-none cursor-pointer focus:ring-2 focus:ring-green-500 text-sm"
+                className="w-full p-4 bg-surface-secondary dark:bg-slate-800 border-none rounded-2xl font-bold dark:text-white outline-none cursor-pointer focus:ring-2 focus:ring-green-500 text-sm"
               >
                 <option>{t("experts.reviews") === "reviews" ? "Top Rated" : "Top Rated"}</option>
                 <option>Price: Low to High</option>
@@ -699,10 +699,10 @@ const Marketplace = () => {
             </div>
             <div>
               <div className="flex justify-between items-end mb-3">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                <p className="text-[10px] font-black text-text-disabled uppercase tracking-widest flex items-center gap-2">
                   <LuDollarSign /> {t("market.maxPrice")}
                 </p>
-                <span className="text-sm font-black text-green-600 bg-green-50 dark:bg-green-900/20 px-3 py-1 rounded-lg">
+                <span className="text-sm font-black text-primary-base bg-primary-light dark:bg-green-900/20 px-3 py-1 rounded-lg">
                   {t("common.egp")} {Number(maxPrice).toLocaleString()}
                 </span>
               </div>
@@ -721,23 +721,23 @@ const Marketplace = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               key={`${item.id}-${item.title}`}
-              className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-5 border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col relative"
+              className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-5 border border-border-default dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col relative"
             >
               <div
                 onClick={() => {
                   setSelectedProduct(item);
                 }}
-                className="bg-gray-50 dark:bg-slate-800 h-48 rounded-4xl mb-5 flex items-center justify-center text-7xl cursor-pointer group-hover:scale-[1.02] transition-transform relative overflow-hidden"
+                className="bg-surface-secondary dark:bg-slate-800 h-48 rounded-4xl mb-5 flex items-center justify-center text-7xl cursor-pointer group-hover:scale-[1.02] transition-transform relative overflow-hidden"
               >
-                <div className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-black text-gray-600 dark:text-gray-300 flex items-center gap-1 shadow-sm">
-                  <LuMapPin size={12} className="text-green-600" /> {item.region}
+                <div className="absolute top-3 left-3 bg-surface-card/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-black text-text-subtle dark:text-gray-300 flex items-center gap-1 shadow-sm">
+                  <LuMapPin size={12} className="text-primary-base" /> {item.region}
                 </div>
                 {renderProductImage(item.image, item.title)}
               </div>
 
               <div className="flex-1 flex flex-col">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-50 dark:bg-green-900/30 px-3 py-1 rounded-full">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-primary-base bg-primary-light dark:bg-green-900/30 px-3 py-1 rounded-full">
                     {item.category}
                   </span>
                   <div className="flex items-center gap-1 text-xs font-bold dark:text-gray-300">
@@ -749,13 +749,13 @@ const Marketplace = () => {
                   onClick={() => {
                     setSelectedProduct(item);
                   }}
-                  className="text-lg font-black dark:text-white cursor-pointer hover:text-green-600 transition-colors leading-tight line-clamp-2 mt-1"
+                  className="text-lg font-black dark:text-white cursor-pointer hover:text-primary-base transition-colors leading-tight line-clamp-2 mt-1"
                 >
                   {item.title}
                 </h3>
 
                 <div className="flex items-center gap-1.5 mt-2">
-                  <p className="text-[11px] font-bold text-gray-400 truncate">{item.owner}</p>
+                  <p className="text-[11px] font-bold text-text-disabled truncate">{item.owner}</p>
                   {item.isVerified && (
                     <div className="bg-blue-500 rounded-full p-0.5 flex items-center justify-center shrink-0" title="Verified Provider">
                       <LuCheck size={10} className="text-white" strokeWidth={4} />
@@ -767,9 +767,9 @@ const Marketplace = () => {
                   {item.marketType !== "sensors" ? (
                     <>
                       <div>
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">{t("market.price")}</p>
-                        <p className="text-xl font-black text-gray-900 dark:text-white">
-                          {t("common.egp")} {item.price.toLocaleString()} <span className="text-[10px] text-gray-400">/ {item.unit === "unit" ? t("market.unit") : item.unit}</span>
+                        <p className="text-[9px] font-black text-text-disabled uppercase tracking-widest mb-0.5">{t("market.price")}</p>
+                        <p className="text-xl font-black text-text-main dark:text-white">
+                          {t("common.egp")} {item.price.toLocaleString()} <span className="text-[10px] text-text-disabled">/ {item.unit === "unit" ? t("market.unit") : item.unit}</span>
                         </p>
                       </div>
                       <button
@@ -780,7 +780,7 @@ const Marketplace = () => {
                           }
                           addToCart(item);
                         }}
-                        className="bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white dark:hover:bg-green-500 transition-colors shadow-sm"
+                        className="bg-surface-secondary dark:bg-slate-800 text-text-main dark:text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-primary-base hover:text-white dark:hover:bg-green-500 transition-colors shadow-sm"
                         title={t("market.addToCart")}
                       >
                         <LuShoppingCart size={20} />
@@ -798,7 +798,7 @@ const Marketplace = () => {
                           setQuoteProduct(item);
                           setShowQuoteModal(true);
                         }}
-                        className="w-full bg-gray-900 dark:bg-green-600 text-white px-4 py-3 rounded-2xl font-black hover:bg-gray-800 dark:hover:bg-green-700 transition-colors shadow-lg flex items-center justify-center gap-2"
+                        className="w-full bg-gray-900 dark:bg-primary-base text-white px-4 py-3 rounded-2xl font-black hover:bg-gray-800 dark:hover:bg-primary-hover transition-colors shadow-lg flex items-center justify-center gap-2"
                       >
                         Request Quote
                       </button>
@@ -813,7 +813,7 @@ const Marketplace = () => {
         {filteredData.length === 0 && !loadingProducts && (
           <div className="col-span-full py-20 text-center">
             <LuSearch size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 font-bold text-lg">{t("market.noItemsFound")}</p>
+            <p className="text-text-muted font-bold text-lg">{t("market.noItemsFound")}</p>
             <button
               onClick={() => {
                 setSearchQuery("");
@@ -821,7 +821,7 @@ const Marketplace = () => {
                 setSelectedCategory("All");
                 setIsFilterOpen(false);
               }}
-              className="mt-4 text-green-600 font-bold hover:underline"
+              className="mt-4 text-primary-base font-bold hover:underline"
             >
               {t("market.clearFilters")}
             </button>
@@ -845,19 +845,19 @@ const Marketplace = () => {
                   initial={{ y: 50, opacity: 0, scale: 0.95 }}
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 50, opacity: 0, scale: 0.95 }}
-                  className="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-[3.5rem] p-8 md:p-12 relative shadow-2xl z-10 overflow-y-auto max-h-[95vh] custom-scrollbar"
+                  className="bg-surface-card dark:bg-slate-900 w-full max-w-3xl rounded-[3.5rem] p-8 md:p-12 relative shadow-2xl z-10 overflow-y-auto max-h-[95vh] custom-scrollbar"
                 >
                   <button
                     onClick={() => setSelectedProduct(null)}
-                    className="absolute top-6 right-6 p-3 bg-gray-100 dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
+                    className="absolute top-6 right-6 p-3 bg-surface-secondary dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
                   >
                     <LuX size={24} />
                   </button>
 
                   <div className="flex flex-col md:flex-row gap-10 mt-4">
-                    <div className="w-full md:w-2/5 h-64 md:h-auto bg-gray-50 dark:bg-slate-800 rounded-[2.5rem] flex items-center justify-center text-9xl relative overflow-hidden">
-                      <div className="absolute top-4 left-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-black text-gray-600 dark:text-gray-300 flex items-center gap-1 shadow-sm">
-                        <LuMapPin size={14} className="text-green-600" /> {selectedProduct.region}
+                    <div className="w-full md:w-2/5 h-64 md:h-auto bg-surface-secondary dark:bg-slate-800 rounded-[2.5rem] flex items-center justify-center text-9xl relative overflow-hidden">
+                      <div className="absolute top-4 left-4 bg-surface-card/80 dark:bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-black text-text-subtle dark:text-gray-300 flex items-center gap-1 shadow-sm">
+                        <LuMapPin size={14} className="text-primary-base" /> {selectedProduct.region}
                       </div>
                       <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-full h-full flex items-center justify-center">
                         {renderProductImage(selectedProduct.image, selectedProduct.title, "w-full h-full object-cover rounded-4xl", "text-9xl")}
@@ -865,14 +865,14 @@ const Marketplace = () => {
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
                       <div className="mb-6">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-green-600 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-full mb-3 inline-block">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-primary-base bg-primary-light dark:bg-green-900/20 px-3 py-1.5 rounded-full mb-3 inline-block">
                           {selectedProduct.category}
                         </span>
                         <h2 className="text-3xl md:text-4xl font-black dark:text-white leading-tight">
                           {selectedProduct.title}
                         </h2>
-                        <div className="flex items-center gap-4 mt-3 p-3 bg-gray-50 dark:bg-slate-800/50 rounded-2xl w-fit border border-gray-100 dark:border-slate-700/50">
-                          <span className="font-bold text-gray-600 dark:text-gray-300 text-sm flex items-center gap-2">
+                        <div className="flex items-center gap-4 mt-3 p-3 bg-surface-secondary dark:bg-slate-800/50 rounded-2xl w-fit border border-border-default dark:border-slate-700/50">
+                          <span className="font-bold text-text-subtle dark:text-gray-300 text-sm flex items-center gap-2">
                             {selectedProduct.owner}
                             {selectedProduct.isVerified && (
                               <div className="bg-blue-500 rounded-full p-1 flex items-center justify-center" title="Verified Provider">
@@ -881,19 +881,19 @@ const Marketplace = () => {
                             )}
                           </span>
                           <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                          <span className="font-bold text-gray-500 text-sm flex items-center gap-1">
+                          <span className="font-bold text-text-muted text-sm flex items-center gap-1">
                             <LuStar className="text-yellow-400 fill-yellow-400" /> {selectedProduct.rating}
                           </span>
                         </div>
                       </div>
 
                       <div className="mt-auto">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium mb-8">
+                        <p className="text-sm text-text-subtle dark:text-text-disabled leading-relaxed font-medium mb-8">
                           {selectedProduct.description}
                         </p>
-                        <div className="flex items-center justify-between bg-gray-50 dark:bg-slate-800 p-4 rounded-4xl border border-gray-100 dark:border-slate-700/50">
+                        <div className="flex items-center justify-between bg-surface-secondary dark:bg-slate-800 p-4 rounded-4xl border border-border-default dark:border-slate-700/50">
                           <div className="px-2">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t("market.unitPrice")}</p>
+                            <p className="text-[10px] font-black text-text-disabled uppercase tracking-widest mb-1">{t("market.unitPrice")}</p>
                             <p className="text-2xl font-black dark:text-white leading-none">
                               {t("common.egp")} {selectedProduct.price.toLocaleString()}
                             </p>
@@ -903,7 +903,7 @@ const Marketplace = () => {
                               handleAddToCart(selectedProduct);
                               setSelectedProduct(null);
                             }}
-                            className="px-8 py-4 bg-green-600 text-white rounded-2xl font-black uppercase text-sm tracking-widest shadow-xl hover:bg-green-700 active:scale-95 transition-all flex items-center gap-2"
+                            className="px-8 py-4 bg-primary-base text-white rounded-2xl font-black uppercase text-sm tracking-widest shadow-xl hover:bg-primary-hover active:scale-95 transition-all flex items-center gap-2"
                           >
                             <LuPlus size={18} /> {t("market.addToCart")}
                           </button>
@@ -913,13 +913,13 @@ const Marketplace = () => {
                   </div>
 
                   {/* --- REVIEWS & FEEDBACK SYSTEM --- */}
-                  <div className="mt-12 pt-10 border-t border-gray-100 dark:border-slate-800 text-left">
+                  <div className="mt-12 pt-10 border-t border-border-default dark:border-slate-800 text-left">
                     <h3 className="text-2xl font-black dark:text-white tracking-tight mb-2">
                       {t("market.reviewsTitle") || "Product Reviews"}
                     </h3>
-                    <div className="flex items-center gap-6 mb-8 bg-gray-50 dark:bg-slate-800/40 p-5 rounded-3xl border border-gray-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-6 mb-8 bg-surface-secondary dark:bg-slate-800/40 p-5 rounded-3xl border border-border-default dark:border-slate-800/80">
                       <div>
-                        <p className="text-4xl font-black text-slate-800 dark:text-white">
+                        <p className="text-4xl font-black text-text-main dark:text-white">
                           {reviewsData.averageRating || "0.0"}
                         </p>
                         <div className="flex items-center gap-0.5 text-yellow-400 mt-1">
@@ -931,19 +931,19 @@ const Marketplace = () => {
                             />
                           ))}
                         </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">
+                        <p className="text-[10px] font-bold text-text-disabled uppercase tracking-widest mt-2">
                           {reviewsData.totalReviews || 0} {t("market.reviews") || "Reviews"}
                         </p>
                       </div>
                       <div className="w-px h-16 bg-gray-200 dark:bg-slate-800" />
-                      <div className="flex-1 text-xs font-semibold text-gray-500 leading-relaxed">
+                      <div className="flex-1 text-xs font-semibold text-text-muted leading-relaxed">
                         {t("market.averageRatingDesc") || "Ratings are collected from verified buyers who purchased this product on the platform."}
                       </div>
                     </div>
 
                     {/* Review submission form */}
                     {user ? (
-                      <form onSubmit={handleSubmitReview} className="mb-10 space-y-4 bg-gray-50/50 dark:bg-slate-800/20 p-6 rounded-[2rem] border border-gray-100 dark:border-slate-800/50">
+                      <form onSubmit={handleSubmitReview} className="mb-10 space-y-4 bg-surface-secondary/50 dark:bg-slate-800/20 p-6 rounded-[2rem] border border-border-default dark:border-slate-800/50">
                         <h4 className="text-sm font-black dark:text-white uppercase tracking-widest">
                           {editingReviewId ? (t("market.editReview") || "Edit Your Review") : (t("market.leaveReview") || "Leave a Review")}
                         </h4>
@@ -954,13 +954,13 @@ const Marketplace = () => {
                           </div>
                         )}
                         {reviewSuccess && (
-                          <div className="text-xs font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
+                          <div className="text-xs font-bold text-emerald-500 bg-primary-light dark:bg-emerald-950/20 p-3 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
                             {reviewSuccess}
                           </div>
                         )}
 
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-gray-400 uppercase mr-2">{t("market.yourRating") || "Rating"}:</span>
+                          <span className="text-xs font-bold text-text-disabled uppercase mr-2">{t("market.yourRating") || "Rating"}:</span>
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
                               key={star}
@@ -982,14 +982,14 @@ const Marketplace = () => {
                             onChange={(e) => setNewComment(e.target.value)}
                             placeholder={t("market.writeCommentPlaceholder") || "Share your feedback about the product..."}
                             rows={3}
-                            className="w-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-4 text-xs font-semibold dark:text-white outline-none focus:border-green-500 transition-colors"
+                            className="w-full bg-surface-card dark:bg-slate-900 border border-border-default dark:border-slate-800 rounded-2xl p-4 text-xs font-semibold dark:text-white outline-none focus:border-green-500 transition-colors"
                           />
                         </div>
 
                         <div className="flex gap-2">
                           <button
                             type="submit"
-                            className="px-6 py-3 bg-green-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-green-700 transition"
+                            className="px-6 py-3 bg-primary-base text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition"
                           >
                             {editingReviewId ? (t("market.update") || "Update") : (t("market.submit") || "Submit")}
                           </button>
@@ -1001,7 +1001,7 @@ const Marketplace = () => {
                                 setNewComment("");
                                 setNewRating(5);
                               }}
-                              className="px-6 py-3 bg-gray-200 dark:bg-slate-800 text-gray-600 dark:text-slate-300 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-300 transition"
+                              className="px-6 py-3 bg-gray-200 dark:bg-slate-800 text-text-subtle dark:text-slate-300 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-300 transition"
                             >
                               {t("market.cancel") || "Cancel"}
                             </button>
@@ -1009,7 +1009,7 @@ const Marketplace = () => {
                         </div>
                       </form>
                     ) : (
-                      <div className="p-4 text-center text-xs font-bold text-gray-400 bg-gray-50 dark:bg-slate-800/40 rounded-2xl mb-8">
+                      <div className="p-4 text-center text-xs font-bold text-text-disabled bg-surface-secondary dark:bg-slate-800/40 rounded-2xl mb-8">
                         {t("market.pleaseLoginToReview") || "Please login to write a review for this product."}
                       </div>
                     )}
@@ -1021,7 +1021,7 @@ const Marketplace = () => {
                           <div className="animate-spin h-6 w-6 border-2 border-green-500 border-t-transparent rounded-full" />
                         </div>
                       ) : reviewsData.reviews.length === 0 ? (
-                        <p className="text-xs font-bold text-gray-400 italic py-4 text-center">
+                        <p className="text-xs font-bold text-text-disabled italic py-4 text-center">
                           {t("market.noReviewsYet") || "No reviews yet. Be the first to review!"}
                         </p>
                       ) : (
@@ -1030,7 +1030,7 @@ const Marketplace = () => {
                           const isAdmin = user && user.role === "ADMIN";
 
                           return (
-                            <div key={rev.id} className="bg-gray-50/50 dark:bg-slate-800/20 p-5 rounded-3xl border border-gray-100/50 dark:border-slate-800/30 flex justify-between items-start">
+                            <div key={rev.id} className="bg-surface-secondary/50 dark:bg-slate-800/20 p-5 rounded-3xl border border-border-default/50 dark:border-slate-800/30 flex justify-between items-start">
                               <div className="space-y-2 flex-1">
                                 <div className="flex items-center gap-3">
                                   <span className="text-xs font-black dark:text-white">
@@ -1040,16 +1040,16 @@ const Marketplace = () => {
                                     {[1, 2, 3, 4, 5].map((s) => (
                                       <LuStar
                                         key={s}
-                                        className={s <= rev.rating ? "fill-yellow-400" : "text-gray-200 dark:text-slate-800"}
+                                        className={s <= rev.rating ? "fill-yellow-400" : "text-gray-200 dark:text-text-main"}
                                         size={12}
                                       />
                                     ))}
                                   </div>
                                 </div>
-                                <p className="text-xs font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
+                                <p className="text-xs font-medium text-text-subtle dark:text-gray-300 leading-relaxed">
                                   {rev.comment}
                                 </p>
-                                <p className="text-[9px] text-gray-400 font-bold">
+                                <p className="text-[9px] text-text-disabled font-bold">
                                   {new Date(rev.createdAt).toLocaleDateString()}
                                 </p>
                               </div>
@@ -1059,7 +1059,7 @@ const Marketplace = () => {
                                   {isOwn && (
                                     <button
                                       onClick={() => handleEditReview(rev)}
-                                      className="p-2 bg-gray-100 hover:bg-green-50 hover:text-green-600 dark:bg-slate-800 dark:hover:bg-green-950/20 dark:text-slate-400 rounded-xl transition-all"
+                                      className="p-2 bg-surface-secondary hover:bg-primary-light hover:text-primary-base dark:bg-slate-800 dark:hover:bg-green-950/20 dark:text-text-disabled rounded-xl transition-all"
                                       title="Edit Review"
                                     >
                                       <FiEdit size={14} />
@@ -1067,7 +1067,7 @@ const Marketplace = () => {
                                   )}
                                   <button
                                     onClick={() => handleDeleteReview(rev.id)}
-                                    className="p-2 bg-gray-100 hover:bg-red-50 hover:text-red-600 dark:bg-slate-800 dark:hover:bg-red-950/20 dark:text-slate-400 rounded-xl transition-all"
+                                    className="p-2 bg-surface-secondary hover:bg-red-50 hover:text-red-600 dark:bg-slate-800 dark:hover:bg-red-950/20 dark:text-text-disabled rounded-xl transition-all"
                                     title="Delete Review"
                                   >
                                     <LuTrash2 size={14} />
@@ -1098,18 +1098,18 @@ const Marketplace = () => {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                  className="relative h-full w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col z-10 border-l border-gray-100 dark:border-slate-800"
+                  className="relative h-full w-full max-w-md bg-surface-card dark:bg-slate-900 shadow-2xl p-6 flex flex-col z-10 border-l border-border-default dark:border-slate-800"
                 >
-                  <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100 dark:border-slate-800">
+                  <div className="flex justify-between items-center mb-8 pb-4 border-b border-border-default dark:border-slate-800">
                     <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
-                      <div className="p-2 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-xl">
+                      <div className="p-2 bg-primary-light dark:bg-green-900/20 text-primary-base rounded-xl">
                         <LuShoppingCart size={20} />
                       </div>
                       {t("market.cart")}
                     </h2>
                     <button
                       onClick={() => setIsCartOpen(false)}
-                      className="p-2 bg-gray-100 dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
+                      className="p-2 bg-surface-secondary dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
                     >
                       <LuX size={20} />
                     </button>
@@ -1117,7 +1117,7 @@ const Marketplace = () => {
 
                   <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
                     {cart.length === 0 ? (
-                      <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-4 opacity-50">
+                      <div className="h-full flex flex-col items-center justify-center text-text-disabled space-y-4 opacity-50">
                         <LuShoppingCart size={80} strokeWidth={1} />
                         <p className="font-black text-xl">{t("market.cartEmpty")}</p>
                       </div>
@@ -1129,26 +1129,26 @@ const Marketplace = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.9 }}
                           key={`${item.productId}-${item.type}`}
-                          className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-4xl border border-gray-100 dark:border-slate-700/50 group hover:border-green-200 dark:hover:border-green-900 transition-colors"
+                          className="flex items-center gap-4 p-4 bg-surface-secondary dark:bg-slate-800/50 rounded-4xl border border-border-default dark:border-slate-700/50 group hover:border-green-200 dark:hover:border-green-900 transition-colors"
                         >
-                          <div className="w-16 h-16 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-3xl shadow-sm overflow-hidden">
+                          <div className="w-16 h-16 bg-surface-card dark:bg-slate-700 rounded-2xl flex items-center justify-center text-3xl shadow-sm overflow-hidden">
                             {renderProductImage(item.imageUrl || '🛒', item.title, "w-full h-full object-cover rounded-2xl", "text-3xl")}
                           </div>
                           <div className="flex-1">
                             <h4 className="font-bold text-sm dark:text-white leading-tight mb-1 line-clamp-1">{item.title}</h4>
-                            <p className="text-xs font-black text-green-600">{t("common.egp")} {(item.price * item.quantity).toLocaleString()}</p>
+                            <p className="text-xs font-black text-primary-base">{t("common.egp")} {(item.price * item.quantity).toLocaleString()}</p>
                           </div>
-                          <div className="flex items-center gap-3 bg-white dark:bg-slate-900 p-1 rounded-full border border-gray-100 dark:border-slate-700 shadow-sm">
+                          <div className="flex items-center gap-3 bg-surface-card dark:bg-slate-900 p-1 rounded-full border border-border-default dark:border-slate-700 shadow-sm">
                             <button
                               onClick={() => updateQty(item.productId, item.type, -1)}
-                              className="w-7 h-7 bg-gray-50 dark:bg-slate-800 rounded-full flex items-center justify-center hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all"
+                              className="w-7 h-7 bg-surface-secondary dark:bg-slate-800 rounded-full flex items-center justify-center hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all"
                             >
                               <LuMinus size={12} />
                             </button>
                             <span className="font-black text-xs w-3 text-center dark:text-white">{item.quantity}</span>
                             <button
                               onClick={() => updateQty(item.productId, item.type, 1)}
-                              className="w-7 h-7 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"
+                              className="w-7 h-7 bg-primary-light dark:bg-green-900/20 text-primary-base rounded-full flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"
                             >
                               <LuPlus size={12} />
                             </button>
@@ -1164,9 +1164,9 @@ const Marketplace = () => {
                     )}
                   </div>
 
-                  <div className="pt-6 border-t border-gray-100 dark:border-slate-800 mt-4 space-y-6 bg-white dark:bg-slate-900 relative z-20">
-                    <div className="flex justify-between items-end bg-gray-50 dark:bg-slate-800 p-6 rounded-4xl border border-gray-100 dark:border-slate-700/50">
-                      <span className="font-black text-gray-400 uppercase text-[10px] tracking-[0.2em] mb-1">{t("market.totalEstimate")}</span>
+                  <div className="pt-6 border-t border-border-default dark:border-slate-800 mt-4 space-y-6 bg-surface-card dark:bg-slate-900 relative z-20">
+                    <div className="flex justify-between items-end bg-surface-secondary dark:bg-slate-800 p-6 rounded-4xl border border-border-default dark:border-slate-700/50">
+                      <span className="font-black text-text-disabled uppercase text-[10px] tracking-[0.2em] mb-1">{t("market.totalEstimate")}</span>
                       <span className="font-black text-3xl dark:text-white leading-none">
                         {t("common.egp")} {cart.reduce((t, i) => t + i.price * i.quantity, 0).toLocaleString()}
                       </span>
@@ -1174,7 +1174,7 @@ const Marketplace = () => {
                     <button
                       onClick={handleCheckout}
                       disabled={cart.length === 0}
-                      className="w-full py-5 bg-gray-900 dark:bg-green-600 disabled:bg-gray-200 disabled:dark:bg-slate-800 disabled:text-gray-400 disabled:cursor-not-allowed text-white rounded-4xl font-black text-sm uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl active:scale-95"
+                      className="w-full py-5 bg-gray-900 dark:bg-primary-base disabled:bg-gray-200 disabled:dark:bg-slate-800 disabled:text-text-disabled disabled:cursor-not-allowed text-white rounded-4xl font-black text-sm uppercase tracking-widest hover:bg-primary-hover transition-all shadow-xl active:scale-95"
                     >
                       {t("market.checkoutSecure")}
                     </button>
@@ -1201,16 +1201,16 @@ const Marketplace = () => {
                 initial={{ y: 25, opacity: 0, scale: 0.95 }}
                 animate={{ y: 0, opacity: 1, scale: 1 }}
                 exit={{ y: 25, opacity: 0, scale: 0.95 }}
-                className="relative z-10 w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl shadow-green-900/5 max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-slate-800"
+                className="relative z-10 w-full max-w-2xl bg-surface-card dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl shadow-green-900/5 max-h-[90vh] overflow-y-auto border border-border-default dark:border-slate-800"
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-3xl font-black dark:text-white">{t("market.addMarketProd")}</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">{t("market.addMarketDesc")}</p>
+                    <p className="text-sm text-text-muted dark:text-text-disabled">{t("market.addMarketDesc")}</p>
                   </div>
                   <button
                     onClick={() => setShowCreateModal(false)}
-                    className="text-slate-500 dark:text-slate-300 hover:text-red-500 transition"
+                    className="text-text-muted dark:text-slate-300 hover:text-red-500 transition"
                   >
                     <LuX size={26} />
                   </button>
@@ -1223,14 +1223,14 @@ const Marketplace = () => {
                     value={createForm.title}
                     onChange={handleCreateInput}
                     placeholder={t("market.prodTitle")}
-                    className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
+                    className="md:col-span-2 w-full bg-surface-secondary dark:bg-slate-800/50 border-2 border-border-default/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-text-main dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-text-disabled"
                   />
                   <textarea
                     name="description"
                     value={createForm.description}
                     onChange={handleCreateInput}
                     placeholder={t("market.prodDesc")}
-                    className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400 h-28 resize-none"
+                    className="md:col-span-2 w-full bg-surface-secondary dark:bg-slate-800/50 border-2 border-border-default/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-text-main dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-text-disabled h-28 resize-none"
                   />
                   <CustomSelect
                     value={createForm.category}
@@ -1254,7 +1254,7 @@ const Marketplace = () => {
                     value={createForm.price}
                     onChange={handleCreateInput}
                     placeholder={t("market.price")}
-                    className="w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
+                    className="w-full bg-surface-secondary dark:bg-slate-800/50 border-2 border-border-default/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-text-main dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-text-disabled"
                   />
                   
                   <CustomSelect
@@ -1308,7 +1308,7 @@ const Marketplace = () => {
                     value={createForm.region}
                     onChange={handleCreateInput}
                     placeholder={t("market.region") || "Region"}
-                    className="md:col-span-2 w-full bg-gray-50 dark:bg-slate-800/50 border-2 border-gray-200/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-gray-400"
+                    className="md:col-span-2 w-full bg-surface-secondary dark:bg-slate-800/50 border-2 border-border-default/60 dark:border-slate-700/50 rounded-2xl px-5 py-4 text-sm font-bold text-text-main dark:text-white outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-gray-300 dark:hover:border-slate-600 transition-all shadow-sm placeholder:text-text-disabled"
                   />
 
                   <div className="md:col-span-2 mt-2">
@@ -1330,10 +1330,10 @@ const Marketplace = () => {
                   
                   <div className="md:col-span-2 space-y-4 mt-2">
                     {formError && <p className="text-red-600 text-sm font-bold bg-red-50 p-3 rounded-xl border border-red-100">{formError}</p>}
-                    {successMessage && <p className="text-green-600 text-sm font-bold bg-green-50 p-3 rounded-xl border border-green-100">{successMessage}</p>}
+                    {successMessage && <p className="text-primary-base text-sm font-bold bg-primary-light p-3 rounded-xl border border-green-100">{successMessage}</p>}
                     <button
                       onClick={handleCreateProduct}
-                      className="w-full py-4 bg-green-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-green-500 hover:shadow-lg hover:shadow-green-600/30 active:scale-[0.98] transition-all duration-200"
+                      className="w-full py-4 bg-primary-base text-white rounded-2xl font-black uppercase tracking-widest hover:bg-green-500 hover:shadow-lg hover:shadow-green-600/30 active:scale-[0.98] transition-all duration-200"
                     >
                       {t("market.createListing")}
                     </button>

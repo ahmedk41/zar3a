@@ -151,16 +151,16 @@ const Chat = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto h-[calc(100dvh-140px)] flex flex-col bg-white dark:bg-slate-950 rounded-[3rem] shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden transition-all duration-500">
+    <div className="max-w-6xl mx-auto h-[calc(100dvh-140px)] flex flex-col bg-surface-card dark:bg-slate-950 rounded-[3rem] shadow-2xl border border-border-default dark:border-slate-800 overflow-hidden transition-all duration-500">
       
       {/* 1. Header */}
-      <header className="px-8 py-5 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl z-20">
+      <header className="px-8 py-5 border-b border-border-default dark:border-slate-800 flex items-center justify-between bg-surface-card/80 dark:bg-slate-950/80 backdrop-blur-xl z-20">
         <div className="flex items-center gap-5">
           <motion.button
             whileHover={{ scale: 1.1, backgroundColor: "#f3f4f6" }}
             whileTap={{ scale: 0.9 }}
             onClick={() => navigate(-1)}
-            className="p-3 bg-gray-50 dark:bg-slate-900 text-gray-600 dark:text-gray-300 rounded-2xl transition-colors shadow-sm"
+            className="p-3 bg-surface-secondary dark:bg-slate-900 text-text-subtle dark:text-gray-300 rounded-2xl transition-colors shadow-sm"
           >
             <LuArrowLeft size={20} />
           </motion.button>
@@ -169,7 +169,7 @@ const Chat = () => {
             <div className="w-14 h-14 bg-linear-to-br from-green-500 to-emerald-700 rounded-[1.2rem] p-0.5 shadow-lg">
               <img
                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${expertId}`}
-                className="w-full h-full rounded-[1.1rem] bg-white dark:bg-slate-800"
+                className="w-full h-full rounded-[1.1rem] bg-surface-card dark:bg-slate-800"
                 alt="Expert"
               />
             </div>
@@ -177,12 +177,12 @@ const Chat = () => {
           </div>
 
           <div>
-            <h2 className="font-black text-gray-900 dark:text-white text-lg tracking-tight leading-none">
+            <h2 className="font-black text-text-main dark:text-white text-lg tracking-tight leading-none">
               {expertInfo?.name || t("chat.expertChat")}
             </h2>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <p className="text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest transition-colors">
+              <p className="text-[10px] font-black text-primary-base dark:text-green-400 uppercase tracking-widest transition-colors">
                 {t("chat.activeNow")}
               </p>
             </div>
@@ -192,14 +192,14 @@ const Chat = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setShowInfoPanel(!showInfoPanel)}
-            className={`p-3 transition-colors rounded-2xl ${showInfoPanel ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-gray-400 hover:text-green-600 dark:hover:text-green-400'}`}
+            className={`p-3 transition-colors rounded-2xl ${showInfoPanel ? 'text-primary-base bg-primary-light dark:bg-green-900/20' : 'text-text-disabled hover:text-primary-base dark:hover:text-green-400'}`}
             title={t("experts.viewProfile")}
           >
             <LuInfo size={22} />
           </button>
           <button
             onClick={() => navigate('/experts')}
-            className="p-3 text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors rounded-2xl"
+            className="p-3 text-text-disabled hover:text-primary-base dark:hover:text-green-400 transition-colors rounded-2xl"
             title={t("nav.experts")}
           >
             <LuUser size={22} />
@@ -215,37 +215,37 @@ const Chat = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="overflow-hidden border-b border-gray-100 dark:border-slate-800"
+            className="overflow-hidden border-b border-border-default dark:border-slate-800"
           >
             <div className="px-8 py-5 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-slate-900 dark:to-slate-900 space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="font-black text-gray-900 dark:text-white text-sm uppercase tracking-widest">{t("chat.details")}</h3>
-                <button onClick={() => setShowInfoPanel(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <h3 className="font-black text-text-main dark:text-white text-sm uppercase tracking-widest">{t("chat.details")}</h3>
+                <button onClick={() => setShowInfoPanel(false)} className="text-text-disabled hover:text-text-subtle dark:hover:text-gray-300">
                   <LuX size={16} />
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("experts.specialty")}</p>
-                  <p className="text-sm font-bold text-gray-800 dark:text-white">{expertInfo.specialty || t("admin.cvNA")}</p>
+                  <p className="text-[10px] font-bold text-text-disabled uppercase tracking-wider">{t("experts.specialty")}</p>
+                  <p className="text-sm font-bold text-text-main dark:text-white">{expertInfo.specialty || t("admin.cvNA")}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("experts.hourlyRate")}</p>
-                  <p className="text-sm font-bold text-green-600 dark:text-green-400">EGP {Number(expertInfo.hourlyRate).toLocaleString()}</p>
+                  <p className="text-[10px] font-bold text-text-disabled uppercase tracking-wider">{t("experts.hourlyRate")}</p>
+                  <p className="text-sm font-bold text-primary-base dark:text-green-400">EGP {Number(expertInfo.hourlyRate).toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("experts.location")}</p>
-                  <p className="text-sm font-bold text-gray-800 dark:text-white">{expertInfo.location || t("admin.cvNA")}</p>
+                  <p className="text-[10px] font-bold text-text-disabled uppercase tracking-wider">{t("experts.location")}</p>
+                  <p className="text-sm font-bold text-text-main dark:text-white">{expertInfo.location || t("admin.cvNA")}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("admin.tableEmail")}</p>
-                  <p className="text-sm font-bold text-gray-800 dark:text-white">{expertInfo.email || t("admin.cvNA")}</p>
+                  <p className="text-[10px] font-bold text-text-disabled uppercase tracking-wider">{t("admin.tableEmail")}</p>
+                  <p className="text-sm font-bold text-text-main dark:text-white">{expertInfo.email || t("admin.cvNA")}</p>
                 </div>
               </div>
               {expertInfo.description && (
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("chat.about")}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mt-1">{expertInfo.description}</p>
+                  <p className="text-[10px] font-bold text-text-disabled uppercase tracking-wider">{t("chat.about")}</p>
+                  <p className="text-xs text-text-subtle dark:text-gray-300 leading-relaxed mt-1">{expertInfo.description}</p>
                 </div>
               )}
             </div>
@@ -255,9 +255,9 @@ const Chat = () => {
 
 
       {/* 2. Chat Workspace */}
-      <main ref={chatContainerRef} className="flex-1 overflow-y-auto p-8 space-y-8 bg-slate-50/30 dark:bg-slate-950/30 relative">
+      <main ref={chatContainerRef} className="flex-1 overflow-y-auto p-8 space-y-8 bg-surface-secondary/30 dark:bg-slate-950/30 relative">
         <div className="flex justify-center mb-4">
-          <span className="px-5 py-2 bg-white dark:bg-slate-900 shadow-sm rounded-2xl text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] border border-gray-100 dark:border-slate-800">
+          <span className="px-5 py-2 bg-surface-card dark:bg-slate-900 shadow-sm rounded-2xl text-[10px] font-black text-text-disabled dark:text-text-muted uppercase tracking-[0.2em] border border-border-default dark:border-slate-800">
             {t("chat.today")}
           </span>
         </div>
@@ -265,7 +265,7 @@ const Chat = () => {
         {chatLoading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-3">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
-            <p className="text-sm text-gray-400 font-bold">{t("chat.loadingMsgs")}</p>
+            <p className="text-sm text-text-disabled font-bold">{t("chat.loadingMsgs")}</p>
           </div>
         ) : (
           <AnimatePresence initial={false}>
@@ -282,8 +282,8 @@ const Chat = () => {
                   <div
                     className={`px-6 py-4 rounded-[2.2rem] shadow-sm relative transition-all duration-300 ${
                       msg.sender === "user"
-                        ? "bg-green-600 text-white rounded-tr-none hover:shadow-green-200/50"
-                        : "bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 rounded-tl-none border border-gray-100 dark:border-slate-800"
+                        ? "bg-primary-base text-white rounded-tr-none hover:shadow-green-200/50"
+                        : "bg-surface-card dark:bg-slate-900 text-text-main dark:text-slate-100 rounded-tl-none border border-border-default dark:border-slate-800"
                     }`}
                   >
                     {/* Attachment rendering */}
@@ -304,8 +304,8 @@ const Chat = () => {
                             rel="noopener noreferrer"
                             className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold transition ${
                               msg.sender === 'user'
-                                ? 'bg-white/20 hover:bg-white/30 text-white'
-                                : 'bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200'
+                                ? 'bg-surface-card/20 hover:bg-surface-card/30 text-white'
+                                : 'bg-surface-secondary dark:bg-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200'
                             }`}
                           >
                             <LuFileText size={18} />
@@ -325,7 +325,7 @@ const Chat = () => {
                   </div>
 
                   <div className="flex items-center gap-2 mt-2 px-2 opacity-60">
-                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-600 uppercase tracking-tighter">
+                    <span className="text-[10px] font-bold text-text-disabled dark:text-text-subtle uppercase tracking-tighter">
                       {msg.time}
                     </span>
                     {msg.sender === "user" && (
@@ -353,9 +353,9 @@ const Chat = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-gray-100 dark:border-slate-800"
+            className="overflow-hidden border-t border-border-default dark:border-slate-800"
           >
-            <div className="px-8 py-3 bg-green-50 dark:bg-green-950/20 flex items-center justify-between">
+            <div className="px-8 py-3 bg-primary-light dark:bg-green-950/20 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {selectedFile.type.startsWith('image/') ? (
                   <div className="w-10 h-10 rounded-xl overflow-hidden border border-green-200 dark:border-green-800">
@@ -363,12 +363,12 @@ const Chat = () => {
                   </div>
                 ) : (
                   <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
-                    <LuFileText size={18} className="text-green-600" />
+                    <LuFileText size={18} className="text-primary-base" />
                   </div>
                 )}
                 <div>
                   <p className="text-xs font-bold text-green-800 dark:text-green-300 truncate max-w-[200px]">{selectedFile.name}</p>
-                  <p className="text-[10px] text-green-600 dark:text-green-500">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+                  <p className="text-[10px] text-primary-base dark:text-green-500">{(selectedFile.size / 1024).toFixed(1)} KB</p>
                 </div>
               </div>
               <button
@@ -383,10 +383,10 @@ const Chat = () => {
       </AnimatePresence>
 
       {/* 3. Input Console */}
-      <footer className="p-8 bg-white dark:bg-slate-950 border-t border-gray-50 dark:border-slate-900">
+      <footer className="p-8 bg-surface-card dark:bg-slate-950 border-t border-gray-50 dark:border-slate-900">
         <form
           onSubmit={handleSendMessage}
-          className="flex items-center gap-4 bg-gray-100/50 dark:bg-slate-900/50 p-2.5 pl-6 rounded-[2.5rem] focus-within:bg-white dark:focus-within:bg-slate-900 transition-all duration-500 shadow-inner border border-transparent focus-within:border-green-500/30"
+          className="flex items-center gap-4 bg-surface-secondary/50 dark:bg-slate-900/50 p-2.5 pl-6 rounded-[2.5rem] focus-within:bg-surface-card dark:focus-within:bg-slate-900 transition-all duration-500 shadow-inner border border-transparent focus-within:border-green-500/30"
         >
           {/* Hidden file inputs */}
           <input
@@ -408,7 +408,7 @@ const Chat = () => {
             <button
               type="button"
               onClick={() => imageInputRef.current?.click()}
-              className="p-2.5 text-gray-400 hover:text-green-600 transition-colors"
+              className="p-2.5 text-text-disabled hover:text-primary-base transition-colors"
               title="Send Image"
             >
               <LuImage size={22} />
@@ -416,7 +416,7 @@ const Chat = () => {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="p-2.5 text-gray-400 hover:text-green-600 transition-colors"
+              className="p-2.5 text-text-disabled hover:text-primary-base transition-colors"
               title="Send Document"
             >
               <LuPaperclip size={22} />
@@ -428,7 +428,7 @@ const Chat = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder={selectedFile ? t("chat.caption") : t("chat.typeHere")}
-            className="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-400 font-medium py-3"
+            className="flex-1 bg-transparent border-none outline-none text-text-main dark:text-white placeholder:text-text-disabled font-medium py-3"
           />
 
           <motion.button
@@ -438,8 +438,8 @@ const Chat = () => {
             disabled={sending || (!message.trim() && !selectedFile)}
             className={`px-8 py-4 rounded-[1.8rem] font-black shadow-lg transition-all flex items-center gap-2 ${
               sending || (!message.trim() && !selectedFile)
-                ? 'bg-gray-300 dark:bg-slate-700 text-gray-500 cursor-not-allowed shadow-none'
-                : 'bg-green-600 hover:bg-green-700 text-white shadow-green-200 dark:shadow-none'
+                ? 'bg-gray-300 dark:bg-slate-700 text-text-muted cursor-not-allowed shadow-none'
+                : 'bg-primary-base hover:bg-primary-hover text-white shadow-green-200 dark:shadow-none'
             }`}
           >
             <span className="hidden sm:inline">{sending ? t("chat.sending") : t("chat.send")}</span>

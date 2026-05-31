@@ -168,15 +168,15 @@ const Payment = () => {
   // Loading Overlay for Redirection Callback
   if (confirmStatus === 'verifying' || confirmStatus === 'success') {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center py-20 px-4">
-        <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-8 text-center space-y-6 animate-fade-in">
+      <div className="min-h-screen bg-surface-secondary dark:bg-slate-950 flex items-center justify-center py-20 px-4">
+        <div className="max-w-md w-full bg-surface-card dark:bg-slate-900 rounded-3xl border border-border-default dark:border-slate-800 shadow-2xl p-8 text-center space-y-6 animate-fade-in">
           {confirmStatus === 'verifying' ? (
             <>
-              <div className="relative w-20 h-20 mx-auto flex items-center justify-center bg-emerald-50 dark:bg-emerald-950/30 rounded-full">
-                <LuLoader size={40} className="text-emerald-600 dark:text-emerald-400 animate-spin" />
+              <div className="relative w-20 h-20 mx-auto flex items-center justify-center bg-primary-light dark:bg-emerald-950/30 rounded-full">
+                <LuLoader size={40} className="text-primary-base dark:text-emerald-400 animate-spin" />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white">{t("pay.confirming")}</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <h2 className="text-2xl font-black text-text-main dark:text-white">{t("pay.confirming")}</h2>
+              <p className="text-sm text-text-muted dark:text-text-disabled">
                 {isArabic 
                   ? 'برجاء عدم إغلاق أو تحديث الصفحة أثناء تأكيد معاملتك المالية.' 
                   : 'Please do not close or refresh this page while we verify your transaction status.'}
@@ -184,14 +184,14 @@ const Payment = () => {
             </>
           ) : (
             <>
-              <div className="w-20 h-20 mx-auto flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-full text-emerald-600 dark:text-emerald-400 animate-bounce">
+              <div className="w-20 h-20 mx-auto flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-full text-primary-base dark:text-emerald-400 animate-bounce">
                 <LuCheck size={40} />
               </div>
-              <h2 className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{t("pay.success")}</h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
+              <h2 className="text-2xl font-black text-primary-base dark:text-emerald-400">{t("pay.success")}</h2>
+              <p className="text-sm text-text-subtle dark:text-slate-300 font-medium">
                 {success || t("pay.paymentSuccess")}
               </p>
-              <div className="pt-2 text-xs text-slate-400 dark:text-slate-500">
+              <div className="pt-2 text-xs text-text-disabled dark:text-text-muted">
                 {isArabic 
                   ? 'جاري إعادة توجيهك إلى تتبع الطلبات خلال ثوانٍ...' 
                   : 'Redirecting you to order tracking page in a few seconds...'}
@@ -204,32 +204,32 @@ const Payment = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 transition-colors duration-300">
+    <div className="min-h-screen bg-surface-secondary dark:bg-slate-950 py-10 px-4 transition-colors duration-300">
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-semibold transition"
+          className="inline-flex items-center gap-2 text-text-subtle dark:text-text-disabled hover:text-text-main dark:hover:text-white font-semibold transition"
         >
           <LuArrowLeft size={18} /> {t("pay.backCart")}
         </button>
 
         {/* Master Payment Box */}
-        <div className="rounded-3xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 p-6 md:p-10 relative overflow-hidden">
+        <div className="rounded-3xl bg-surface-card dark:bg-slate-900 shadow-xl border border-border-default dark:border-slate-800 p-6 md:p-10 relative overflow-hidden">
           
           {/* Subtle Decorative Gradient Backdrop */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
 
           {/* Heading */}
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-slate-100 dark:border-slate-800 pb-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-border-default dark:border-slate-800 pb-6">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-text-disabled dark:text-text-muted flex items-center gap-1.5">
                 <LuShieldCheck className="text-emerald-500" /> {t("pay.secureCheckout")}
               </p>
-              <h1 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{t("pay.reviewOrder")}</h1>
+              <h1 className="text-3xl font-black text-text-main dark:text-white mt-1">{t("pay.reviewOrder")}</h1>
             </div>
-            <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30 px-5 py-3 text-emerald-600 dark:text-emerald-400 font-black text-lg">
+            <div className="flex items-center gap-2 rounded-2xl bg-primary-light dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30 px-5 py-3 text-primary-base dark:text-emerald-400 font-black text-lg">
               {t("pay.total")}: EGP {totalAmount.toLocaleString()}
             </div>
           </div>
@@ -247,8 +247,8 @@ const Payment = () => {
             
             {/* Left side: Order Items Summary */}
             <div className="lg:col-span-5 space-y-4">
-              <h2 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                <LuShoppingCart size={20} className="text-slate-400" /> {t("pay.orderSummary")}
+              <h2 className="text-xl font-extrabold text-text-main dark:text-white flex items-center gap-2">
+                <LuShoppingCart size={20} className="text-text-disabled" /> {t("pay.orderSummary")}
               </h2>
               
               <div className="space-y-3 max-h-[460px] overflow-y-auto pr-1">
@@ -258,22 +258,22 @@ const Payment = () => {
                   return (
                     <div 
                       key={itemKey} 
-                      className="rounded-2xl bg-slate-50 dark:bg-slate-950/40 p-4 border border-slate-200/60 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition"
+                      className="rounded-2xl bg-surface-secondary dark:bg-slate-950/40 p-4 border border-border-default/60 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
-                          <p className="font-bold text-slate-900 dark:text-white text-sm md:text-base leading-snug">{item.title}</p>
-                          <p className="text-xs text-slate-400 dark:text-slate-500">
+                          <p className="font-bold text-text-main dark:text-white text-sm md:text-base leading-snug">{item.title}</p>
+                          <p className="text-xs text-text-disabled dark:text-text-muted">
                             {t("market.category." + item.category) || item.category || t("market.title")}
                           </p>
                         </div>
-                        <p className="font-black text-slate-900 dark:text-white text-sm md:text-base shrink-0">
+                        <p className="font-black text-text-main dark:text-white text-sm md:text-base shrink-0">
                           EGP {(item.price * quantity).toLocaleString()}
                         </p>
                       </div>
-                      <div className="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                        <span>{t("track.quantity")}: <strong className="text-slate-800 dark:text-slate-200">{quantity}</strong></span>
-                        <span>{t("market.unitPrice")}: <strong className="text-slate-800 dark:text-slate-200">EGP {item.price}</strong></span>
+                      <div className="mt-3 flex items-center justify-between text-xs text-text-muted dark:text-text-disabled">
+                        <span>{t("track.quantity")}: <strong className="text-text-main dark:text-slate-200">{quantity}</strong></span>
+                        <span>{t("market.unitPrice")}: <strong className="text-text-main dark:text-slate-200">EGP {item.price}</strong></span>
                       </div>
                     </div>
                   );
@@ -286,21 +286,21 @@ const Payment = () => {
               
               {/* Shipping Address Textarea */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                <label className="text-sm font-bold text-text-subtle dark:text-text-disabled uppercase tracking-wider">
                   {t("pay.shipping")}
                 </label>
                 <textarea
                   value={shippingAddress}
                   onChange={(e) => setShippingAddress(e.target.value)}
                   placeholder={t("pay.shippingPlaceholder")}
-                  className="w-full min-h-[100px] rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-950 dark:text-white outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-950"
+                  className="w-full min-h-[100px] rounded-2xl border border-border-default dark:border-slate-800 bg-surface-secondary dark:bg-slate-950 px-4 py-3 text-sm text-slate-950 dark:text-white outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-950"
                 />
-                <p className="text-xs text-slate-400 dark:text-slate-500">{t("pay.shippingTip")}</p>
+                <p className="text-xs text-text-disabled dark:text-text-muted">{t("pay.shippingTip")}</p>
               </div>
 
               {/* Payment Method Selector Grid */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block">
+                <label className="text-sm font-bold text-text-subtle dark:text-text-disabled uppercase tracking-wider block">
                   {t("pay.paymentMethod")}
                 </label>
                 
@@ -311,19 +311,19 @@ const Payment = () => {
                     onClick={() => setPaymentMethod('STRIPE')}
                     className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                       paymentMethod === 'STRIPE'
-                        ? 'border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm'
-                        : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950/20'
+                        ? 'border-emerald-500 bg-primary-light/20 dark:bg-emerald-950/10 shadow-sm'
+                        : 'border-border-default dark:border-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-surface-secondary dark:bg-slate-800 flex items-center justify-center text-text-subtle dark:text-slate-300">
                         <LuCreditCard size={20} />
                       </div>
                       <div>
-                        <p className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">
+                        <p className="font-extrabold text-text-main dark:text-white text-sm sm:text-base">
                           {t("pay.method.stripe")}
                         </p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">
+                        <p className="text-xs text-text-disabled dark:text-text-muted">
                           {isArabic ? 'بطاقة دولية عبر بوابة Stripe الآمنة' : 'Global card processing securely hosted by Stripe'}
                         </p>
                       </div>
@@ -331,7 +331,7 @@ const Payment = () => {
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                       paymentMethod === 'STRIPE' ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
                     }`}>
-                      {paymentMethod === 'STRIPE' && <div className="w-2 h-2 rounded-full bg-white" />}
+                      {paymentMethod === 'STRIPE' && <div className="w-2 h-2 rounded-full bg-surface-card" />}
                     </div>
                   </div>
 
@@ -340,19 +340,19 @@ const Payment = () => {
                     onClick={() => setPaymentMethod('PAYMOB_CARD')}
                     className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                       paymentMethod === 'PAYMOB_CARD'
-                        ? 'border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm'
-                        : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950/20'
+                        ? 'border-emerald-500 bg-primary-light/20 dark:bg-emerald-950/10 shadow-sm'
+                        : 'border-border-default dark:border-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
-                        <LuCreditCard size={20} className="text-slate-500" />
+                      <div className="w-10 h-10 rounded-xl bg-surface-secondary dark:bg-slate-800 flex items-center justify-center text-text-subtle dark:text-slate-300">
+                        <LuCreditCard size={20} className="text-text-muted" />
                       </div>
                       <div>
-                        <p className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">
+                        <p className="font-extrabold text-text-main dark:text-white text-sm sm:text-base">
                           {t("pay.method.paymob_card")}
                         </p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">
+                        <p className="text-xs text-text-disabled dark:text-text-muted">
                           {isArabic ? 'فيزا، ماستركارد، وميزة المحلية (بيموب)' : 'Visa, Mastercard, & local Meeza cards via Paymob'}
                         </p>
                       </div>
@@ -360,7 +360,7 @@ const Payment = () => {
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                       paymentMethod === 'PAYMOB_CARD' ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
                     }`}>
-                      {paymentMethod === 'PAYMOB_CARD' && <div className="w-2 h-2 rounded-full bg-white" />}
+                      {paymentMethod === 'PAYMOB_CARD' && <div className="w-2 h-2 rounded-full bg-surface-card" />}
                     </div>
                   </div>
 
@@ -369,19 +369,19 @@ const Payment = () => {
                     onClick={() => setPaymentMethod('VODAFONE_CASH')}
                     className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                       paymentMethod === 'VODAFONE_CASH'
-                        ? 'border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm'
-                        : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950/20'
+                        ? 'border-emerald-500 bg-primary-light/20 dark:bg-emerald-950/10 shadow-sm'
+                        : 'border-border-default dark:border-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-surface-secondary dark:bg-slate-800 flex items-center justify-center text-text-subtle dark:text-slate-300">
                         <LuSmartphone size={20} />
                       </div>
                       <div>
-                        <p className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">
+                        <p className="font-extrabold text-text-main dark:text-white text-sm sm:text-base">
                           {t("pay.method.vodafone")}
                         </p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">
+                        <p className="text-xs text-text-disabled dark:text-text-muted">
                           {isArabic ? 'فودافون كاش والمحافظ الإلكترونية بمصر' : 'Vodafone Cash & all Egyptian mobile wallets'}
                         </p>
                       </div>
@@ -389,7 +389,7 @@ const Payment = () => {
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                       paymentMethod === 'VODAFONE_CASH' ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
                     }`}>
-                      {paymentMethod === 'VODAFONE_CASH' && <div className="w-2 h-2 rounded-full bg-white" />}
+                      {paymentMethod === 'VODAFONE_CASH' && <div className="w-2 h-2 rounded-full bg-surface-card" />}
                     </div>
                   </div>
 
@@ -398,19 +398,19 @@ const Payment = () => {
                     onClick={() => setPaymentMethod('COD')}
                     className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                       paymentMethod === 'COD'
-                        ? 'border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm'
-                        : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950/20'
+                        ? 'border-emerald-500 bg-primary-light/20 dark:bg-emerald-950/10 shadow-sm'
+                        : 'border-border-default dark:border-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                      <div className="w-10 h-10 rounded-xl bg-surface-secondary dark:bg-slate-800 flex items-center justify-center text-text-subtle dark:text-slate-300">
                         <LuBanknote size={20} />
                       </div>
                       <div>
-                        <p className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">
+                        <p className="font-extrabold text-text-main dark:text-white text-sm sm:text-base">
                           {t("pay.method.cod")}
                         </p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500">
+                        <p className="text-xs text-text-disabled dark:text-text-muted">
                           {isArabic ? 'الدفع نقدًا عند استلام الشحنة' : 'Pay in cash upon physical delivery'}
                         </p>
                       </div>
@@ -418,7 +418,7 @@ const Payment = () => {
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                       paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
                     }`}>
-                      {paymentMethod === 'COD' && <div className="w-2 h-2 rounded-full bg-white" />}
+                      {paymentMethod === 'COD' && <div className="w-2 h-2 rounded-full bg-surface-card" />}
                     </div>
                   </div>
 
@@ -427,8 +427,8 @@ const Payment = () => {
 
               {/* Mobile number field for Vodafone Cash */}
               {paymentMethod === 'VODAFONE_CASH' && (
-                <div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800/80 rounded-2xl animate-fade-in">
-                  <label className="text-xs font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider block">
+                <div className="space-y-2 p-4 bg-surface-secondary dark:bg-slate-950/20 border border-border-default dark:border-slate-800/80 rounded-2xl animate-fade-in">
+                  <label className="text-xs font-extrabold text-text-subtle dark:text-text-disabled uppercase tracking-wider block">
                     {t("pay.walletNumber")}
                   </label>
                   <input
@@ -436,9 +436,9 @@ const Payment = () => {
                     value={walletPhone}
                     onChange={(e) => setWalletPhone(e.target.value)}
                     placeholder={t("pay.walletNumberPlaceholder")}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-2.5 text-sm text-slate-950 dark:text-white outline-none focus:border-emerald-500"
+                    className="w-full rounded-xl border border-border-default dark:border-slate-800 bg-surface-card dark:bg-slate-950 px-4 py-2.5 text-sm text-slate-950 dark:text-white outline-none focus:border-emerald-500"
                   />
-                  <p className="text-xs text-slate-400 dark:text-slate-500">
+                  <p className="text-xs text-text-disabled dark:text-text-muted">
                     {isArabic 
                       ? 'أدخل رقم المحفظة المسجلة لإتمام الخصم وتأكيد العملية.' 
                       : 'Provide the active wallet mobile number that will authorize the charge.'}
@@ -447,12 +447,12 @@ const Payment = () => {
               )}
 
               {/* Summary Block */}
-              <div className="rounded-2xl bg-slate-50 dark:bg-slate-950/60 p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div className="rounded-2xl bg-surface-secondary dark:bg-slate-950/60 p-5 border border-border-default dark:border-slate-800 flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 font-extrabold">{t("pay.totalDue")}</p>
-                  <p className="mt-1 text-2xl font-black text-slate-900 dark:text-white">EGP {totalAmount.toLocaleString()}</p>
+                  <p className="text-xs uppercase tracking-wider text-text-disabled dark:text-text-muted font-extrabold">{t("pay.totalDue")}</p>
+                  <p className="mt-1 text-2xl font-black text-text-main dark:text-white">EGP {totalAmount.toLocaleString()}</p>
                 </div>
-                <div className="text-xs text-slate-400 dark:text-slate-500 font-medium max-w-[200px] text-right flex flex-col items-end gap-1">
+                <div className="text-xs text-text-disabled dark:text-text-muted font-medium max-w-[200px] text-right flex flex-col items-end gap-1">
                   <span className="flex items-center gap-1"><LuShieldCheck size={14} className="text-emerald-500" /> SSL Encrypted</span>
                   <span>3D Secure verification</span>
                 </div>
@@ -462,7 +462,7 @@ const Payment = () => {
               <button
                 onClick={handleCheckout}
                 disabled={isSubmitting || cart.length === 0}
-                className="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white py-4 font-black uppercase tracking-wider transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/10 cursor-pointer"
+                className="w-full rounded-2xl bg-primary-base hover:bg-primary-hover text-white py-4 font-black uppercase tracking-wider transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/10 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>

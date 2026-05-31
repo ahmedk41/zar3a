@@ -1,12 +1,46 @@
 @import "tailwindcss";
 
-body {
-  font-family: 'Cairo', sans-serif;
+@layer base {
+  body {
+    font-family: 'Cairo', sans-serif;
+    @apply bg-surface-base text-text-main;
+  }
 }
 
 @theme {
-  --color-brand-green: #22c55e;
-  --color-brand-dark: #16a34a;
+  /* Brand Colors */
+  --color-primary-base: #16A34A;
+  --color-primary-hover: #15803D;
+  --color-primary-light: #DCFCE7;
+  --color-accent-base: #22C55E;
+  
+  /* Status Colors */
+  --color-status-success: #16A34A;
+  --color-status-warning: #F59E0B;
+  --color-status-danger: #EF4444;
+  --color-status-info: #3B82F6;
+
+  /* Surfaces */
+  --color-surface-base: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-secondary: #F1F5F9;
+
+  /* Borders */
+  --color-border-default: #E2E8F0;
+  --color-border-hover: #CBD5E1;
+
+  /* Typography */
+  --color-text-main: #0F172A;
+  --color-text-subtle: #475569;
+  --color-text-muted: #64748B;
+  --color-text-disabled: #94A3B8;
+
+  /* Shadows (SaaS Inspired Soft Shadows) */
+  --shadow-card-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow-card-md: 0 4px 6px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-card-lg: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-float: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+
   --animate-ticker: ticker 22s linear infinite;
 
   @keyframes ticker {
