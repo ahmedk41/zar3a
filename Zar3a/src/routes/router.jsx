@@ -24,17 +24,26 @@ const ApprovedUserGuard = ({ children }) => {
 
 // Redirect: routes "/profile" to the user's role-specific profile page
 const ProfileRedirect = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return <div>Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
-  const profileMap = {
-    FARMER: "/profile/farmer",
-    BUYER: "/profile/buyer",
-    SUPPLIER: "/profile/supplier",
-    AGRO_EXPERT: "/profile/expert",
-    ADMIN: "/profile/admin",
-  };
-  const target = profileMap[user.role] || "/";
-  return <Navigate to={target} replace />;
+
+  const roleToUse = user.role || user.pendingRole;
+
+  switch (roleToUse) {
+    case 'FARMER':
+      return <Navigate to="/profile/farmer" replace />;
+    case 'SUPPLIER':
+      return <Navigate to="/profile/supplier" replace />;
+    case 'BUYER':
+      return <Navigate to="/profile/buyer" replace />;
+    case 'AGRO_EXPERT':
+      return <Navigate to="/profile/expert" replace />;
+    case 'ADMIN':
+      return <Navigate to="/admin" replace />;
+    default:
+      return <Navigate to="/" replace />;
+  }
 };
 
 // Layouts

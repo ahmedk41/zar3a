@@ -39,13 +39,18 @@ export default function Login() {
   const onSubmit = async (data) => {
     setApiError("");
     try {
-      const user = await login(data.email, data.password);
-      const redirectMap = {
-        'FARMER': '/profile/farmer', 'BUYER': '/profile/buyer',
-        'SUPPLIER': '/profile/supplier', 'AGRO_EXPERT': '/profile/expert', 'ADMIN': '/profile/admin',
-      };
-      const redirectPath = user.pendingRole === 'AGRO_EXPERT' ? '/profile/expert' : redirectMap[user.role] || '/dashboard';
-      navigate(redirectPath);
+      const res = await login(data.email, data.password);
+      const roleToUse = res.user.role || res.user.pendingRole;
+          
+      if (roleToUse === "AGRO_EXPERT" && res.user.status === "PENDING") {
+        navigate("/profile/expert");
+      } else if (roleToUse === "FARMER" && res.user.status === "PENDING") {
+        navigate("/profile/farmer");
+      } else if (roleToUse === "SUPPLIER" && res.user.status === "PENDING") {
+        navigate("/profile/supplier");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       const msg = err?.response?.data?.message || err?.response?.data?.error ||
         err?.response?.data?.errors?.[0]?.msg || "Login failed. Please check your credentials.";

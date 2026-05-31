@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LuMapPin,
@@ -663,7 +664,7 @@ const Dashboard = () => {
 
       {/* Top Tabs */}
       <div className="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-slate-800 gap-4">
-        <div className="flex gap-2 w-full md:w-auto overflow-x-auto no-scrollbar">
+        <div className="flex gap-2 w-full md:w-auto overflow-x-auto custom-scrollbar pb-2">
           {sectors.map((sector) => (
             <button
               key={sector.id}
@@ -684,7 +685,7 @@ const Dashboard = () => {
               onClick={() => setIsAddSensorOpen(true)}
               className="flex items-center gap-2 px-6 py-3 rounded-3xl font-bold text-sm bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-slate-800 dark:text-emerald-400 border-2 border-dashed border-emerald-300 transition-all whitespace-nowrap"
             >
-              <LuPlus /> {t("dash.addSensor") || "Add Sensor"}
+              <LuPlus /> {t("dash.addSector") || "Add Sector"}
             </button>
           )}
         </div>
@@ -1427,117 +1428,120 @@ const Dashboard = () => {
       </AnimatePresence>
 
       {/* Sleek Add Sensor Modal */}
-      <AnimatePresence>
-        {isAddSensorOpen && (
-          <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsAddSensorOpen(false)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 overflow-hidden text-left"
-            >
-              <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-emerald-400 via-green-500 to-lime-400" />
+      {createPortal(
+        <AnimatePresence>
+          {isAddSensorOpen && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsAddSensorOpen(false)}
+                className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+              />
               
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                  {t("dash.addSensor") || "Add IoT Sensor"}
-                </h3>
-                <button
-                  onClick={() => setIsAddSensorOpen(false)}
-                  className="p-2 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-red-500 rounded-xl transition-all"
-                >
-                  <LuX size={18} />
-                </button>
-              </div>
-
-              {addSensorError && (
-                <div className="flex items-center gap-2 p-4 mb-4 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-2xl">
-                  <LuInfo className="shrink-0" /> {addSensorError}
-                </div>
-              )}
-
-              <form onSubmit={handleAddSensorSubmit} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ms-1">
-                    {t("profile.sensorId") || "Sensor ID"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newSensorForm.sensorId}
-                    onChange={(e) => setNewSensorForm({ ...newSensorForm, sensorId: e.target.value })}
-                    placeholder="e.g. SN-89210-A"
-                    className="w-full px-5 py-3.5 rounded-2xl border bg-slate-50/50 dark:bg-slate-800/50 dark:text-white border-slate-100 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-semibold"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ms-1">
-                    {t("dash.sectorName") || "Sector Name"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newSensorForm.sectorName}
-                    onChange={(e) => setNewSensorForm({ ...newSensorForm, sectorName: e.target.value })}
-                    placeholder="e.g. Sector E: North Field"
-                    className="w-full px-5 py-3.5 rounded-2xl border bg-slate-50/50 dark:bg-slate-800/50 dark:text-white border-slate-100 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-semibold"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ms-1">
-                    {t("dash.zoneLocation") || "Location"}
-                  </label>
-                  <select
-                    value={newSensorForm.location}
-                    onChange={(e) => setNewSensorForm({ ...newSensorForm, location: e.target.value })}
-                    className="w-full px-5 py-3.5 rounded-2xl border bg-slate-50/50 dark:bg-slate-800/50 dark:text-white border-slate-100 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-semibold"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 overflow-hidden text-left"
+              >
+                <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-emerald-400 via-green-500 to-lime-400" />
+                
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                    {t("dash.addSector") || "Add Sector"}
+                  </h3>
+                  <button
+                    onClick={() => setIsAddSensorOpen(false)}
+                    className="p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
                   >
-                    {Object.keys(locationDB).map((loc) => (
-                      <option key={loc} value={loc} className="dark:bg-slate-900">
-                        {t("loc." + loc) || loc}
-                      </option>
-                    ))}
-                  </select>
+                    <LuX size={20} />
+                  </button>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ms-1">
-                    {t("dash.crop") || "Crop"}
-                  </label>
-                  <select
-                    value={newSensorForm.crop}
-                    onChange={(e) => setNewSensorForm({ ...newSensorForm, crop: e.target.value })}
-                    className="w-full px-5 py-3.5 rounded-2xl border bg-slate-50/50 dark:bg-slate-800/50 dark:text-white border-slate-100 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-semibold"
+                {addSensorError && (
+                  <div className="flex items-center gap-3 p-4 mb-6 text-sm font-semibold text-red-600 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-2xl">
+                    <LuInfo className="shrink-0" size={18} /> {addSensorError}
+                  </div>
+                )}
+
+                <form onSubmit={handleAddSensorSubmit} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                      {t("profile.sensorId") || "Sensor ID"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newSensorForm.sensorId}
+                      onChange={(e) => setNewSensorForm({ ...newSensorForm, sensorId: e.target.value })}
+                      placeholder="e.g. SN-89210-A"
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                      {t("dash.sectorName") || "Sector Name"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newSensorForm.sectorName}
+                      onChange={(e) => setNewSensorForm({ ...newSensorForm, sectorName: e.target.value })}
+                      placeholder="e.g. Sector E: North Field"
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                      {t("dash.zoneLocation") || "Location"}
+                    </label>
+                    <select
+                      value={newSensorForm.location}
+                      onChange={(e) => setNewSensorForm({ ...newSensorForm, location: e.target.value })}
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold appearance-none"
+                    >
+                      {Object.keys(locationDB).map((loc) => (
+                        <option key={loc} value={loc} className="dark:bg-slate-900">
+                          {t("loc." + loc) || loc}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                      {t("dash.crop") || "Crop"}
+                    </label>
+                    <select
+                      value={newSensorForm.crop}
+                      onChange={(e) => setNewSensorForm({ ...newSensorForm, crop: e.target.value })}
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold appearance-none"
+                    >
+                      {Object.keys(cropsData).map((c) => (
+                        <option key={c} value={c} className="dark:bg-slate-900">
+                          {cropsData[c].icon} {t("crop." + c) || c}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4.5 rounded-2xl font-black text-lg shadow-lg shadow-emerald-500/20 transition-all mt-6 flex items-center justify-center gap-2"
                   >
-                    {Object.keys(cropsData).map((c) => (
-                      <option key={c} value={c} className="dark:bg-slate-900">
-                        {cropsData[c].icon} {t("crop." + c) || c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4.5 rounded-2xl font-black text-lg shadow-lg shadow-emerald-500/20 transition-all mt-6 flex items-center justify-center gap-2"
-                >
-                  {t("common.add") || "Add"}
-                </button>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                    {t("common.add") || "Add"}
+                  </button>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };
