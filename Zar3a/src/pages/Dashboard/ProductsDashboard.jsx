@@ -263,7 +263,7 @@ export default function ProductsDashboard() {
       const allProductIds = filteredProducts.map(p => p.id);
       const newBoosted = [...new Set([...prev, ...allProductIds])];
       localStorage.setItem("boosted_products", JSON.stringify(newBoosted));
-      alert(t("prodDash.boostSuccess") || "All displayed products have been Premium Boosted!");
+      alert("✨ Success! Your products have been Premium Boosted and are now at the top of the Marketplace.");
       return newBoosted;
     });
   };
@@ -394,6 +394,7 @@ export default function ProductsDashboard() {
               {filteredProducts.map((product) => {
                 const isCrop = product.marketplaceType === "CROP_MARKET";
                 const isDeletable = canDeleteProduct(product);
+                const isBoosted = boostedProducts.includes(product.id);
 
                 return (
                   <motion.div
@@ -402,18 +403,29 @@ export default function ProductsDashboard() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     key={product.id}
-                    className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-6 border border-border-default dark:border-slate-800/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                    className={`bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group ${
+                      isBoosted
+                        ? "border-[3px] border-amber-400 dark:border-amber-500 shadow-amber-400/20"
+                        : "border border-border-default dark:border-slate-800/80"
+                    }`}
                   >
                     <div>
                       {/* Product Header */}
                       <div className="flex justify-between items-start mb-4">
-                        <span className={`text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full ${
-                          isCrop
-                            ? "bg-primary-light dark:bg-emerald-950/40 text-primary-base dark:text-emerald-400"
-                            : "bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400"
-                        }`}>
-                          {isCrop ? `🌾 ${t("nav.cropMarket")}` : `📦 ${t("prodDash.agriShop")}`}
-                        </span>
+                        <div className="flex flex-col gap-2">
+                          <span className={`text-[9px] w-fit font-black uppercase tracking-wider px-3 py-1.5 rounded-full ${
+                            isCrop
+                              ? "bg-primary-light dark:bg-emerald-950/40 text-primary-base dark:text-emerald-400"
+                              : "bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400"
+                          }`}>
+                            {isCrop ? `🌾 ${t("nav.cropMarket")}` : `📦 ${t("prodDash.agriShop")}`}
+                          </span>
+                          {isBoosted && (
+                            <span className="text-[9px] font-black w-fit uppercase tracking-wider px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-white shadow-md shadow-amber-500/20">
+                              ✨ PREMIUM BOOSTED
+                            </span>
+                          )}
+                        </div>
                         <span className="text-xs font-black text-text-disabled uppercase tracking-widest bg-surface-secondary dark:bg-slate-800/60 px-3 py-1 rounded-lg">
                           {t("market.category." + product.category) || product.category || "OTHER"}
                         </span>
