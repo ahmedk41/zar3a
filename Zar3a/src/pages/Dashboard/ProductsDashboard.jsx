@@ -73,28 +73,29 @@ export default function ProductsDashboard() {
     if (!user) return;
     setLoading(true);
     try {
+      let fetchedProducts = [];
       if (user.role === "ADMIN") {
-        // Fetch crop products & agri products in parallel
         const [cropRes, agriRes] = await Promise.all([
           api.get("/marketplace/crop-products"),
           api.get("/marketplace/agri-products")
         ]);
-        const crops = Array.isArray(cropRes.data) ? cropRes.data : [];
-        const agris = Array.isArray(agriRes.data) ? agriRes.data : [];
-        setProducts([...crops, ...agris]);
+        fetchedProducts = [
+          ...(Array.isArray(cropRes.data) ? cropRes.data : []),
+          ...(Array.isArray(agriRes.data) ? agriRes.data : [])
+        ];
       } else if (user.role === "FARMER") {
-        // Farmer sees only crop market products
         const cropRes = await api.get("/marketplace/crop-products");
-        const crops = Array.isArray(cropRes.data) ? cropRes.data : [];
-        setProducts(crops);
+        fetchedProducts = Array.isArray(cropRes.data) ? cropRes.data : [];
       } else if (user.role === "SUPPLIER") {
-        // Supplier sees only agri shop products
         const agriRes = await api.get("/marketplace/agri-products");
-        const agris = Array.isArray(agriRes.data) ? agriRes.data : [];
-        setProducts(agris);
-      } else {
-        setProducts([]);
+        fetchedProducts = Array.isArray(agriRes.data) ? agriRes.data : [];
       }
+      
+      // Filter products to ONLY show those belonging to the logged-in user
+      const userProducts = fetchedProducts.filter(
+        p => p.userId === user.id || p.User?.id === user.id
+      );
+      setProducts(userProducts);
     } catch (err) {
       console.error("Failed to load products in dashboard:", err);
       setErrorMsg(t("prodDash.loadFailed"));
@@ -116,19 +117,6 @@ export default function ProductsDashboard() {
       setErrorMsg(err?.response?.data?.message || t("prodDash.deleteFailed"));
       setTimeout(() => setErrorMsg(null), 4000);
     }
-  };
-
-  const handleBoost = (productId) => {
-    setBoostedProducts((prev) => {
-      let newBoosted;
-      if (prev.includes(productId)) {
-        newBoosted = prev.filter(id => id !== productId);
-      } else {
-        newBoosted = [...prev, productId];
-      }
-      localStorage.setItem("boosted_products", JSON.stringify(newBoosted));
-      return newBoosted;
-    });
   };
 
   const handleOpenEditModal = (product) => {
@@ -269,32 +257,39 @@ export default function ProductsDashboard() {
       return matchesSearch;
     });
 
+  const handleBoostAll = () => {
+    setBoostedProducts((prev) => {
+      const allProductIds = filteredProducts.map(p => p.id);
+      const newBoosted = [...new Set([...prev, ...allProductIds])];
+      localStorage.setItem("boosted_products", JSON.stringify(newBoosted));
+      alert(t("prodDash.boostSuccess") || "All displayed products have been Premium Boosted!");
+      return newBoosted;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-slate-950 dark:to-slate-900 py-12 px-4 md:px-8 text-left">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-card/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm">
-          <div>
-            <h1 className="text-4xl font-[1000] text-text-main dark:text-white tracking-tighter uppercase">
-              {t("prodDash.title")}
-            </h1>
-            <p className="text-sm font-bold text-primary-base dark:text-emerald-400 mt-1 uppercase tracking-widest">
-              {t("prodDash.manageOffer")}
-            </p>
-          </div>
-          <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 relative z-10">
+          <h1 className="text-3xl font-black text-text-main dark:text-white uppercase tracking-tight flex items-center gap-3">
+            <LuPackage className="text-primary-base" /> {t("prodDash.title")}
+          </h1>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            {filteredProducts.length > 0 && (
+              <button
+                onClick={handleBoostAll}
+                className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:scale-95 uppercase tracking-wider"
+              >
+                Boost All Products ✨
+              </button>
+            )}
             <button
-              onClick={loadProducts}
-              className="px-6 py-3 bg-surface-secondary dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold text-xs hover:bg-gray-200 transition"
+              onClick={() => setShowCreateModal(true)}
+              className="flex-1 md:flex-none bg-primary-base text-white px-6 py-3.5 rounded-2xl font-black hover:bg-primary-hover shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:scale-95 text-sm uppercase tracking-wider"
             >
-              {t("prodDash.refresh")}
-            </button>
-            <button
-              onClick={() => navigate("/marketplace")}
-              className="px-6 py-3 bg-primary-base text-white rounded-2xl font-black text-xs hover:bg-primary-hover transition shadow-lg shadow-green-200 dark:shadow-none"
-            >
-              {t("prodDash.browseMarket")}
+              <LuPlus size={20} /> {t("prodDash.addNew")}
             </button>
           </div>
         </div>
@@ -387,7 +382,6 @@ export default function ProductsDashboard() {
               {filteredProducts.map((product) => {
                 const isCrop = product.marketplaceType === "CROP_MARKET";
                 const isDeletable = canDeleteProduct(product);
-                const isBoosted = boostedProducts.includes(product.id);
 
                 return (
                   <motion.div
@@ -459,33 +453,21 @@ export default function ProductsDashboard() {
                       </div>
 
                       {isDeletable ? (
-                        <div className="flex flex-col gap-2 w-full md:w-auto">
-                          <button
-                            onClick={() => handleBoost(product.id)}
-                            className={`w-full px-4 py-2 text-[10px] uppercase font-black tracking-widest rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm ${
-                              isBoosted 
-                                ? "bg-surface-secondary dark:bg-slate-800 text-text-disabled cursor-default shadow-none" 
-                                : "bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-white shadow-amber-500/20"
-                            }`}
-                          >
-                            {isBoosted ? "Boosted ✨" : "Premium Boost (500)"}
-                          </button>
-                          <div className="flex gap-2 w-full">
+                        <div className="flex gap-2">
                           <button
                             onClick={() => handleOpenEditModal(product)}
                             className="w-12 h-12 bg-primary-light dark:bg-emerald-950/20 text-primary-base dark:text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shadow-sm"
-                            title="Edit Product"
+                            title={t("common.edit")}
                           >
-                            <FiEdit size={18} />
+                            <LuPenSquare size={18} />
                           </button>
                           <button
                             onClick={() => handleDelete(product.id)}
-                            className="w-12 h-12 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all active:scale-95 shadow-sm"
-                            title="Delete Product"
+                            className="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all active:scale-95 shadow-sm"
+                            title={t("common.delete")}
                           >
                             <LuTrash2 size={18} />
                           </button>
-                          </div>
                         </div>
                       ) : (
                         <span className="text-[10px] text-text-disabled dark:text-text-muted font-bold bg-surface-secondary dark:bg-slate-800/40 px-3 py-2 rounded-xl">
