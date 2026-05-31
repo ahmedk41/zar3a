@@ -59,21 +59,21 @@ const UserChat = () => {
           title: t("chat.myMessages") || "My Messages",
           subtitle: t("chat.conversations") || "Conversations",
           accent: "emerald",
-          activeBg: "bg-emerald-50 dark:bg-emerald-900/20",
-          activeBorder: "border-emerald-200 dark:border-emerald-800",
-          msgBg: "bg-emerald-600",
-          msgHover: "hover:bg-emerald-700",
+          activeBg: "bg-primary-light dark:bg-emerald-900/20",
+          activeBorder: "border-primary-light dark:border-emerald-800",
+          msgBg: "bg-primary-base",
+          msgHover: "hover:bg-primary-hover",
           shadow: "shadow-emerald-200",
           ring: "ring-emerald-500/30",
           spinnerBorder: "border-emerald-600",
           checkColor: "text-emerald-400",
-          filePreviewBg: "bg-emerald-50 dark:bg-emerald-950/20",
-          filePreviewBorder: "border-emerald-200 dark:border-emerald-800",
+          filePreviewBg: "bg-primary-light dark:bg-emerald-950/20",
+          filePreviewBorder: "border-primary-light dark:border-emerald-800",
           filePreviewText: "text-emerald-800 dark:text-emerald-300",
-          filePreviewSize: "text-emerald-600 dark:text-emerald-500",
-          fileIconColor: "text-emerald-600",
+          filePreviewSize: "text-primary-base dark:text-emerald-500",
+          fileIconColor: "text-primary-base",
           fileIconBg: "bg-emerald-100 dark:bg-emerald-900/40",
-          hoverText: "hover:text-emerald-600",
+          hoverText: "hover:text-primary-base",
           focusBorder: "focus-within:border-emerald-500/30",
         };
       case "BUYER":
@@ -131,21 +131,21 @@ const UserChat = () => {
           title: t("chat.myMessages") || "My Messages",
           subtitle: t("chat.conversations") || "Conversations",
           accent: "green",
-          activeBg: "bg-green-50 dark:bg-green-900/20",
+          activeBg: "bg-primary-light dark:bg-green-900/20",
           activeBorder: "border-green-200 dark:border-green-800",
-          msgBg: "bg-green-600",
-          msgHover: "hover:bg-green-700",
+          msgBg: "bg-primary-base",
+          msgHover: "hover:bg-primary-hover",
           shadow: "shadow-green-200",
           ring: "ring-green-500/30",
           spinnerBorder: "border-green-600",
           checkColor: "text-green-400",
-          filePreviewBg: "bg-green-50 dark:bg-green-950/20",
+          filePreviewBg: "bg-primary-light dark:bg-green-950/20",
           filePreviewBorder: "border-green-200 dark:border-green-800",
           filePreviewText: "text-green-800 dark:text-green-300",
-          filePreviewSize: "text-green-600 dark:text-green-500",
-          fileIconColor: "text-green-600",
+          filePreviewSize: "text-primary-base dark:text-green-500",
+          fileIconColor: "text-primary-base",
           fileIconBg: "bg-green-100 dark:bg-green-900/40",
-          hoverText: "hover:text-green-600",
+          hoverText: "hover:text-primary-base",
           focusBorder: "focus-within:border-green-500/30",
         };
     }
@@ -280,7 +280,7 @@ const UserChat = () => {
       AGRO_EXPERT: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
       ADMIN: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
     };
-    return colors[role] || "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+    return colors[role] || "bg-surface-secondary text-gray-700 dark:bg-gray-900/30 dark:text-text-disabled";
   };
 
   if (loading) {
@@ -292,22 +292,22 @@ const UserChat = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto h-[calc(100dvh-140px)] flex bg-white dark:bg-slate-950 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden mt-2">
+    <div className="max-w-7xl mx-auto h-[calc(100dvh-140px)] flex bg-surface-card dark:bg-slate-950 rounded-[2rem] shadow-2xl border border-border-default dark:border-slate-800 overflow-hidden mt-2">
 
       {/* ─── Left Panel: Conversations List ─── */}
-      <div className={`${activeUserId ? "hidden md:flex" : "flex"} flex-col w-full md:w-[380px] border-e border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950`}>
+      <div className={`${activeUserId ? "hidden md:flex" : "flex"} flex-col w-full md:w-[380px] border-e border-border-default dark:border-slate-800 bg-surface-secondary/50 dark:bg-slate-950`}>
 
         {/* Header */}
-        <div className="px-6 py-5 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800">
+        <div className="px-6 py-5 bg-surface-card dark:bg-slate-900 border-b border-border-default dark:border-slate-800">
           <div className="flex items-center gap-3 mb-4">
             <div className={`w-10 h-10 bg-gradient-to-br ${theme.gradient} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
               {theme.headerIcon}
             </div>
             <div>
-              <h2 className="font-black text-lg text-slate-900 dark:text-white tracking-tight">
+              <h2 className="font-black text-lg text-text-main dark:text-white tracking-tight">
                 {theme.title}
               </h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-text-disabled uppercase tracking-widest">
                 {theme.subtitle}
               </p>
             </div>
@@ -315,13 +315,13 @@ const UserChat = () => {
 
           {/* Search */}
           <div className="relative">
-            <LuSearch size={16} className="absolute start-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <LuSearch size={16} className="absolute start-4 top-1/2 -translate-y-1/2 text-text-disabled" />
             <input
               type="text"
               placeholder={t("chat.searchConversations") || "Search conversations..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full ps-10 pe-4 py-3 bg-gray-100 dark:bg-slate-800 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 placeholder:text-slate-400 border-none outline-none focus:ring-2 ${theme.ring} transition`}
+              className={`w-full ps-10 pe-4 py-3 bg-surface-secondary dark:bg-slate-800 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 placeholder:text-text-disabled border-none outline-none focus:ring-2 ${theme.ring} transition`}
             />
           </div>
         </div>
@@ -331,13 +331,13 @@ const UserChat = () => {
           {convoLoading ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-3">
               <div className={`animate-spin rounded-full h-8 w-8 border-b-2 ${theme.spinnerBorder}`}></div>
-              <p className="text-xs text-slate-400 font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
+              <p className="text-xs text-text-disabled font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
             </div>
           ) : filteredConversations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 space-y-3 text-slate-400">
+            <div className="flex flex-col items-center justify-center py-20 space-y-3 text-text-disabled">
               <LuInbox size={40} className="opacity-30" />
               <p className="text-sm font-bold">{t("chat.noConversations") || "No conversations yet"}</p>
-              <p className="text-xs text-slate-400 px-8 text-center">{t("chat.startConversation") || "Start a conversation by contacting an expert from the Experts page"}</p>
+              <p className="text-xs text-text-disabled px-8 text-center">{t("chat.startConversation") || "Start a conversation by contacting an expert from the Experts page"}</p>
             </div>
           ) : (
             <div className="p-2 space-y-1">
@@ -349,7 +349,7 @@ const UserChat = () => {
                   className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-start ${
                     activeUserId === convo.user.id
                       ? `${theme.activeBg} border ${theme.activeBorder}`
-                      : "hover:bg-white dark:hover:bg-slate-900 border border-transparent"
+                      : "hover:bg-surface-card dark:hover:bg-slate-900 border border-transparent"
                   }`}
                 >
                   {/* Avatar */}
@@ -357,7 +357,7 @@ const UserChat = () => {
                     <div className={`w-12 h-12 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-2xl p-0.5 overflow-hidden`}>
                       <img
                         src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${convo.user.id}`}
-                        className="w-full h-full rounded-[0.85rem] bg-white dark:bg-slate-800"
+                        className="w-full h-full rounded-[0.85rem] bg-surface-card dark:bg-slate-800"
                         alt={convo.user.fullName}
                       />
                     </div>
@@ -371,14 +371,14 @@ const UserChat = () => {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="font-bold text-sm text-slate-900 dark:text-white truncate">
+                      <p className="font-bold text-sm text-text-main dark:text-white truncate">
                         {convo.user.fullName}
                       </p>
                       <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0 ${getRoleBadgeColor(convo.user.role)}`}>
                         {convo.user.role?.replace("_", " ") || "USER"}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 truncate mt-0.5">{convo.user.email}</p>
+                    <p className="text-xs text-text-disabled truncate mt-0.5">{convo.user.email}</p>
                   </div>
                 </motion.button>
               ))}
@@ -388,20 +388,20 @@ const UserChat = () => {
       </div>
 
       {/* ─── Right Panel: Chat Window ─── */}
-      <div className={`${activeUserId ? "flex" : "hidden md:flex"} flex-col flex-1 bg-white dark:bg-slate-950`}>
+      <div className={`${activeUserId ? "flex" : "hidden md:flex"} flex-col flex-1 bg-surface-card dark:bg-slate-950`}>
         {!activeUserId ? (
           /* Empty State */
           <div className="flex-1 flex flex-col items-center justify-center text-slate-300 dark:text-slate-700 space-y-4">
-            <div className="w-24 h-24 bg-slate-100 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center">
+            <div className="w-24 h-24 bg-surface-secondary dark:bg-slate-900 rounded-[2rem] flex items-center justify-center">
               <LuMessageSquare size={40} />
             </div>
             <p className="font-bold text-lg">{t("chat.selectConversation") || "Select a conversation"}</p>
-            <p className="text-sm text-slate-400 text-center px-8">{t("chat.selectConversationHint") || "Choose a contact from the left to start chatting"}</p>
+            <p className="text-sm text-text-disabled text-center px-8">{t("chat.selectConversationHint") || "Choose a contact from the left to start chatting"}</p>
           </div>
         ) : (
           <>
             {/* Chat Header */}
-            <header className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center gap-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl z-10">
+            <header className="px-6 py-4 border-b border-border-default dark:border-slate-800 flex items-center gap-4 bg-surface-card/80 dark:bg-slate-950/80 backdrop-blur-xl z-10">
               <button
                 onClick={() => {
                   setActiveUserId(null);
@@ -409,7 +409,7 @@ const UserChat = () => {
                   setMessages([]);
                   setSearchParams({});
                 }}
-                className="md:hidden p-2.5 bg-gray-50 dark:bg-slate-900 rounded-xl text-slate-500"
+                className="md:hidden p-2.5 bg-surface-secondary dark:bg-slate-900 rounded-xl text-text-muted"
               >
                 <LuArrowLeft size={18} />
               </button>
@@ -418,7 +418,7 @@ const UserChat = () => {
                 <div className={`w-12 h-12 bg-gradient-to-br ${theme.gradient} rounded-2xl p-0.5 shadow-md`}>
                   <img
                     src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${activeUserId}`}
-                    className="w-full h-full rounded-[0.85rem] bg-white dark:bg-slate-800"
+                    className="w-full h-full rounded-[0.85rem] bg-surface-card dark:bg-slate-800"
                     alt={activeUser?.fullName}
                   />
                 </div>
@@ -426,7 +426,7 @@ const UserChat = () => {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="font-black text-slate-900 dark:text-white text-sm truncate">
+                <h3 className="font-black text-text-main dark:text-white text-sm truncate">
                   {activeUser?.fullName}
                 </h3>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -435,7 +435,7 @@ const UserChat = () => {
                   </span>
                   <div className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                    <span className="text-[9px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest">{t("chat.activeNow") || "Active"}</span>
+                    <span className="text-[9px] font-bold text-primary-base dark:text-green-400 uppercase tracking-widest">{t("chat.activeNow") || "Active"}</span>
                   </div>
                 </div>
               </div>
@@ -444,11 +444,11 @@ const UserChat = () => {
             {/* Chat Messages */}
             <main
               ref={chatContainerRef}
-              className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/30 dark:bg-slate-950/30"
+              className="flex-1 overflow-y-auto p-6 space-y-6 bg-surface-secondary/30 dark:bg-slate-950/30"
             >
               {/* Today marker */}
               <div className="flex justify-center mb-2">
-                <span className="px-4 py-1.5 bg-white dark:bg-slate-900 shadow-sm rounded-2xl text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border border-gray-100 dark:border-slate-800">
+                <span className="px-4 py-1.5 bg-surface-card dark:bg-slate-900 shadow-sm rounded-2xl text-[9px] font-black text-text-disabled dark:text-text-muted uppercase tracking-[0.2em] border border-border-default dark:border-slate-800">
                   {t("chat.today") || "Today"}
                 </span>
               </div>
@@ -456,7 +456,7 @@ const UserChat = () => {
               {chatLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-3">
                   <div className={`animate-spin rounded-full h-8 w-8 border-b-2 ${theme.spinnerBorder}`}></div>
-                  <p className="text-xs text-slate-400 font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
+                  <p className="text-xs text-text-disabled font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
                 </div>
               ) : (
                 <AnimatePresence initial={false}>
@@ -472,7 +472,7 @@ const UserChat = () => {
                           className={`px-5 py-3.5 rounded-[1.8rem] shadow-sm transition-all ${
                             msg.sender === "me"
                               ? `${theme.msgBg} text-white rounded-tr-none`
-                              : "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-tl-none border border-gray-100 dark:border-slate-800"
+                              : "bg-surface-card dark:bg-slate-900 text-text-main dark:text-slate-100 rounded-tl-none border border-border-default dark:border-slate-800"
                           }`}
                         >
                           {/* Attachment */}
@@ -493,8 +493,8 @@ const UserChat = () => {
                                   rel="noopener noreferrer"
                                   className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition ${
                                     msg.sender === "me"
-                                      ? "bg-white/20 hover:bg-white/30 text-white"
-                                      : "bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
+                                      ? "bg-surface-card/20 hover:bg-surface-card/30 text-white"
+                                      : "bg-surface-secondary dark:bg-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
                                   }`}
                                 >
                                   <LuFileText size={16} />
@@ -511,7 +511,7 @@ const UserChat = () => {
                         </div>
 
                         <div className="flex items-center gap-2 mt-1.5 px-2 opacity-50">
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">
+                          <span className="text-[9px] font-bold text-text-disabled uppercase tracking-tight">
                             {msg.time}
                           </span>
                           {msg.sender === "me" && (
@@ -538,7 +538,7 @@ const UserChat = () => {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden border-t border-gray-100 dark:border-slate-800"
+                  className="overflow-hidden border-t border-border-default dark:border-slate-800"
                 >
                   <div className={`px-6 py-3 ${theme.filePreviewBg} flex items-center justify-between`}>
                     <div className="flex items-center gap-3">
@@ -565,19 +565,19 @@ const UserChat = () => {
             </AnimatePresence>
 
             {/* Input */}
-            <footer className="p-5 bg-white dark:bg-slate-950 border-t border-gray-50 dark:border-slate-900">
+            <footer className="p-5 bg-surface-card dark:bg-slate-950 border-t border-gray-50 dark:border-slate-900">
               <form
                 onSubmit={handleSendMessage}
-                className={`flex items-center gap-3 bg-gray-100/50 dark:bg-slate-900/50 p-2 ps-5 rounded-[2rem] focus-within:bg-white dark:focus-within:bg-slate-900 transition-all shadow-inner border border-transparent ${theme.focusBorder}`}
+                className={`flex items-center gap-3 bg-surface-secondary/50 dark:bg-slate-900/50 p-2 ps-5 rounded-[2rem] focus-within:bg-surface-card dark:focus-within:bg-slate-900 transition-all shadow-inner border border-transparent ${theme.focusBorder}`}
               >
                 <input type="file" ref={imageInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
                 <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileSelect} />
 
                 <div className="flex items-center gap-1">
-                  <button type="button" onClick={() => imageInputRef.current?.click()} className={`p-2 text-slate-400 ${theme.hoverText} transition`}>
+                  <button type="button" onClick={() => imageInputRef.current?.click()} className={`p-2 text-text-disabled ${theme.hoverText} transition`}>
                     <LuImage size={20} />
                   </button>
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className={`p-2 text-slate-400 ${theme.hoverText} transition`}>
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className={`p-2 text-text-disabled ${theme.hoverText} transition`}>
                     <LuPaperclip size={20} />
                   </button>
                 </div>
@@ -587,7 +587,7 @@ const UserChat = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={selectedFile ? (t("chat.caption") || "Add a caption...") : (t("chat.typeHere") || "Type a message...")}
-                  className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder:text-slate-400 font-medium py-2.5 text-sm"
+                  className="flex-1 bg-transparent border-none outline-none text-text-main dark:text-white placeholder:text-text-disabled font-medium py-2.5 text-sm"
                   dir="auto"
                 />
 
@@ -598,7 +598,7 @@ const UserChat = () => {
                   disabled={sending || (!message.trim() && !selectedFile)}
                   className={`px-6 py-3 rounded-[1.5rem] font-black text-sm shadow-lg transition-all flex items-center gap-2 ${
                     sending || (!message.trim() && !selectedFile)
-                      ? "bg-gray-300 dark:bg-slate-700 text-gray-500 cursor-not-allowed shadow-none"
+                      ? "bg-gray-300 dark:bg-slate-700 text-text-muted cursor-not-allowed shadow-none"
                       : `${theme.msgBg} ${theme.msgHover} text-white ${theme.shadow} dark:shadow-none`
                   }`}
                 >

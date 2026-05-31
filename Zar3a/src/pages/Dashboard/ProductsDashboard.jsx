@@ -257,25 +257,25 @@ export default function ProductsDashboard() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-card/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm">
           <div>
-            <h1 className="text-4xl font-[1000] text-slate-900 dark:text-white tracking-tighter uppercase">
+            <h1 className="text-4xl font-[1000] text-text-main dark:text-white tracking-tighter uppercase">
               {t("prodDash.title")}
             </h1>
-            <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-1 uppercase tracking-widest">
+            <p className="text-sm font-bold text-primary-base dark:text-emerald-400 mt-1 uppercase tracking-widest">
               {t("prodDash.manageOffer")}
             </p>
           </div>
           <div className="flex gap-2">
             <button
               onClick={loadProducts}
-              className="px-6 py-3 bg-gray-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold text-xs hover:bg-gray-200 transition"
+              className="px-6 py-3 bg-surface-secondary dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold text-xs hover:bg-gray-200 transition"
             >
               {t("prodDash.refresh")}
             </button>
             <button
               onClick={() => navigate("/marketplace")}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs hover:bg-emerald-700 transition shadow-lg shadow-green-200 dark:shadow-none"
+              className="px-6 py-3 bg-primary-base text-white rounded-2xl font-black text-xs hover:bg-primary-hover transition shadow-lg shadow-green-200 dark:shadow-none"
             >
               {t("prodDash.browseMarket")}
             </button>
@@ -289,7 +289,7 @@ export default function ProductsDashboard() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-3 px-6 py-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-2xl text-green-600 dark:text-green-400 font-semibold"
+              className="flex items-center gap-3 px-6 py-4 bg-primary-light dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-2xl text-primary-base dark:text-green-400 font-semibold"
             >
               <FiCheckCircle className="shrink-0" /> {message}
             </motion.div>
@@ -308,8 +308,8 @@ export default function ProductsDashboard() {
 
         {/* Filters and Search Bar */}
         <div className="flex flex-col lg:flex-row gap-4 items-center">
-          <div className="flex-1 w-full relative bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-slate-800 flex items-center p-2">
-            <div className="p-3 text-gray-400 bg-gray-50 dark:bg-slate-800 rounded-2xl">
+          <div className="flex-1 w-full relative bg-surface-card dark:bg-slate-900 rounded-[2rem] border border-border-default dark:border-slate-800 flex items-center p-2">
+            <div className="p-3 text-text-disabled bg-surface-secondary dark:bg-slate-800 rounded-2xl">
               <LuSearch size={20} />
             </div>
             <input
@@ -322,13 +322,13 @@ export default function ProductsDashboard() {
           </div>
 
           {user && user.role === "ADMIN" && (
-            <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-full border border-gray-100 dark:border-slate-800 w-full lg:w-auto overflow-x-auto">
+            <div className="flex bg-surface-card dark:bg-slate-900 p-1.5 rounded-full border border-border-default dark:border-slate-800 w-full lg:w-auto overflow-x-auto">
               <button
                 onClick={() => setActiveTypeFilter("ALL")}
                 className={`px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-widest transition-all ${
                   activeTypeFilter === "ALL"
-                    ? "bg-green-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-950 dark:hover:text-white"
+                    ? "bg-primary-base text-white shadow-md"
+                    : "text-text-muted hover:text-gray-950 dark:hover:text-white"
                 }`}
               >
                 {t("prodDash.allItems")}
@@ -337,8 +337,8 @@ export default function ProductsDashboard() {
                 onClick={() => setActiveTypeFilter("CROP")}
                 className={`px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-widest transition-all ${
                   activeTypeFilter === "CROP"
-                    ? "bg-green-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-950 dark:hover:text-white"
+                    ? "bg-primary-base text-white shadow-md"
+                    : "text-text-muted hover:text-gray-950 dark:hover:text-white"
                 }`}
               >
                 {t("prodDash.cropProd")}
@@ -347,8 +347,8 @@ export default function ProductsDashboard() {
                 onClick={() => setActiveTypeFilter("AGRI")}
                 className={`px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-widest transition-all ${
                   activeTypeFilter === "AGRI"
-                    ? "bg-green-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-950 dark:hover:text-white"
+                    ? "bg-primary-base text-white shadow-md"
+                    : "text-text-muted hover:text-gray-950 dark:hover:text-white"
                 }`}
               >
                 {t("prodDash.agriShop")}
@@ -361,7 +361,7 @@ export default function ProductsDashboard() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
-            <p className="text-gray-500 font-bold dark:text-gray-400">{t("prodDash.loading")}</p>
+            <p className="text-text-muted font-bold dark:text-text-disabled">{t("prodDash.loading")}</p>
 
           </div>
         ) : (
@@ -378,30 +378,30 @@ export default function ProductsDashboard() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     key={product.id}
-                    className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-gray-100 dark:border-slate-800/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                    className="bg-surface-card dark:bg-slate-900 rounded-[2.5rem] p-6 border border-border-default dark:border-slate-800/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
                   >
                     <div>
                       {/* Product Header */}
                       <div className="flex justify-between items-start mb-4">
                         <span className={`text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full ${
                           isCrop
-                            ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
+                            ? "bg-primary-light dark:bg-emerald-950/40 text-primary-base dark:text-emerald-400"
                             : "bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400"
                         }`}>
                           {isCrop ? `🌾 ${t("nav.cropMarket")}` : `📦 ${t("prodDash.agriShop")}`}
                         </span>
-                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest bg-gray-50 dark:bg-slate-800/60 px-3 py-1 rounded-lg">
+                        <span className="text-xs font-black text-text-disabled uppercase tracking-widest bg-surface-secondary dark:bg-slate-800/60 px-3 py-1 rounded-lg">
                           {t("market.category." + product.category) || product.category || "OTHER"}
                         </span>
                       </div>
 
                       {/* Title & Desc */}
-                      <h3 className="text-xl font-black text-slate-800 dark:text-white group-hover:text-green-600 transition-colors line-clamp-1">
+                      <h3 className="text-xl font-black text-text-main dark:text-white group-hover:text-primary-base transition-colors line-clamp-1">
                         {product.title}
                       </h3>
                       
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="text-[10px] text-gray-400 font-bold">{t("prodDash.seller")}: {product.User?.fullName || "Zar3a Member"}</span>
+                        <span className="text-[10px] text-text-disabled font-bold">{t("prodDash.seller")}: {product.User?.fullName || "Zar3a Member"}</span>
                         {product.isVerified && (
                           <span className="bg-blue-500 rounded-full p-0.5 flex items-center justify-center shrink-0">
                             <LuCheck size={8} className="text-white" strokeWidth={4} />
@@ -409,19 +409,19 @@ export default function ProductsDashboard() {
                         )}
                       </div>
 
-                      <p className="text-slate-500 dark:text-gray-400 text-xs mt-3 leading-relaxed line-clamp-3 font-medium">
+                      <p className="text-text-muted dark:text-text-disabled text-xs mt-3 leading-relaxed line-clamp-3 font-medium">
                         {product.description || t("track.noDesc")}
                       </p>
 
                       {/* Metadata fields */}
                       <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-50 dark:border-slate-800/50">
                         <div>
-                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">{t("prodDash.region")}</p>
-                          <p className="text-xs font-black text-slate-800 dark:text-gray-200">{t("loc." + product.region) || product.region || t("market.all")}</p>
+                          <p className="text-[9px] font-bold text-text-disabled uppercase tracking-wider">{t("prodDash.region")}</p>
+                          <p className="text-xs font-black text-text-main dark:text-gray-200">{t("loc." + product.region) || product.region || t("market.all")}</p>
                         </div>
                         <div>
-                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">{t("prodDash.status")}</p>
-                          <p className="text-xs font-black text-green-600 dark:text-green-400">
+                          <p className="text-[9px] font-bold text-text-disabled uppercase tracking-wider">{t("prodDash.status")}</p>
+                          <p className="text-xs font-black text-primary-base dark:text-green-400">
                             {product.status === "AVAILABLE" ? t("market.available") :
                              product.status === "SOLD" ? t("market.sold") :
                              product.status === "DELETED" ? t("market.deleted") :
@@ -434,9 +434,9 @@ export default function ProductsDashboard() {
                     {/* Bottom Info and Actions */}
                     <div className="mt-6 pt-5 border-t border-gray-50 dark:border-slate-800/50 flex items-center justify-between">
                       <div>
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">{t("prodDash.price")}</p>
-                        <p className="text-xl font-black text-slate-900 dark:text-white">
-                          EGP {Number(product.price).toLocaleString()} <span className="text-xs font-normal text-gray-400">/ {product.unit || "unit"}</span>
+                        <p className="text-[9px] font-black text-text-disabled uppercase tracking-widest mb-0.5">{t("prodDash.price")}</p>
+                        <p className="text-xl font-black text-text-main dark:text-white">
+                          EGP {Number(product.price).toLocaleString()} <span className="text-xs font-normal text-text-disabled">/ {product.unit || "unit"}</span>
                         </p>
                       </div>
 
@@ -444,7 +444,7 @@ export default function ProductsDashboard() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleOpenEditModal(product)}
-                            className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shadow-sm"
+                            className="w-12 h-12 bg-primary-light dark:bg-emerald-950/20 text-primary-base dark:text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shadow-sm"
                             title="Edit Product"
                           >
                             <FiEdit size={18} />
@@ -458,7 +458,7 @@ export default function ProductsDashboard() {
                           </button>
                         </div>
                       ) : (
-                        <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold bg-gray-50 dark:bg-slate-800/40 px-3 py-2 rounded-xl">
+                        <span className="text-[10px] text-text-disabled dark:text-text-muted font-bold bg-surface-secondary dark:bg-slate-800/40 px-3 py-2 rounded-xl">
                           {t("prodDash.viewOnly")}
                         </span>
                       )}
@@ -469,10 +469,10 @@ export default function ProductsDashboard() {
             </AnimatePresence>
 
             {filteredProducts.length === 0 && !loading && (
-              <div className="col-span-full py-28 bg-white dark:bg-slate-900 rounded-[3rem] border border-gray-100 dark:border-slate-800 text-center flex flex-col items-center justify-center">
+              <div className="col-span-full py-28 bg-surface-card dark:bg-slate-900 rounded-[3rem] border border-border-default dark:border-slate-800 text-center flex flex-col items-center justify-center">
                 <LuLayoutGrid size={50} className="text-gray-300 dark:text-slate-700 mb-4" />
-                <h3 className="text-xl font-black text-slate-800 dark:text-white">{t("prodDash.noProductsFound")}</h3>
-                <p className="text-xs text-gray-400 mt-1 max-w-sm">{t("prodDash.noProductsDesc")}</p>
+                <h3 className="text-xl font-black text-text-main dark:text-white">{t("prodDash.noProductsFound")}</h3>
+                <p className="text-xs text-text-disabled mt-1 max-w-sm">{t("prodDash.noProductsDesc")}</p>
               </div>
             )}
           </div>
@@ -495,20 +495,20 @@ export default function ProductsDashboard() {
               initial={{ y: 50, opacity: 0, scale: 0.95 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 50, opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[3.5rem] p-8 md:p-10 relative shadow-2xl z-10 overflow-y-auto max-h-[90vh] custom-scrollbar text-left"
+              className="bg-surface-card dark:bg-slate-900 w-full max-w-2xl rounded-[3.5rem] p-8 md:p-10 relative shadow-2xl z-10 overflow-y-auto max-h-[90vh] custom-scrollbar text-left"
             >
               <button
                 type="button"
                 onClick={handleCloseEditModal}
-                className="absolute top-6 right-6 p-3 bg-gray-100 dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
+                className="absolute top-6 right-6 p-3 bg-surface-secondary dark:bg-slate-800 rounded-full hover:bg-red-50 hover:text-red-500 transition-all"
               >
-                <LuX size={20} className="text-gray-500 hover:text-red-500" />
+                <LuX size={20} className="text-text-muted hover:text-red-500" />
               </button>
 
               <h2 className="text-2xl font-black dark:text-white mb-2 tracking-tight">
                 {t("prodDash.editProductTitle") || "Edit Product Details"}
               </h2>
-              <p className="text-xs text-gray-400 font-bold mb-6 uppercase tracking-wider">
+              <p className="text-xs text-text-disabled font-bold mb-6 uppercase tracking-wider">
                 {t("prodDash.editProductDesc") || "Update your product offerings in the marketplace."}
               </p>
 
@@ -518,7 +518,7 @@ export default function ProductsDashboard() {
                 </div>
               )}
               {editSuccess && (
-                <div className="mb-4 text-xs font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800/30">
+                <div className="mb-4 text-xs font-bold text-emerald-500 bg-primary-light dark:bg-emerald-950/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800/30">
                   {editSuccess}
                 </div>
               )}
@@ -526,7 +526,7 @@ export default function ProductsDashboard() {
               <form onSubmit={handleUpdateProduct} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.prodTitle") || "Product Title"}</label>
+                    <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.prodTitle") || "Product Title"}</label>
                     <input
                       type="text"
                       name="title"
@@ -534,11 +534,11 @@ export default function ProductsDashboard() {
                       onChange={handleEditFormChange}
                       required
                       placeholder="e.g. Premium Nitrates"
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                      className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.price") || "Price (EGP)"}</label>
+                    <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.price") || "Price (EGP)"}</label>
                     <input
                       type="number"
                       name="price"
@@ -547,41 +547,41 @@ export default function ProductsDashboard() {
                       required
                       min="1"
                       placeholder="e.g. 500"
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                      className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.unit") || "Unit"}</label>
+                    <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.unit") || "Unit"}</label>
                     <input
                       type="text"
                       name="unit"
                       value={editForm.unit}
                       onChange={handleEditFormChange}
                       placeholder="e.g. Bag, Ton, kg"
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                      className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.region") || "Region"}</label>
+                    <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.region") || "Region"}</label>
                     <input
                       type="text"
                       name="region"
                       value={editForm.region}
                       onChange={handleEditFormChange}
                       placeholder="e.g. Cairo, assiot"
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                      className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.status") || "Status"}</label>
+                    <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.status") || "Status"}</label>
                     <select
                       name="status"
                       value={editForm.status}
                       onChange={handleEditFormChange}
-                      className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                      className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                     >
                       <option value="AVAILABLE">AVAILABLE</option>
                       <option value="SOLD">SOLD</option>
@@ -591,12 +591,12 @@ export default function ProductsDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.category") || "Category"}</label>
+                  <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.category") || "Category"}</label>
                   <select
                     name="category"
                     value={editForm.category}
                     onChange={handleEditFormChange}
-                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                    className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                   >
                     <option value="SEEDS">SEEDS</option>
                     <option value="FERTILIZERS">FERTILIZERS</option>
@@ -608,7 +608,7 @@ export default function ProductsDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.description") || "Description"}</label>
+                  <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.description") || "Description"}</label>
                   <textarea
                     name="description"
                     value={editForm.description}
@@ -616,15 +616,15 @@ export default function ProductsDashboard() {
                     required
                     rows={4}
                     placeholder="Provide details about nutrient values, size, and uses..."
-                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl p-4 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                    className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl p-4 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">{t("prodDash.productImage") || "Product Image"}</label>
+                  <label className="block text-[10px] font-bold text-text-disabled uppercase tracking-widest mb-1.5">{t("prodDash.productImage") || "Product Image"}</label>
                   <div className="mt-2 flex flex-col md:flex-row items-center gap-4">
                     {(editImagePreview || editForm.imageUrl) && (
-                      <div className="w-24 h-24 rounded-2xl border border-gray-100 dark:border-slate-800 overflow-hidden shrink-0 flex items-center justify-center bg-gray-50 dark:bg-slate-800">
+                      <div className="w-24 h-24 rounded-2xl border border-border-default dark:border-slate-800 overflow-hidden shrink-0 flex items-center justify-center bg-surface-secondary dark:bg-slate-800">
                         <img src={editImagePreview || editForm.imageUrl} alt="Preview" className="w-full h-full object-cover animate-fade-in" />
                       </div>
                     )}
@@ -635,10 +635,10 @@ export default function ProductsDashboard() {
                         value={editForm.imageUrl}
                         onChange={(e) => { handleEditFormChange(e); setEditImageFile(null); setEditImagePreview(""); }}
                         placeholder="Paste External Image URL"
-                        className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
+                        className="w-full bg-surface-secondary dark:bg-slate-800 border border-border-default dark:border-slate-700/50 rounded-2xl px-4 py-3.5 text-xs font-bold dark:text-white outline-none focus:border-green-500 transition-colors"
                       />
-                      <div className="relative h-12 flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-2xl hover:bg-gray-100 dark:hover:bg-slate-800/50 transition">
-                        <span className="absolute text-[10px] font-bold text-gray-400 pointer-events-none">
+                      <div className="relative h-12 flex items-center justify-center border-2 border-dashed border-border-default dark:border-slate-700 rounded-2xl hover:bg-surface-secondary dark:hover:bg-slate-800/50 transition">
+                        <span className="absolute text-[10px] font-bold text-text-disabled pointer-events-none">
                           OR UPLOAD FILE (.JPG/.PNG)
                         </span>
                         <input
@@ -662,14 +662,14 @@ export default function ProductsDashboard() {
                 <div className="flex gap-3 pt-4 border-t border-gray-50 dark:border-slate-800/50">
                   <button
                     type="submit"
-                    className="flex-1 py-4 bg-green-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-700 transition shadow-lg shadow-green-200 dark:shadow-none"
+                    className="flex-1 py-4 bg-primary-base text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition shadow-lg shadow-green-200 dark:shadow-none"
                   >
                     {t("prodDash.saveChanges") || "Save Changes"}
                   </button>
                   <button
                     type="button"
                     onClick={handleCloseEditModal}
-                    className="px-6 py-4 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition"
+                    className="px-6 py-4 bg-surface-secondary dark:bg-slate-800 text-text-subtle dark:text-gray-300 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition"
                   >
                     {t("prodDash.cancel") || "Cancel"}
                   </button>

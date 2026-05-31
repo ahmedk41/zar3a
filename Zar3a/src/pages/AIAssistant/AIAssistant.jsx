@@ -143,14 +143,14 @@ const AIAssistant = () => {
     <div className="max-w-5xl mx-auto h-[88vh] flex flex-col bg-[#F8FAFC] dark:bg-[#0F172A] rounded-4xl shadow-[0_20px_50px_rgba(8,112,184,0.07)] border border-white dark:border-slate-800 overflow-hidden relative mt-6 font-sans">
 
       {/* 🌟 Premium Header */}
-      <div className="px-8 py-5 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center z-10">
+      <div className="px-8 py-5 bg-surface-card/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-border-default/50 dark:border-slate-800/50 flex justify-between items-center z-10">
         <div className="flex items-center gap-5">
           <div className="w-14 h-14 bg-linear-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30 text-white">
             <LuSprout size={28} />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2 tracking-tight">
-              ZAR3A <span className="text-emerald-600 dark:text-emerald-400 font-light">{t("ai.title")}</span>
+            <h2 className="text-2xl font-black text-text-main dark:text-white flex items-center gap-2 tracking-tight">
+              ZAR3A <span className="text-primary-base dark:text-emerald-400 font-light">{t("ai.title")}</span>
               <LuSparkles className="text-yellow-400" size={18} />
             </h2>
             <div className="flex items-center gap-2 mt-0.5">
@@ -158,7 +158,7 @@ const AIAssistant = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{t("ai.subtitle")}</p>
+              <p className="text-[11px] font-bold text-text-muted dark:text-text-disabled uppercase tracking-widest">{t("ai.subtitle")}</p>
             </div>
           </div>
         </div>
@@ -180,7 +180,7 @@ const AIAssistant = () => {
                 {/* Avatar */}
                 <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${msg.sender === "user"
                     ? "bg-linear-to-tr from-slate-800 to-slate-700 text-white"
-                    : "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-emerald-600"
+                    : "bg-surface-card dark:bg-slate-800 border border-border-default dark:border-slate-700 text-primary-base"
                   }`}>
                   {msg.sender === "user" ? <LuUser size={22} /> : <LuBot size={24} />}
                 </div>
@@ -189,15 +189,14 @@ const AIAssistant = () => {
                 <div
                   className={`px-7 py-5 text-[16px] leading-[1.8] shadow-sm ${msg.sender === "user"
                       ? "bg-slate-800 text-white rounded-4xl rounded-tr-sm"
-                      : "bg-white dark:bg-slate-800/80 dark:text-slate-200 rounded-4xl rounded-tl-sm border border-slate-100/80 dark:border-slate-700/50 backdrop-blur-sm"
+                      : "bg-surface-card dark:bg-slate-800/80 dark:text-slate-200 rounded-4xl rounded-tl-sm border border-border-default/80 dark:border-slate-700/50 backdrop-blur-sm"
                     }`}
                   dir={msg.sender === "ai" ? "auto" : "auto"}
                 >
                   {msg.sender === "user" ? (
                     <p className="font-medium break-words whitespace-pre-wrap" style={{ overflowWrap: 'anywhere' }}>{msg.text}</p>
                   ) : (
-                    /* 🎨 Pro Markdown Styling (Fixed className issue) */
-                    <div className="markdown-body font-medium text-slate-700 dark:text-slate-200 break-words whitespace-pre-wrap [&>h3]:text-xl [&>h3]:font-black [&>h3]:text-emerald-700 dark:[&>h3]:text-emerald-400 [&>h3]:mb-4 [&>h3]:mt-2 [&>ul]:list-disc [&>ul]:mx-5 [&>ul]:mb-4 [&>ul]:space-y-2 [&>ul>li]:pl-1 [&>ol]:list-decimal [&>ol]:mx-5 [&>ol]:mb-4 [&>ol]:space-y-2 [&>p]:mb-4 last:[&>p]:mb-0 [&>strong]:text-slate-900 dark:[&>strong]:text-white [&>strong]:font-bold [&>hr]:border-slate-200 dark:[&>hr]:border-slate-700 [&>hr]:my-4" style={{ overflowWrap: 'anywhere' }}>
+                    <div className="markdown-body font-medium text-slate-700 dark:text-slate-200 break-words whitespace-pre-wrap [&>h3]:text-xl [&>h3]:font-black [&>h3]:text-emerald-700 dark:[&>h3]:text-emerald-400 [&>h3]:mb-4 [&>h3]:mt-2 [&>ul]:list-disc [&>ul]:mx-5 [&>ul]:mb-4 [&>ul]:space-y-2 [&>ul>li]:pl-1 [&>ol]:list-decimal [&>ol]:mx-5 [&>ol]:mb-4 [&>ol]:space-y-2 [&>p]:mb-4 last:[&>p]:mb-0 [&>strong]:text-text-main dark:[&>strong]:text-white [&>strong]:font-bold [&>hr]:border-border-default dark:[&>hr]:border-slate-700 [&>hr]:my-4" style={{ overflowWrap: 'anywhere' }}>
                       <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
                   )}
@@ -229,9 +228,9 @@ const AIAssistant = () => {
               <button
                 key={idx}
                 onClick={() => handleSend(s.text)}
-                className="p-5 text-start bg-white dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 border border-slate-200/60 dark:border-slate-700/50 hover:border-emerald-500/50 rounded-3xl shadow-xs transition-all duration-300 group cursor-pointer"
+                className="p-5 text-start bg-surface-card dark:bg-slate-800/80 hover:bg-primary-light dark:hover:bg-emerald-950/20 border border-border-default/60 dark:border-slate-700/50 hover:border-emerald-500/50 rounded-3xl shadow-xs transition-all duration-300 group cursor-pointer"
               >
-                <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-900 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-950/40 flex items-center justify-center text-xl mb-3.5 transition duration-300">
+                <div className="w-10 h-10 rounded-2xl bg-surface-secondary dark:bg-slate-900 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-950/40 flex items-center justify-center text-xl mb-3.5 transition duration-300">
                   {s.icon}
                 </div>
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 leading-relaxed group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition">
@@ -245,13 +244,13 @@ const AIAssistant = () => {
         {/* Typing Indicator */}
         {isTyping && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 ml-2">
-            <div className="w-11 h-11 rounded-2xl bg-white border border-slate-100 shadow-sm flex items-center justify-center shrink-0">
-              <LuBot size={24} className="text-emerald-600" />
+            <div className="w-11 h-11 rounded-2xl bg-surface-card border border-border-default shadow-sm flex items-center justify-center shrink-0">
+              <LuBot size={24} className="text-primary-base" />
             </div>
-            <div className="px-6 py-5 bg-white dark:bg-slate-800/80 rounded-4xl rounded-tl-sm border border-slate-100/80 shadow-sm flex items-center gap-2 backdrop-blur-sm">
+            <div className="px-6 py-5 bg-surface-card dark:bg-slate-800/80 rounded-4xl rounded-tl-sm border border-border-default/80 shadow-sm flex items-center gap-2 backdrop-blur-sm">
               <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-bounce"></div>
               <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-              <div className="w-2.5 h-2.5 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+              <div className="w-2.5 h-2.5 bg-primary-base rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
             </div>
           </motion.div>
         )}
@@ -259,10 +258,10 @@ const AIAssistant = () => {
       </div>
 
       {/* 🚀 Glass Input Section */}
-      <div className="p-6 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 z-10">
-        <div className="max-w-4xl mx-auto flex items-center gap-4 bg-white dark:bg-slate-800 p-2.5 px-6 rounded-4xl shadow-[0_5px_15px_rgba(0,0,0,0.05)] border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-emerald-500/40 focus-within:shadow-emerald-500/10 transition-all duration-300">
+      <div className="p-6 bg-surface-card/60 dark:bg-slate-900/60 backdrop-blur-xl border-t border-border-default/50 dark:border-slate-800/50 z-10">
+        <div className="max-w-4xl mx-auto flex items-center gap-4 bg-surface-card dark:bg-slate-800 p-2.5 px-6 rounded-4xl shadow-[0_5px_15px_rgba(0,0,0,0.05)] border border-border-default dark:border-slate-700 focus-within:ring-2 ring-emerald-500/40 focus-within:shadow-emerald-500/10 transition-all duration-300">
           <input
-            className="flex-1 bg-transparent border-none outline-none py-3 text-lg font-medium text-slate-800 dark:text-white placeholder:text-slate-400"
+            className="flex-1 bg-transparent border-none outline-none py-3 text-lg font-medium text-text-main dark:text-white placeholder:text-text-disabled"
             placeholder={t("ai.placeholder")}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
@@ -272,12 +271,12 @@ const AIAssistant = () => {
           <button
             onClick={handleSend}
             disabled={isTyping || !inputText.trim()}
-            className="w-14 h-14 bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-700 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 active:scale-90 transition-all duration-200 shrink-0"
+            className="w-14 h-14 bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-700 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-text-disabled active:scale-90 transition-all duration-200 shrink-0"
           >
             <LuSend size={22} className={document.dir === 'rtl' ? "mr-1" : "ml-1"} />
           </button>
         </div>
-        <p className="text-center text-[11px] font-semibold text-slate-400 mt-4 tracking-wide">
+        <p className="text-center text-[11px] font-semibold text-text-disabled mt-4 tracking-wide">
           ZAR3A PROJECT 2026 • CONFIDENTIAL ACADEMIC PROTOTYPE
         </p>
       </div>

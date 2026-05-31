@@ -40,7 +40,7 @@ const MainLayout = () => {
         <main ref={mainRef} className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden pt-6">
           
           <div className="flex-1 px-4 md:px-8 pb-8">
-            <div className="min-h-full bg-white dark:bg-slate-900/50 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm p-4 md:p-8">
+            <div className="min-h-full bg-surface-card dark:bg-slate-900/50 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm p-4 md:p-8">
               <Outlet />
             </div>
           </div>

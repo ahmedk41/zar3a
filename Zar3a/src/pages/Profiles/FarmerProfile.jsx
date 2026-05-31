@@ -57,14 +57,14 @@ export default function FarmerProfile() {
           className="mb-8"
         >
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-16 h-16 bg-primary-base rounded-full flex items-center justify-center text-white text-2xl font-bold">
               {profile?.fullName?.charAt(0)}
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-4xl font-bold text-text-main dark:text-white">
                 {profile?.fullName}
               </h1>
-              <p className="text-green-600 dark:text-green-400 font-semibold">🌾 {t("profile.farmer")}</p>
+              <p className="text-primary-base dark:text-green-400 font-semibold">🌾 {t("profile.farmer")}</p>
             </div>
           </div>
         </motion.div>
@@ -76,34 +76,34 @@ export default function FarmerProfile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
           >
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <FiUser className="text-green-600" /> {t("profile.personalInfo")}
+            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
+              <FiUser className="text-primary-base" /> {t("profile.personalInfo")}
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.fullName")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.fullName")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   {profile?.fullName}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.username")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.username")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   @{profile?.username}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.email")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FiMail className="text-green-600" /> {profile?.email}
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.email")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
+                  <FiMail className="text-primary-base" /> {profile?.email}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.phone")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FiPhone className="text-green-600" /> {profile?.phone}
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.phone")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
+                  <FiPhone className="text-primary-base" /> {profile?.phone}
                 </p>
               </div>
             </div>
@@ -114,32 +114,32 @@ export default function FarmerProfile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            className="bg-surface-card dark:bg-gray-800 rounded-lg shadow-lg p-6"
           >
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <FiHome className="text-green-600" /> {t("profile.farmInfo")}
+            <h2 className="text-xl font-bold text-text-main dark:text-white mb-4 flex items-center gap-2">
+              <FiHome className="text-primary-base" /> {t("profile.farmInfo")}
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.farmSize")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.farmSize")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   {profile?.FarmerProfile?.farmSize || t("admin.cvNA")}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.soilType")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.soilType")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white">
                   {profile?.FarmerProfile?.soilType || t("admin.cvNA")}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.location")}</label>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FiMapPin className="text-green-600" /> {profile?.FarmerProfile?.location || t("admin.cvNA")}
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.location")}</label>
+                <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
+                  <FiMapPin className="text-primary-base" /> {profile?.FarmerProfile?.location || t("admin.cvNA")}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">{t("profile.sensorId") || "Sensor ID"}</label>
+                <label className="text-sm text-text-subtle dark:text-text-disabled">{t("profile.sensorId") || "Sensor ID"}</label>
                 
                 {editingSensor ? (
                   <form onSubmit={handleUpdateSensor} className="mt-2 flex flex-col gap-2">
@@ -156,7 +156,7 @@ export default function FarmerProfile() {
                       <button
                         type="submit"
                         disabled={isUpdating}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition"
+                        className="px-4 py-2 bg-primary-base text-white rounded-lg text-sm font-bold hover:bg-primary-hover transition"
                       >
                         {isUpdating ? "Saving..." : "Save Sensor"}
                       </button>
@@ -171,15 +171,15 @@ export default function FarmerProfile() {
                   </form>
                 ) : (
                   <div className="flex justify-between items-center mt-1">
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                      <FiTrendingUp className="text-green-600" /> {profile?.FarmerProfile?.sensorId || t("admin.cvNA")}
+                    <p className="text-lg font-semibold text-text-main dark:text-white flex items-center gap-2">
+                      <FiTrendingUp className="text-primary-base" /> {profile?.FarmerProfile?.sensorId || t("admin.cvNA")}
                     </p>
                     <button
                       onClick={() => {
                         setNewSensorId(profile?.FarmerProfile?.sensorId || "");
                         setEditingSensor(true);
                       }}
-                      className="text-sm text-green-600 hover:text-green-700 dark:text-green-400 font-bold"
+                      className="text-sm text-primary-base hover:text-green-700 dark:text-green-400 font-bold"
                     >
                       Edit
                     </button>
@@ -199,13 +199,13 @@ export default function FarmerProfile() {
         >
           <Link
             to="/products-dashboard"
-            className="bg-green-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+            className="bg-primary-base text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
           >
             <FiTrendingUp /> {t("profile.prodDash")}
           </Link>
           <Link
             to="/track-orders"
-            className="bg-emerald-600 text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
+            className="bg-primary-base text-white rounded-lg shadow-lg p-6 hover:shadow-xl transition text-center font-semibold flex items-center justify-center gap-2"
           >
             <FiTrendingUp /> {t("profile.trackOrder")}
           </Link>

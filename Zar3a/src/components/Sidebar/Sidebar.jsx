@@ -115,17 +115,17 @@ const Sidebar = ({ isOpen, onClose }) => {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className={
             isMobile
-              ? "fixed inset-y-0 start-0 z-50 w-64 bg-white dark:bg-slate-900 border-e border-gray-100 dark:border-slate-800 flex flex-col shadow-2xl transition-colors overflow-hidden h-full"
-              : "sticky top-20 h-[calc(100vh-80px)] w-64 bg-white dark:bg-slate-900 border-e border-gray-100 dark:border-slate-800 flex flex-col transition-colors overflow-hidden shrink-0 z-30"
+              ? "fixed inset-y-0 start-0 z-50 w-64 bg-surface-card dark:bg-slate-900 border-e border-border-default dark:border-slate-800 flex flex-col shadow-2xl transition-colors overflow-hidden h-full"
+              : "sticky top-20 h-[calc(100vh-80px)] w-64 bg-surface-card dark:bg-slate-900 border-e border-border-default dark:border-slate-800 flex flex-col transition-colors overflow-hidden shrink-0 z-30"
           }
         >
           {/* Mobile Header with Close Button */}
           {isMobile && (
-            <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
-              <span className="font-black text-lg text-emerald-600 uppercase tracking-wider">Zar3a</span>
+            <div className="p-4 border-b border-border-default dark:border-slate-800 flex justify-between items-center">
+              <span className="font-black text-lg text-primary-base uppercase tracking-wider">Zar3a</span>
               <button 
                 onClick={onClose}
-                className="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
+                className="p-2 bg-surface-secondary dark:bg-slate-800 rounded-xl text-text-muted hover:text-status-danger transition-colors cursor-pointer"
               >
                 <LuX size={18} />
               </button>
@@ -134,7 +134,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
           {/* Menu Items */}
           <div className="p-4 flex-1 space-y-2 overflow-y-auto">
-            <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("nav.mainMenu")}</p>
+            <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">{t("nav.mainMenu")}</p>
             {menuItems.map((item) => (
               <NavLink
                 key={item.path}
@@ -143,8 +143,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 p-3 rounded-xl transition-all ${
                     isActive
-                      ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold shadow-sm"
-                      : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-green-600"
+                      ? "bg-primary-light dark:bg-emerald-900/20 text-primary-base dark:text-emerald-400 font-bold shadow-sm"
+                      : "text-text-subtle dark:text-text-disabled hover:bg-surface-secondary dark:hover:bg-slate-800 hover:text-primary-hover"
                   }`
                 }
               >
@@ -155,7 +155,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           </div>
 
           {/* Bottom Actions */}
-          <div className="p-4 border-t border-gray-100 dark:border-slate-800 space-y-1">
+          <div className="p-4 border-t border-border-default dark:border-slate-800 space-y-1">
             {/* My Profile - Mobile Only */}
             {isMobile && user && profileLink && (
               <NavLink
@@ -163,7 +163,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 p-3 rounded-xl transition-all ${
-                    isActive ? "bg-green-50 dark:bg-green-900/20 text-green-700 font-bold" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800"
+                    isActive ? "bg-primary-light dark:bg-emerald-900/20 text-primary-base font-bold" : "text-text-subtle dark:text-text-disabled hover:bg-surface-secondary dark:hover:bg-slate-800"
                   }`
                 }
               >
@@ -179,7 +179,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 onClick={isMobile ? onClose : undefined}
                 className={({ isActive }) =>
                   `flex items-center gap-3 p-3 rounded-xl transition-all ${
-                    isActive ? "bg-green-50 dark:bg-green-900/20 text-green-700 font-bold" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800"
+                    isActive ? "bg-primary-light dark:bg-emerald-900/20 text-primary-base font-bold" : "text-text-subtle dark:text-text-disabled hover:bg-surface-secondary dark:hover:bg-slate-800"
                   }`
                 }
               >
@@ -196,7 +196,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     await logout();
                     onClose();
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-start font-bold cursor-pointer"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl text-status-danger dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-start font-bold cursor-pointer"
                 >
                   <LuLogOut className="text-xl shrink-0" />
                   <span>{t("nav.logout")}</span>
@@ -205,7 +205,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <NavLink
                   to="/login"
                   onClick={onClose}
-                  className="flex items-center gap-3 p-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold"
+                  className="flex items-center gap-3 p-3 rounded-xl text-text-subtle dark:text-slate-300 hover:bg-surface-secondary dark:hover:bg-slate-800 transition-all font-bold"
                 >
                   <LuUser className="text-xl shrink-0" />
                   <span>{t("nav.signIn")}</span>

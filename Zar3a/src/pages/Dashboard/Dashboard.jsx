@@ -663,13 +663,13 @@ const Dashboard = () => {
       )}
 
       {/* Top Tabs */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-slate-800 gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-surface-card dark:bg-slate-900 p-4 rounded-[2.5rem] shadow-sm border border-border-default dark:border-slate-800 gap-4">
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto custom-scrollbar pb-2">
           {sectors.map((sector) => (
             <button
               key={sector.id}
               onClick={() => setActiveSectorId(sector.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-3xl font-bold text-sm transition-all whitespace-nowrap ${activeSectorId === sector.id ? "bg-green-600 text-white shadow-lg shadow-green-200 dark:shadow-none" : "bg-gray-50 dark:bg-slate-800 text-gray-500 hover:bg-gray-100"}`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-3xl font-bold text-sm transition-all whitespace-nowrap ${activeSectorId === sector.id ? "bg-primary-base text-white shadow-lg shadow-green-200 dark:shadow-none" : "bg-surface-secondary dark:bg-slate-800 text-text-muted hover:bg-surface-secondary"}`}
             >
               <LuLayoutGrid /> {
                 sector.name.includes("Greenhouse") ? `${t("dash.sector")} A: ${t("dash.greenhouse")}` :
@@ -683,7 +683,7 @@ const Dashboard = () => {
           {user?.role === "FARMER" && (
             <button
               onClick={() => setIsAddSensorOpen(true)}
-              className="flex items-center gap-2 px-6 py-3 rounded-3xl font-bold text-sm bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-slate-800 dark:text-emerald-400 border-2 border-dashed border-emerald-300 transition-all whitespace-nowrap"
+              className="flex items-center gap-2 px-6 py-3 rounded-3xl font-bold text-sm bg-primary-light text-emerald-700 hover:bg-emerald-100 dark:bg-slate-800 dark:text-emerald-400 border-2 border-dashed border-emerald-300 transition-all whitespace-nowrap"
             >
               <LuPlus /> {t("dash.addSector") || "Add Sector"}
             </button>
@@ -691,7 +691,7 @@ const Dashboard = () => {
         </div>
         <button
           onClick={() => setIsLogOpen(true)}
-          className="relative p-4 bg-gray-50 dark:bg-slate-800 hover:text-green-600 rounded-full transition-colors hidden md:block"
+          className="relative p-4 bg-surface-secondary dark:bg-slate-800 hover:text-primary-base rounded-full transition-colors hidden md:block"
         >
           <LuBell size={20} className="dark:text-white" />
           <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
@@ -704,13 +704,13 @@ const Dashboard = () => {
             {/* Location Search */}
             <div
               ref={searchRef}
-              className="relative z-40 bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-slate-800 flex items-center p-3"
+              className="relative z-40 bg-surface-card dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-border-default dark:border-slate-800 flex items-center p-3"
             >
-              <div className="p-3 bg-green-50 text-green-600 rounded-3xl">
+              <div className="p-3 bg-primary-light text-primary-base rounded-3xl">
                 <LuMapPin size={22} />
               </div>
               <div className="flex-1 px-4">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                <p className="text-[10px] font-black text-text-disabled uppercase tracking-widest">
                   {t("dash.zoneLocation")}
                 </p>
                 <input
@@ -729,13 +729,13 @@ const Dashboard = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-[110%] left-0 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 rounded-[2.5rem] shadow-2xl z-50 p-2 max-h-75 overflow-y-auto custom-scrollbar"
+                    className="absolute top-[110%] left-0 w-full bg-surface-card/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 rounded-[2.5rem] shadow-2xl z-50 p-2 max-h-75 overflow-y-auto custom-scrollbar"
                   >
                     {filteredLocs.map((loc) => (
                       <div
                         key={loc}
                         onClick={() => handleSelectLocation(loc)}
-                        className="p-4 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-3xl cursor-pointer flex justify-between items-center border-b border-transparent"
+                        className="p-4 hover:bg-primary-light dark:hover:bg-green-900/20 rounded-3xl cursor-pointer flex justify-between items-center border-b border-transparent"
                       >
                         <div>
                           <h4 className="font-bold dark:text-white text-sm">
@@ -743,7 +743,7 @@ const Dashboard = () => {
                           </h4>
                         </div>
                         <div className="text-right">
-                          <p className="text-[10px] text-green-600 font-bold uppercase">
+                          <p className="text-[10px] text-primary-base font-bold uppercase">
                             {t("dash.best")}: {t("crop." + locationDB[loc].bestCrop)}
                           </p>
                         </div>
@@ -755,23 +755,23 @@ const Dashboard = () => {
             </div>
 
             {/* Dropdown & Mode */}
-            <div className="bg-white dark:bg-slate-900 p-3 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-sm flex items-center justify-between">
+            <div className="bg-surface-card dark:bg-slate-900 p-3 rounded-[2.5rem] border border-border-default dark:border-slate-800 shadow-sm flex items-center justify-between">
               <div
                 ref={cropDropdownRef}
-                className="relative w-1/2 border-r border-gray-100 dark:border-slate-800 pr-2 z-30"
+                className="relative w-1/2 border-r border-border-default dark:border-slate-800 pr-2 z-30"
               >
                 <div
                   onClick={() => setIsCropDropdownOpen(!isCropDropdownOpen)}
-                  className="flex items-center justify-between w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-3xl cursor-pointer transition-colors"
+                  className="flex items-center justify-between w-full px-3 py-2 bg-surface-secondary dark:bg-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-700 rounded-3xl cursor-pointer transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{crop.icon}</span>
-                    <span className="font-black text-gray-800 dark:text-white truncate">
+                    <span className="font-black text-text-main dark:text-white truncate">
                       {t("crop." + activeSector.crop)}
                     </span>
                   </div>
                   <LuChevronDown
-                    className={`text-gray-400 transition-transform ${isCropDropdownOpen ? "rotate-180" : ""}`}
+                    className={`text-text-disabled transition-transform ${isCropDropdownOpen ? "rotate-180" : ""}`}
                   />
                 </div>
                 <AnimatePresence>
@@ -780,7 +780,7 @@ const Dashboard = () => {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full left-0 mt-2 w-full min-w-50 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-gray-100 dark:border-slate-700 rounded-3xl shadow-xl z-50 overflow-hidden p-2"
+                      className="absolute top-full left-0 mt-2 w-full min-w-50 bg-surface-card/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border-default dark:border-slate-700 rounded-3xl shadow-xl z-50 overflow-hidden p-2"
                     >
                       {Object.keys(cropsData).map((c) => (
                         <div
@@ -789,7 +789,7 @@ const Dashboard = () => {
                             updateActiveSector({ crop: c });
                             setIsCropDropdownOpen(false);
                           }}
-                          className={`flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all ${activeSector.crop === c ? "bg-green-50 dark:bg-green-900/20 text-green-600" : "hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"}`}
+                          className={`flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all ${activeSector.crop === c ? "bg-primary-light dark:bg-green-900/20 text-primary-base" : "hover:bg-surface-secondary dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"}`}
                         >
                           <span className="text-2xl">{cropsData[c].icon}</span>
                           <span className="font-bold">{t("crop." + c)}</span>
@@ -800,7 +800,7 @@ const Dashboard = () => {
                 </AnimatePresence>
               </div>
               <div className="w-1/2 flex items-center justify-between px-4">
-                <p className="text-[10px] font-black text-gray-400 uppercase">
+                <p className="text-[10px] font-black text-text-disabled uppercase">
                   {activeSector.isAuto ? t("dash.auto") : t("dash.manual")}
                 </p>
                 <div
@@ -812,7 +812,7 @@ const Dashboard = () => {
                 >
                   <motion.div
                     animate={{ x: activeSector.isAuto ? 28 : 0 }}
-                    className={`w-5 h-5 rounded-full shadow-md flex items-center justify-center ${activeSector.isAuto ? "bg-green-500 text-white" : "bg-white text-gray-400"}`}
+                    className={`w-5 h-5 rounded-full shadow-md flex items-center justify-center ${activeSector.isAuto ? "bg-green-500 text-white" : "bg-surface-card text-text-disabled"}`}
                   >
                     <LuPower size={10} />
                   </motion.div>
@@ -824,17 +824,17 @@ const Dashboard = () => {
 
           {/* Hardware Panel */}
           <div
-            className={`p-6 rounded-[2.5rem] border transition-all ${activeSector.isAuto ? "bg-gray-50 dark:bg-slate-800/50 border-gray-100 dark:border-slate-800 opacity-60" : "bg-white dark:bg-slate-900 border-green-200 dark:border-green-900/50 shadow-lg"}`}
+            className={`p-6 rounded-[2.5rem] border transition-all ${activeSector.isAuto ? "bg-surface-secondary dark:bg-slate-800/50 border-border-default dark:border-slate-800 opacity-60" : "bg-surface-card dark:bg-slate-900 border-green-200 dark:border-green-900/50 shadow-lg"}`}
           >
             <div className="flex justify-between items-center mb-4">
               <h4 className="font-black dark:text-white flex items-center gap-2">
-                <LuSettings2 className="text-gray-400" /> {t("dash.hardwareControl")}
+                <LuSettings2 className="text-text-disabled" /> {t("dash.hardwareControl")}
               </h4>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <button
                 onClick={() => toggleHardware("pump")}
-                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.pump ? "bg-blue-500 border-blue-600 text-white" : "bg-gray-50 dark:bg-slate-800 text-gray-400"}`}
+                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.pump ? "bg-blue-500 border-blue-600 text-white" : "bg-surface-secondary dark:bg-slate-800 text-text-disabled"}`}
               >
                 <LuDroplet
                   size={24}
@@ -846,7 +846,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => toggleHardware("vent")}
-                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.vent ? "bg-emerald-500 border-emerald-600 text-white" : "bg-gray-50 dark:bg-slate-800 text-gray-400"}`}
+                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.vent ? "bg-emerald-500 border-emerald-600 text-white" : "bg-surface-secondary dark:bg-slate-800 text-text-disabled"}`}
               >
                 <LuWind
                   size={24}
@@ -858,7 +858,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => toggleHardware("fertilizer")}
-                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.fertilizer ? "bg-purple-500 border-purple-600 text-white" : "bg-gray-50 dark:bg-slate-800 text-gray-400"}`}
+                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.fertilizer ? "bg-purple-500 border-purple-600 text-white" : "bg-surface-secondary dark:bg-slate-800 text-text-disabled"}`}
               >
                 <LuFlaskConical
                   size={24}
@@ -870,7 +870,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => toggleHardware("ph")}
-                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.ph ? "bg-yellow-500 border-yellow-600 text-white" : "bg-gray-50 dark:bg-slate-800 text-gray-400"}`}
+                className={`flex flex-col items-center justify-center p-4 rounded-3xl transition-all border ${hardware.ph ? "bg-yellow-500 border-yellow-600 text-white" : "bg-surface-secondary dark:bg-slate-800 text-text-disabled"}`}
               >
                 <LuThermometer
                   size={24}
@@ -888,7 +888,7 @@ const Dashboard = () => {
         <div className="lg:col-span-4 grid grid-cols-1 gap-4">
           <div className="bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 rounded-[2.5rem] text-white flex flex-col justify-between shadow-2xl shadow-indigo-200/40 dark:shadow-none relative overflow-hidden h-full">
             {/* Abstract Glass Glows */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-surface-card opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-400 opacity-20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
 
             {/* Background Icon */}
@@ -938,7 +938,7 @@ const Dashboard = () => {
               </div>
 
               {/* Premium Glassmorphic AI Pill */}
-              <div className="bg-white/10 hover:bg-white/20 transition-all cursor-default border border-white/20 px-4 py-2.5 rounded-2xl backdrop-blur-md flex items-center gap-3 shadow-xl">
+              <div className="bg-surface-card/10 hover:bg-surface-card/20 transition-all cursor-default border border-white/20 px-4 py-2.5 rounded-2xl backdrop-blur-md flex items-center gap-3 shadow-xl">
                 <div className="flex flex-col text-right">
                   <span className="text-[8px] font-black uppercase tracking-widest text-indigo-200">
                     {t("dash.aiSuggested")}
@@ -947,7 +947,7 @@ const Dashboard = () => {
                     {t("crop." + weather.bestCrop) || weather.bestCrop}
                   </span>
                 </div>
-                <div className="w-10 h-10 bg-white/20 rounded-[10px] flex items-center justify-center text-2xl shadow-inner border border-white/10">
+                <div className="w-10 h-10 bg-surface-card/20 rounded-[10px] flex items-center justify-center text-2xl shadow-inner border border-white/10">
                   {cropsData[weather.bestCrop]?.icon}
                 </div>
               </div>
@@ -964,36 +964,36 @@ const Dashboard = () => {
         <div className="lg:col-span-2 flex flex-col gap-6">
           
           {/* TAB BUTTONS */}
-          <div className="flex flex-wrap gap-2 p-2 bg-gray-100 dark:bg-slate-800 rounded-3xl shadow-inner">
+          <div className="flex flex-wrap gap-2 p-2 bg-surface-secondary dark:bg-slate-800 rounded-3xl shadow-inner">
             <button 
               onClick={() => setActiveDashboardChart("moisture")} 
-              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "moisture" ? "bg-white dark:bg-slate-900 shadow-md text-emerald-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "moisture" ? "bg-surface-card dark:bg-slate-900 shadow-md text-emerald-500" : "text-text-muted dark:text-text-disabled hover:bg-surface-card/50 dark:hover:bg-slate-900/50"}`}
             >
               {t("dash.moistureTelemetry") || "Moisture"}
             </button>
             <button 
               onClick={() => setActiveDashboardChart("vent")} 
-              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "vent" ? "bg-white dark:bg-slate-900 shadow-md text-cyan-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "vent" ? "bg-surface-card dark:bg-slate-900 shadow-md text-cyan-500" : "text-text-muted dark:text-text-disabled hover:bg-surface-card/50 dark:hover:bg-slate-900/50"}`}
             >
               {t("dash.ventilationTelemetry") || "Ventilation"}
             </button>
             <button 
               onClick={() => setActiveDashboardChart("fertilizer")} 
-              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "fertilizer" ? "bg-white dark:bg-slate-900 shadow-md text-violet-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "fertilizer" ? "bg-surface-card dark:bg-slate-900 shadow-md text-violet-500" : "text-text-muted dark:text-text-disabled hover:bg-surface-card/50 dark:hover:bg-slate-900/50"}`}
             >
               {t("dash.fertilizerTelemetry") || "Fertilizer"}
             </button>
             <button 
               onClick={() => setActiveDashboardChart("ph")} 
-              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "ph" ? "bg-white dark:bg-slate-900 shadow-md text-yellow-500" : "text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-slate-900/50"}`}
+              className={`px-6 py-3 rounded-2xl font-black text-sm flex-1 transition-all whitespace-nowrap ${activeDashboardChart === "ph" ? "bg-surface-card dark:bg-slate-900 shadow-md text-yellow-500" : "text-text-muted dark:text-text-disabled hover:bg-surface-card/50 dark:hover:bg-slate-900/50"}`}
             >
               {t("dash.phLevelTelemetry") !== "dash.phLevelTelemetry" ? t("dash.phLevelTelemetry") : "pH Level Telemetry"}
             </button>
           </div>
 
-          <div onClick={() => setActiveModalChart(activeDashboardChart)} className="bg-white dark:bg-slate-900 p-8 rounded-[3.5rem] border border-gray-100 dark:border-slate-800 shadow-sm relative cursor-pointer hover:shadow-lg transition-all group">
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 rounded-[3.5rem] transition-all flex items-center justify-center z-20 pointer-events-none">
-              <span className="opacity-0 group-hover:opacity-100 bg-white dark:bg-slate-800 text-gray-800 dark:text-white px-6 py-3 rounded-full font-bold shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all"><LuMaximize2 size={20}/> Click to Expand</span>
+          <div onClick={() => setActiveModalChart(activeDashboardChart)} className="bg-surface-card dark:bg-slate-900 p-8 rounded-[3.5rem] border border-border-default dark:border-slate-800 shadow-sm relative cursor-pointer hover:shadow-lg transition-all group">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-surface-card/5 rounded-[3.5rem] transition-all flex items-center justify-center z-20 pointer-events-none">
+              <span className="opacity-0 group-hover:opacity-100 bg-surface-card dark:bg-slate-800 text-text-main dark:text-white px-6 py-3 rounded-full font-bold shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all"><LuMaximize2 size={20}/> Click to Expand</span>
             </div>
             {activeDashboardChart === "moisture" && (
               <div className="animate-in fade-in zoom-in-95 duration-300">
@@ -1002,12 +1002,12 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-black dark:text-white tracking-tight">
                       {t("dash.moistureTelemetry")}
                     </h3>
-                    <p className="text-sm font-bold text-gray-400 uppercase mt-1">
+                    <p className="text-sm font-bold text-text-disabled uppercase mt-1">
                       {t("dash.pumpStatus")}:{" "}
                       <span className={aiRes.color}>{aiRes.pumpStatus}</span>
                     </p>
                   </div>
-                  <div className="p-2 bg-emerald-50 dark:bg-slate-800 rounded-2xl text-emerald-600 dark:text-emerald-400">
+                  <div className="p-2 bg-primary-light dark:bg-slate-800 rounded-2xl text-primary-base dark:text-emerald-400">
                     <LuDroplet size={20} />
                   </div>
                 </div>
@@ -1040,9 +1040,9 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-black dark:text-white tracking-tight">
                       {t("dash.ventilationTelemetry") || "Ventilation Telemetry"}
                     </h3>
-                    <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                    <p className="text-xs font-bold text-text-disabled uppercase mt-1">
                       {t("dash.ventilationActive") || "Current State"}:{" "}
-                      <span className={hardware.vent ? "text-emerald-500 font-black" : "text-gray-400 font-black"}>{hardware.vent ? "● ACTIVE" : "○ INACTIVE"}</span>
+                      <span className={hardware.vent ? "text-emerald-500 font-black" : "text-text-disabled font-black"}>{hardware.vent ? "● ACTIVE" : "○ INACTIVE"}</span>
                     </p>
                   </div>
                   <div className="p-2 bg-cyan-50 dark:bg-slate-800 rounded-2xl text-cyan-600 dark:text-cyan-400">
@@ -1071,7 +1071,7 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-black dark:text-white tracking-tight">
                       {t("dash.fertilizerTelemetry") || "Fertilizer Telemetry"}
                     </h3>
-                    <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                    <p className="text-xs font-bold text-text-disabled uppercase mt-1">
                       {t("dash.fertilizerConsumption") || "Usage & Consumption Trends"}
                     </p>
                   </div>
@@ -1102,7 +1102,7 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-black dark:text-white tracking-tight">
                       {t("dash.phLevelTelemetry") || "pH Level Telemetry"}
                     </h3>
-                    <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                    <p className="text-xs font-bold text-text-disabled uppercase mt-1">
                       {t("dash.soilAcidity") || "Soil Acidity Monitoring"}
                     </p>
                   </div>
@@ -1136,7 +1136,7 @@ const Dashboard = () => {
 
         {/* RIGHT COLUMN: STICKY AI ENGINE */}
         <div className="space-y-6 lg:sticky lg:top-8 self-start">
-          <motion.div className="bg-white dark:bg-slate-900 p-8 rounded-[3rem] border border-gray-100 dark:border-slate-800 shadow-xl border-t-4 border-t-green-500 flex flex-col justify-between h-auto min-h-[300px]">
+          <motion.div className="bg-surface-card dark:bg-slate-900 p-8 rounded-[3rem] border border-border-default dark:border-slate-800 shadow-xl border-t-4 border-t-green-500 flex flex-col justify-between h-auto min-h-[300px]">
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-yellow-100 text-yellow-600 rounded-xl">
@@ -1146,13 +1146,13 @@ const Dashboard = () => {
                   {t("dash.aiEngine")}
                 </h3>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 font-medium leading-relaxed italic mb-8 border-l-2 border-green-500 pl-4 bg-gray-50 dark:bg-slate-800/50 p-4 rounded-r-2xl">
+              <p className="text-text-subtle dark:text-gray-300 font-medium leading-relaxed italic mb-8 border-l-2 border-green-500 pl-4 bg-surface-secondary dark:bg-slate-800/50 p-4 rounded-r-2xl">
                 "{aiRes.advice}"
               </p>
             </div>
             <button
               onClick={() => setIsReportOpen(true)}
-              className="w-full mt-auto py-4 bg-gray-900 dark:bg-green-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-lg"
+              className="w-full mt-auto py-4 bg-gray-900 dark:bg-primary-base text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-lg"
             >
               {t("dash.viewProfileRevenue")}
             </button>
@@ -1176,7 +1176,7 @@ const Dashboard = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-[100px] left-1/2 -translate-x-1/2 w-11/12 max-w-5xl max-h-[calc(100vh-120px)] bg-white dark:bg-slate-900 rounded-[3.5rem] shadow-2xl z-[100] border border-gray-100 dark:border-slate-800 overflow-y-auto flex flex-col"
+              className="fixed top-[100px] left-1/2 -translate-x-1/2 w-11/12 max-w-5xl max-h-[calc(100vh-120px)] bg-surface-card dark:bg-slate-900 rounded-[3.5rem] shadow-2xl z-[100] border border-border-default dark:border-slate-800 overflow-y-auto flex flex-col"
             >
               <div className="p-8 pb-4 flex justify-between items-start">
                 <div>
@@ -1190,7 +1190,7 @@ const Dashboard = () => {
                     {activeModalChart === 'moisture' && (
                       <div className="space-y-3">
                         <p className="text-base font-bold text-gray-700 dark:text-gray-300">Tracks real-time soil moisture percentage relative to the crop's ideal hydration zone.</p>
-                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                        <ul className="list-disc pl-5 space-y-1 text-text-muted dark:text-text-disabled">
                           <li><strong>Green Zone:</strong> The optimal moisture range between the Min and Max lines.</li>
                           <li><strong>Impact:</strong> Keeps roots healthy, preventing dehydration or fungal rot from overwatering.</li>
                           <li><strong>Automation:</strong> Zar3a AI automatically activates water pumps if levels drop below the threshold.</li>
@@ -1200,7 +1200,7 @@ const Dashboard = () => {
                     {activeModalChart === 'vent' && (
                       <div className="space-y-3">
                         <p className="text-base font-bold text-gray-700 dark:text-gray-300">Monitors greenhouse ventilation fan activity over time to maintain optimal airflow.</p>
-                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                        <ul className="list-disc pl-5 space-y-1 text-text-muted dark:text-text-disabled">
                           <li><strong>Bar Height:</strong> A value of 1 means active (running), while 0 means idle.</li>
                           <li><strong>Impact:</strong> Proper airflow reduces trapped humidity, preventing airborne diseases.</li>
                           <li><strong>Automation:</strong> Zar3a AI turns on the vent if the temperature or humidity spikes inside the facility.</li>
@@ -1210,7 +1210,7 @@ const Dashboard = () => {
                     {activeModalChart === 'fertilizer' && (
                       <div className="space-y-3">
                         <p className="text-base font-bold text-gray-700 dark:text-gray-300">Displays automated fertilizer dosage (kg) applied alongside overall water consumption (L).</p>
-                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                        <ul className="list-disc pl-5 space-y-1 text-text-muted dark:text-text-disabled">
                           <li><strong>Nutrient Balance:</strong> Balancing fertilizer with irrigation volume ensures safe absorption.</li>
                           <li><strong>Impact:</strong> Prevents nutrient lockout and root burn, significantly maximizing crop yield.</li>
                           <li><strong>Efficiency:</strong> Tracks overall farm consumption to minimize waste and reduce operational costs.</li>
@@ -1220,7 +1220,7 @@ const Dashboard = () => {
                     {activeModalChart === 'ph' && (
                       <div className="space-y-3">
                         <p className="text-base font-bold text-gray-700 dark:text-gray-300">Monitors the soil pH levels, indicating acidity or alkalinity of the planting environment.</p>
-                        <ul className="list-disc pl-5 space-y-1 text-gray-500 dark:text-gray-400">
+                        <ul className="list-disc pl-5 space-y-1 text-text-muted dark:text-text-disabled">
                           <li><strong>Ideal Range:</strong> A slightly acidic to neutral pH (typically 6.0 to 7.5) is ideal for most crops.</li>
                           <li><strong>Impact:</strong> Correct pH maximizes the availability of essential macro and micro-nutrients in the soil.</li>
                           <li><strong>Correction:</strong> If pH leaves the optimal zone, immediate soil amendment is recommended to restore balance.</li>
@@ -1231,7 +1231,7 @@ const Dashboard = () => {
                 </div>
                 <button
                   onClick={() => setActiveModalChart(null)}
-                  className="w-12 h-12 bg-gray-100 dark:bg-slate-800 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 rounded-full flex items-center justify-center transition-colors shrink-0 text-gray-500"
+                  className="w-12 h-12 bg-surface-secondary dark:bg-slate-800 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 rounded-full flex items-center justify-center transition-colors shrink-0 text-text-muted"
                 >
                   ✕
                 </button>
@@ -1313,15 +1313,15 @@ const Dashboard = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed top-0 right-0 h-full w-full max-w-sm bg-white dark:bg-slate-900 shadow-2xl z-[100] p-6 overflow-y-auto border-l border-gray-100 dark:border-slate-800"
+              className="fixed top-0 right-0 h-full w-full max-w-sm bg-surface-card dark:bg-slate-900 shadow-2xl z-[100] p-6 overflow-y-auto border-l border-border-default dark:border-slate-800"
             >
-              <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100 dark:border-slate-800">
+              <div className="flex justify-between items-center mb-8 pb-4 border-b border-border-default dark:border-slate-800">
                 <h2 className="text-2xl font-black dark:text-white flex items-center gap-2">
-                  <LuBell className="text-green-600" /> {t("dash.systemLogs")}
+                  <LuBell className="text-primary-base" /> {t("dash.systemLogs")}
                 </h2>
                 <button
                   onClick={() => setIsLogOpen(false)}
-                  className="p-2 bg-gray-100 dark:bg-slate-800 rounded-full hover:text-red-500"
+                  className="p-2 bg-surface-secondary dark:bg-slate-800 rounded-full hover:text-red-500"
                 >
                   <LuX size={20} />
                 </button>
@@ -1330,10 +1330,10 @@ const Dashboard = () => {
                 {logs.map((log, i) => (
                   <div
                     key={i}
-                    className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl flex gap-4 items-start border border-gray-100 dark:border-slate-700/50"
+                    className="p-4 bg-surface-secondary dark:bg-slate-800/50 rounded-2xl flex gap-4 items-start border border-border-default dark:border-slate-700/50"
                   >
                     <div
-                      className={`p-2 rounded-full mt-1 ${log.type === "action" ? "bg-blue-100 text-blue-600" : "bg-green-100 text-green-600"}`}
+                      className={`p-2 rounded-full mt-1 ${log.type === "action" ? "bg-blue-100 text-blue-600" : "bg-green-100 text-primary-base"}`}
                     >
                       {log.type === "action" ? (
                         <LuSettings2 size={14} />
@@ -1358,7 +1358,7 @@ const Dashboard = () => {
                           return translatedMsg;
                         })()}
                       </p>
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-text-disabled uppercase tracking-widest">
                         {log.time}
                       </p>
                     </div>
@@ -1378,9 +1378,9 @@ const Dashboard = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[3.5rem] p-8 md:p-12 relative overflow-y-auto max-h-[90vh] shadow-2xl border border-white/20"
+              className="bg-surface-card dark:bg-slate-900 w-full max-w-4xl rounded-[3.5rem] p-8 md:p-12 relative overflow-y-auto max-h-[90vh] shadow-2xl border border-white/20"
             >
-              <div className="flex justify-between items-end mb-8 border-b border-gray-100 dark:border-slate-800 pb-6">
+              <div className="flex justify-between items-end mb-8 border-b border-border-default dark:border-slate-800 pb-6">
                 <div>
                   <h2 className="text-4xl font-black dark:text-white">
                     {crop.icon} {t("crop." + activeSector.crop)} Profile
@@ -1388,13 +1388,13 @@ const Dashboard = () => {
                 </div>
                 <button
                   onClick={() => setIsReportOpen(false)}
-                  className="p-3 bg-gray-100 dark:bg-slate-800 rounded-full hover:text-red-500"
+                  className="p-3 bg-surface-secondary dark:bg-slate-800 rounded-full hover:text-red-500"
                 >
                   <LuX size={24} />
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <section className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-4xl">
+                <section className="bg-surface-secondary dark:bg-slate-800/50 p-6 rounded-4xl">
                   <h4 className="font-black dark:text-white mb-4 uppercase text-xs tracking-widest border-l-4 border-green-500 pl-4">
                     {t("dash.financialProj")}
                   </h4>
@@ -1405,7 +1405,7 @@ const Dashboard = () => {
                     <strong>{t("dash.marketPrice")}:</strong> EGP{" "}
                     {crop.pricePerTon.toLocaleString()} / Ton
                   </p>
-                  <p className="text-xl text-green-600 font-black mt-4">
+                  <p className="text-xl text-primary-base font-black mt-4">
                     {t("dash.revenue")}: EGP{" "}
                     {(crop.yieldTons * crop.pricePerTon).toLocaleString()}
                   </p>
@@ -1444,17 +1444,17 @@ const Dashboard = () => {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 overflow-y-auto text-left max-h-[calc(100vh-120px)] custom-scrollbar"
+                className="relative w-full max-w-md bg-surface-card/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 overflow-y-auto text-left max-h-[calc(100vh-120px)] custom-scrollbar"
               >
                 <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-emerald-400 via-green-500 to-lime-400" />
                 
                 <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                  <h3 className="text-2xl font-black text-text-main dark:text-white uppercase tracking-tight">
                     {t("dash.addSector") || "Add Sector"}
                   </h3>
                   <button
                     onClick={() => setIsAddSensorOpen(false)}
-                    className="p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
+                    className="p-2.5 bg-surface-secondary dark:bg-slate-800 text-text-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
                   >
                     <LuX size={20} />
                   </button>
@@ -1468,7 +1468,7 @@ const Dashboard = () => {
 
                 <form onSubmit={handleAddSensorSubmit} className="space-y-5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                    <label className="text-xs font-black text-text-muted dark:text-text-disabled uppercase tracking-widest ms-2">
                       {t("profile.sensorId") || "Sensor ID"}
                     </label>
                     <input
@@ -1477,12 +1477,12 @@ const Dashboard = () => {
                       value={newSensorForm.sensorId}
                       onChange={(e) => setNewSensorForm({ ...newSensorForm, sensorId: e.target.value })}
                       placeholder="e.g. SN-89210-A"
-                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold"
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-surface-secondary/50 dark:bg-slate-800/80 dark:text-white border-border-default dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                    <label className="text-xs font-black text-text-muted dark:text-text-disabled uppercase tracking-widest ms-2">
                       {t("dash.sectorName") || "Sector Name"}
                     </label>
                     <input
@@ -1491,18 +1491,18 @@ const Dashboard = () => {
                       value={newSensorForm.sectorName}
                       onChange={(e) => setNewSensorForm({ ...newSensorForm, sectorName: e.target.value })}
                       placeholder="e.g. Sector E: North Field"
-                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold"
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-surface-secondary/50 dark:bg-slate-800/80 dark:text-white border-border-default dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                    <label className="text-xs font-black text-text-muted dark:text-text-disabled uppercase tracking-widest ms-2">
                       {t("dash.zoneLocation") || "Location"}
                     </label>
                     <select
                       value={newSensorForm.location}
                       onChange={(e) => setNewSensorForm({ ...newSensorForm, location: e.target.value })}
-                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold appearance-none"
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-surface-secondary/50 dark:bg-slate-800/80 dark:text-white border-border-default dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold appearance-none"
                     >
                       {Object.keys(locationDB).map((loc) => (
                         <option key={loc} value={loc} className="dark:bg-slate-900">
@@ -1513,13 +1513,13 @@ const Dashboard = () => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ms-2">
+                    <label className="text-xs font-black text-text-muted dark:text-text-disabled uppercase tracking-widest ms-2">
                       {t("dash.crop") || "Crop"}
                     </label>
                     <select
                       value={newSensorForm.crop}
                       onChange={(e) => setNewSensorForm({ ...newSensorForm, crop: e.target.value })}
-                      className="w-full px-5 py-4 rounded-2xl border-2 bg-slate-50/50 dark:bg-slate-800/80 dark:text-white border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold appearance-none"
+                      className="w-full px-5 py-4 rounded-2xl border-2 bg-surface-secondary/50 dark:bg-slate-800/80 dark:text-white border-border-default dark:border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-semibold appearance-none"
                     >
                       {Object.keys(cropsData).map((c) => (
                         <option key={c} value={c} className="dark:bg-slate-900">
@@ -1531,7 +1531,7 @@ const Dashboard = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4.5 rounded-2xl font-black text-lg shadow-lg shadow-emerald-500/20 transition-all mt-6 flex items-center justify-center gap-2"
+                    className="w-full bg-primary-base hover:bg-primary-hover text-white py-4.5 rounded-2xl font-black text-lg shadow-lg shadow-emerald-500/20 transition-all mt-6 flex items-center justify-center gap-2"
                   >
                     {t("common.add") || "Add"}
                   </button>

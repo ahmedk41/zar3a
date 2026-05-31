@@ -180,7 +180,7 @@ const AdminChat = () => {
       AGRO_EXPERT: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
       ADMIN: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
     };
-    return colors[role] || "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+    return colors[role] || "bg-surface-secondary text-gray-700 dark:bg-gray-900/30 dark:text-text-disabled";
   };
 
   if (loading) {
@@ -192,22 +192,22 @@ const AdminChat = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto h-[calc(100dvh-140px)] flex bg-white dark:bg-slate-950 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden mt-2">
+    <div className="max-w-7xl mx-auto h-[calc(100dvh-140px)] flex bg-surface-card dark:bg-slate-950 rounded-[2rem] shadow-2xl border border-border-default dark:border-slate-800 overflow-hidden mt-2">
 
       {/* ─── Left Panel: Conversations List ─── */}
-      <div className={`${activeUserId ? "hidden md:flex" : "flex"} flex-col w-full md:w-[380px] border-e border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950`}>
+      <div className={`${activeUserId ? "hidden md:flex" : "flex"} flex-col w-full md:w-[380px] border-e border-border-default dark:border-slate-800 bg-surface-secondary/50 dark:bg-slate-950`}>
         
         {/* Header */}
-        <div className="px-6 py-5 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800">
+        <div className="px-6 py-5 bg-surface-card dark:bg-slate-900 border-b border-border-default dark:border-slate-800">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
               <LuShield size={20} />
             </div>
             <div>
-              <h2 className="font-black text-lg text-slate-900 dark:text-white tracking-tight">
+              <h2 className="font-black text-lg text-text-main dark:text-white tracking-tight">
                 {t("admin.chatTitle") || "Admin Messages"}
               </h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-text-disabled uppercase tracking-widest">
                 {t("admin.chatSubtitle") || "Support & Communication"}
               </p>
             </div>
@@ -215,13 +215,13 @@ const AdminChat = () => {
 
           {/* Search */}
           <div className="relative">
-            <LuSearch size={16} className="absolute start-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <LuSearch size={16} className="absolute start-4 top-1/2 -translate-y-1/2 text-text-disabled" />
             <input
               type="text"
               placeholder={t("admin.searchUsers") || "Search users..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full ps-10 pe-4 py-3 bg-gray-100 dark:bg-slate-800 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 placeholder:text-slate-400 border-none outline-none focus:ring-2 ring-indigo-500/30 transition"
+              className="w-full ps-10 pe-4 py-3 bg-surface-secondary dark:bg-slate-800 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 placeholder:text-text-disabled border-none outline-none focus:ring-2 ring-indigo-500/30 transition"
             />
           </div>
         </div>
@@ -231,10 +231,10 @@ const AdminChat = () => {
           {convoLoading ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-3">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-              <p className="text-xs text-slate-400 font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
+              <p className="text-xs text-text-disabled font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
             </div>
           ) : filteredConversations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 space-y-3 text-slate-400">
+            <div className="flex flex-col items-center justify-center py-20 space-y-3 text-text-disabled">
               <LuInbox size={40} className="opacity-30" />
               <p className="text-sm font-bold">{t("admin.noConversations") || "No conversations yet"}</p>
             </div>
@@ -248,12 +248,12 @@ const AdminChat = () => {
                   className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-start ${
                     activeUserId === convo.user.id
                       ? "bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800"
-                      : "hover:bg-white dark:hover:bg-slate-900 border border-transparent"
+                      : "hover:bg-surface-card dark:hover:bg-slate-900 border border-transparent"
                   }`}
                 >
                   {/* Avatar */}
                   <div className="relative shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-2xl flex items-center justify-center text-slate-500 dark:text-slate-300 font-black text-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-2xl flex items-center justify-center text-text-muted dark:text-slate-300 font-black text-lg">
                       {convo.user.fullName?.charAt(0)}
                     </div>
                     {convo.unreadCount > 0 && (
@@ -266,14 +266,14 @@ const AdminChat = () => {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="font-bold text-sm text-slate-900 dark:text-white truncate">
+                      <p className="font-bold text-sm text-text-main dark:text-white truncate">
                         {convo.user.fullName}
                       </p>
                       <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0 ${getRoleBadgeColor(convo.user.role)}`}>
                         {convo.user.role?.replace("_", " ") || "USER"}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 truncate mt-0.5">{convo.user.email}</p>
+                    <p className="text-xs text-text-disabled truncate mt-0.5">{convo.user.email}</p>
                   </div>
                 </motion.button>
               ))}
@@ -283,20 +283,20 @@ const AdminChat = () => {
       </div>
 
       {/* ─── Right Panel: Chat Window ─── */}
-      <div className={`${activeUserId ? "flex" : "hidden md:flex"} flex-col flex-1 bg-white dark:bg-slate-950`}>
+      <div className={`${activeUserId ? "flex" : "hidden md:flex"} flex-col flex-1 bg-surface-card dark:bg-slate-950`}>
         {!activeUserId ? (
           /* Empty State */
           <div className="flex-1 flex flex-col items-center justify-center text-slate-300 dark:text-slate-700 space-y-4">
-            <div className="w-24 h-24 bg-slate-100 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center">
+            <div className="w-24 h-24 bg-surface-secondary dark:bg-slate-900 rounded-[2rem] flex items-center justify-center">
               <LuMessageSquare size={40} />
             </div>
             <p className="font-bold text-lg">{t("admin.selectConversation") || "Select a conversation"}</p>
-            <p className="text-sm text-slate-400">{t("admin.selectConversationHint") || "Choose a user from the left to start chatting"}</p>
+            <p className="text-sm text-text-disabled">{t("admin.selectConversationHint") || "Choose a user from the left to start chatting"}</p>
           </div>
         ) : (
           <>
             {/* Chat Header */}
-            <header className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center gap-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl z-10">
+            <header className="px-6 py-4 border-b border-border-default dark:border-slate-800 flex items-center gap-4 bg-surface-card/80 dark:bg-slate-950/80 backdrop-blur-xl z-10">
               <button
                 onClick={() => {
                   setActiveUserId(null);
@@ -304,7 +304,7 @@ const AdminChat = () => {
                   setMessages([]);
                   setSearchParams({});
                 }}
-                className="md:hidden p-2.5 bg-gray-50 dark:bg-slate-900 rounded-xl text-slate-500"
+                className="md:hidden p-2.5 bg-surface-secondary dark:bg-slate-900 rounded-xl text-text-muted"
               >
                 <LuArrowLeft size={18} />
               </button>
@@ -314,14 +314,14 @@ const AdminChat = () => {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="font-black text-slate-900 dark:text-white text-sm truncate">
+                <h3 className="font-black text-text-main dark:text-white text-sm truncate">
                   {activeUser?.fullName}
                 </h3>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${getRoleBadgeColor(activeUser?.role)}`}>
                     {activeUser?.role?.replace("_", " ") || "USER"}
                   </span>
-                  <span className="text-[10px] text-slate-400">{activeUser?.email}</span>
+                  <span className="text-[10px] text-text-disabled">{activeUser?.email}</span>
                 </div>
               </div>
             </header>
@@ -329,12 +329,12 @@ const AdminChat = () => {
             {/* Chat Messages */}
             <main
               ref={chatContainerRef}
-              className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/30 dark:bg-slate-950/30"
+              className="flex-1 overflow-y-auto p-6 space-y-6 bg-surface-secondary/30 dark:bg-slate-950/30"
             >
               {chatLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-3">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                  <p className="text-xs text-slate-400 font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
+                  <p className="text-xs text-text-disabled font-bold">{t("chat.loadingMsgs") || "Loading..."}</p>
                 </div>
               ) : (
                 <AnimatePresence initial={false}>
@@ -350,7 +350,7 @@ const AdminChat = () => {
                           className={`px-5 py-3.5 rounded-[1.8rem] shadow-sm transition-all ${
                             msg.sender === "admin"
                               ? "bg-indigo-600 text-white rounded-tr-none"
-                              : "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-tl-none border border-gray-100 dark:border-slate-800"
+                              : "bg-surface-card dark:bg-slate-900 text-text-main dark:text-slate-100 rounded-tl-none border border-border-default dark:border-slate-800"
                           }`}
                         >
                           {/* Attachment */}
@@ -371,8 +371,8 @@ const AdminChat = () => {
                                   rel="noopener noreferrer"
                                   className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition ${
                                     msg.sender === "admin"
-                                      ? "bg-white/20 hover:bg-white/30 text-white"
-                                      : "bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
+                                      ? "bg-surface-card/20 hover:bg-surface-card/30 text-white"
+                                      : "bg-surface-secondary dark:bg-slate-800 hover:bg-surface-secondary dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
                                   }`}
                                 >
                                   <LuFileText size={16} />
@@ -389,7 +389,7 @@ const AdminChat = () => {
                         </div>
 
                         <div className="flex items-center gap-2 mt-1.5 px-2 opacity-50">
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">
+                          <span className="text-[9px] font-bold text-text-disabled uppercase tracking-tight">
                             {msg.time}
                           </span>
                           {msg.sender === "admin" && (
@@ -416,7 +416,7 @@ const AdminChat = () => {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden border-t border-gray-100 dark:border-slate-800"
+                  className="overflow-hidden border-t border-border-default dark:border-slate-800"
                 >
                   <div className="px-6 py-3 bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -443,19 +443,19 @@ const AdminChat = () => {
             </AnimatePresence>
 
             {/* Input */}
-            <footer className="p-5 bg-white dark:bg-slate-950 border-t border-gray-50 dark:border-slate-900">
+            <footer className="p-5 bg-surface-card dark:bg-slate-950 border-t border-gray-50 dark:border-slate-900">
               <form
                 onSubmit={handleSendMessage}
-                className="flex items-center gap-3 bg-gray-100/50 dark:bg-slate-900/50 p-2 ps-5 rounded-[2rem] focus-within:bg-white dark:focus-within:bg-slate-900 transition-all shadow-inner border border-transparent focus-within:border-indigo-500/30"
+                className="flex items-center gap-3 bg-surface-secondary/50 dark:bg-slate-900/50 p-2 ps-5 rounded-[2rem] focus-within:bg-surface-card dark:focus-within:bg-slate-900 transition-all shadow-inner border border-transparent focus-within:border-indigo-500/30"
               >
                 <input type="file" ref={imageInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
                 <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileSelect} />
 
                 <div className="flex items-center gap-1">
-                  <button type="button" onClick={() => imageInputRef.current?.click()} className="p-2 text-slate-400 hover:text-indigo-600 transition">
+                  <button type="button" onClick={() => imageInputRef.current?.click()} className="p-2 text-text-disabled hover:text-indigo-600 transition">
                     <LuImage size={20} />
                   </button>
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-slate-400 hover:text-indigo-600 transition">
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-text-disabled hover:text-indigo-600 transition">
                     <LuPaperclip size={20} />
                   </button>
                 </div>
@@ -465,7 +465,7 @@ const AdminChat = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={selectedFile ? (t("chat.caption") || "Add a caption...") : (t("admin.typeReply") || "Type your reply...")}
-                  className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder:text-slate-400 font-medium py-2.5 text-sm"
+                  className="flex-1 bg-transparent border-none outline-none text-text-main dark:text-white placeholder:text-text-disabled font-medium py-2.5 text-sm"
                 />
 
                 <motion.button
@@ -475,7 +475,7 @@ const AdminChat = () => {
                   disabled={sending || (!message.trim() && !selectedFile)}
                   className={`px-6 py-3 rounded-[1.5rem] font-black text-sm shadow-lg transition-all flex items-center gap-2 ${
                     sending || (!message.trim() && !selectedFile)
-                      ? "bg-gray-300 dark:bg-slate-700 text-gray-500 cursor-not-allowed shadow-none"
+                      ? "bg-gray-300 dark:bg-slate-700 text-text-muted cursor-not-allowed shadow-none"
                       : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200 dark:shadow-none"
                   }`}
                 >

@@ -57,7 +57,7 @@ export default function LiveTicker() {
               <span className={item.up ? "text-emerald-400" : "text-red-400"}>
                 {item.change}
               </span>
-              <span className="text-slate-500">{item.price}</span>
+              <span className="text-text-muted">{item.price}</span>
             </span>
           ))}
         </div>

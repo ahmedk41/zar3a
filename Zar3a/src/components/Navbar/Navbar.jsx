@@ -133,25 +133,25 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
 
   return (
     <>
-      <nav className="h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex justify-between items-center sticky top-0 z-[100] transition-all duration-500">
+      <nav className="h-20 bg-surface-card/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-border-default dark:border-slate-800 px-4 md:px-8 flex justify-between items-center sticky top-0 z-[100] transition-all duration-500">
 
         <div className="flex items-center gap-4">
           {/* Menu Toggle Button */}
           <button
             onClick={onToggleSidebar}
-            className="p-2.5 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all cursor-pointer"
+            className="p-2.5 text-text-subtle dark:text-slate-300 bg-surface-secondary dark:bg-slate-800 rounded-xl hover:bg-primary-light dark:hover:bg-emerald-900/20 transition-all cursor-pointer"
             title="Toggle Menu"
           >
             {isSidebarOpen ? <LuX size={22} /> : <LuMenu size={22} />}
           </button>
 
           <Link to="/" className="group flex items-center gap-3">
-            <div className="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl overflow-hidden border border-emerald-100 dark:border-emerald-800 transition-transform group-hover:scale-105">
+            <div className="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-primary-light dark:bg-emerald-900/20 rounded-2xl overflow-hidden border border-primary-light dark:border-emerald-800 transition-transform group-hover:scale-105">
               <img src={Logo} alt="Logo" className="w-full h-full object-contain transform scale-125" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tighter leading-none uppercase">Zar3a</span>
-              <span className="hidden sm:block text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1">{t("nav.smartAgri")}</span>
+              <span className="text-xl md:text-2xl font-black text-text-main dark:text-white tracking-tighter leading-none uppercase">Zar3a</span>
+              <span className="hidden sm:block text-[9px] font-bold text-primary-base dark:text-emerald-400 uppercase tracking-widest mt-1">{t("nav.smartAgri")}</span>
             </div>
           </Link>
         </div>
@@ -163,7 +163,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
             whileTap={{ scale: 0.9 }}
             onClick={toggleLang}
             title={lang === "en" ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}
-            className="flex items-center gap-1.5 px-3 py-2.5 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-2xl hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all font-bold text-xs border border-slate-200 dark:border-slate-700"
+            className="flex items-center gap-1.5 px-3 py-2.5 text-text-subtle dark:text-slate-300 bg-surface-secondary dark:bg-slate-800 rounded-2xl hover:text-primary-base hover:bg-primary-light dark:hover:bg-emerald-900/20 transition-all font-bold text-xs border border-border-default dark:border-slate-700"
           >
             <LuLanguages size={16} />
             <span>{t("lang.toggle")}</span>
@@ -173,7 +173,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={toggleTheme}
-            className="p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl hover:text-emerald-600 transition-all"
+            className="p-3 text-text-muted dark:text-text-disabled bg-surface-secondary dark:bg-slate-800 rounded-2xl hover:text-primary-base transition-all"
           >
             {isDark ? <LuSun size={20} className="text-yellow-400" /> : <LuMoon size={20} />}
           </motion.button>
@@ -182,7 +182,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
           {user && (
             <button 
               onClick={handleChatClick}
-              className="hidden sm:flex p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-emerald-600 transition-all cursor-pointer border-none outline-none" 
+              className="hidden sm:flex p-3 text-text-muted dark:text-text-disabled bg-surface-secondary dark:bg-slate-800 rounded-2xl relative hover:text-primary-base transition-all cursor-pointer border-none outline-none" 
               title={t("nav.chat") || "Chat"}
             >
               <LuMessageSquare size={20} />
@@ -192,7 +192,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
           {user && (
             <button 
               onClick={handleNotificationsClick}
-              className="p-3 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-2xl relative hover:text-blue-600 transition-all cursor-pointer border-none outline-none"
+              className="p-3 text-text-muted dark:text-text-disabled bg-surface-secondary dark:bg-slate-800 rounded-2xl relative hover:text-status-info transition-all cursor-pointer border-none outline-none"
               title={t("nav.notifications") || "Notifications"}
             >
               <LuBell size={20} />
@@ -209,9 +209,9 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
             <div className="relative" ref={profileDropdownRef}>
               <button
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                className="hidden sm:flex items-center gap-2 px-3 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-semibold text-sm"
+                className="hidden sm:flex items-center gap-2 px-3 py-3 bg-surface-secondary dark:bg-slate-800 text-text-subtle dark:text-slate-300 rounded-2xl hover:bg-border-default dark:hover:bg-slate-700 transition-all font-semibold text-sm"
               >
-                <div className="w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-6 h-6 bg-primary-base rounded-full flex items-center justify-center text-white text-xs font-bold">
                   {user.fullName?.charAt(0)}
                 </div>
                 <span className="hidden md:inline">{user.fullName?.split(" ")[0]}</span>
@@ -225,11 +225,11 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute end-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden z-50"
+                    className="absolute end-0 mt-2 w-48 bg-surface-card dark:bg-slate-800 rounded-2xl shadow-dropdown border border-border-default dark:border-slate-700 overflow-hidden z-50"
                   >
-                    <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                      <p className="font-bold text-slate-900 dark:text-white">{user.fullName}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
+                    <div className="px-4 py-3 border-b border-border-default dark:border-slate-700">
+                      <p className="font-bold text-text-main dark:text-white">{user.fullName}</p>
+                      <p className="text-xs text-text-muted dark:text-text-disabled">{user.email}</p>
                     </div>
 
                     <nav className="py-2">
@@ -237,7 +237,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
                         <Link
                           to={profileLink}
                           onClick={() => setIsProfileDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+                          className="flex items-center gap-3 px-4 py-3 text-text-subtle dark:text-slate-300 hover:bg-surface-secondary dark:hover:bg-slate-700 transition-all"
                         >
                           <LuUser size={18} />
                           <span className="font-semibold">{t("nav.myProfile")}</span>
@@ -247,13 +247,13 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
                       <Link
                         to="/settings"
                         onClick={() => setIsProfileDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+                        className="flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-surface-secondary dark:hover:bg-slate-700 transition-all"
                       >
                         <LuSettings size={18} />
                         <span className="font-semibold">{t("nav.settings")}</span>
                       </Link>
 
-                      <div className="border-t border-slate-200 dark:border-slate-700 my-2" />
+                      <div className="border-t border-border-default dark:border-slate-700 my-2" />
 
                       <button
                         onClick={async () => {
@@ -271,7 +271,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
               </AnimatePresence>
             </div>
           ) : (
-            <Link to="/login" className="hidden sm:flex items-center gap-2 px-6 py-3 bg-slate-900 dark:bg-emerald-600 text-white rounded-2xl hover:opacity-90 transition-all font-black text-xs">
+            <Link to="/login" className="hidden sm:flex items-center gap-2 px-6 py-3 bg-slate-900 dark:bg-primary-base text-white rounded-2xl hover:opacity-90 transition-all font-black text-xs">
               <LuUser size={16} />
               <span>{t("nav.signIn")}</span>
             </Link>

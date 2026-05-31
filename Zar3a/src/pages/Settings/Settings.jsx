@@ -209,7 +209,7 @@ const Settings = () => {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-6 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl flex items-center gap-3 z-50"
+            className="absolute top-6 left-1/2 -translate-x-1/2 bg-primary-base text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl flex items-center gap-3 z-50"
           >
             <LuCheck size={18} /> {toastMessage}
           </motion.div>
@@ -229,10 +229,10 @@ const Settings = () => {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-white dark:bg-slate-800 w-full max-w-sm rounded-4xl p-6 shadow-2xl text-center"
+              className="bg-surface-card dark:bg-slate-800 w-full max-w-sm rounded-4xl p-6 shadow-2xl text-center"
             >
               <div
-                className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 ${showModal === "delete" ? "bg-red-100 text-red-500" : "bg-slate-100 dark:bg-slate-700 text-slate-500"}`}
+                className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 ${showModal === "delete" ? "bg-red-100 text-red-500" : "bg-surface-secondary dark:bg-slate-700 text-text-muted"}`}
               >
                 {showModal === "delete" ? (
                   <LuTrash2 size={32} />
@@ -240,10 +240,10 @@ const Settings = () => {
                   <LuLogOut size={32} />
                 )}
               </div>
-              <h2 className="text-xl font-black text-slate-900 dark:text-white mb-2">
+              <h2 className="text-xl font-black text-text-main dark:text-white mb-2">
                 {showModal === "delete" ? t("settings.deleteAcc") : t("settings.signout")}
               </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+              <p className="text-sm text-text-muted dark:text-text-disabled mb-6">
                 {showModal === "delete"
                   ? t("settings.deleteAccDesc")
                   : t("settings.logoutConfirm")}
@@ -251,13 +251,13 @@ const Settings = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowModal(null)}
-                  className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="flex-1 py-3 bg-surface-secondary dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   {t("settings.cancel")}
                 </button>
                 <button
                   onClick={confirmAction}
-                  className={`flex-1 py-3 text-white font-bold rounded-xl transition-colors ${showModal === "delete" ? "bg-red-600 hover:bg-red-700" : "bg-slate-900 dark:bg-emerald-600 hover:opacity-90"}`}
+                  className={`flex-1 py-3 text-white font-bold rounded-xl transition-colors ${showModal === "delete" ? "bg-red-600 hover:bg-red-700" : "bg-slate-900 dark:bg-primary-base hover:opacity-90"}`}
                 >
                   {t("settings.confirm")}
                 </button>
@@ -268,18 +268,18 @@ const Settings = () => {
       </AnimatePresence>
 
       {/* Header */}
-      <div className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-6 flex justify-between items-end gap-4">
+      <div className="mb-8 border-b border-border-default dark:border-slate-800 pb-6 flex justify-between items-end gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl font-black text-text-main dark:text-white tracking-tight">
             {t("settings.title")}
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-text-muted dark:text-text-disabled mt-1 font-medium">
             {t("settings.desc")}
           </p>
         </div>
         <button
           onClick={() => setShowModal("logout")}
-          className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
+          className="flex items-center gap-2 px-5 py-2.5 bg-surface-card dark:bg-slate-800 border border-border-default dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-surface-secondary dark:hover:bg-slate-700 transition-all shadow-sm"
         >
           <LuLogOut size={16} /> {t("settings.signout")}
         </button>
@@ -292,12 +292,12 @@ const Settings = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-colors w-full whitespace-nowrap ${activeTab === tab.id ? "text-emerald-700 dark:text-emerald-400" : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50"}`}
+              className={`relative flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-colors w-full whitespace-nowrap ${activeTab === tab.id ? "text-emerald-700 dark:text-emerald-400" : "text-text-muted hover:bg-surface-secondary dark:text-text-disabled dark:hover:bg-slate-800/50"}`}
             >
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl"
+                  className="absolute inset-0 bg-primary-light dark:bg-emerald-500/10 rounded-xl"
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 />
               )}
@@ -309,7 +309,7 @@ const Settings = () => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-white dark:bg-slate-800/50 rounded-4xl border border-slate-100 dark:border-slate-700 shadow-sm min-h-125 flex flex-col overflow-hidden">
+        <div className="flex-1 bg-surface-card dark:bg-slate-800/50 rounded-4xl border border-border-default dark:border-slate-700 shadow-sm min-h-125 flex flex-col overflow-hidden">
           <div className="p-8 flex-1">
             <AnimatePresence mode="wait">
               {/* --- PROFILE TAB --- */}
@@ -332,7 +332,7 @@ const Settings = () => {
 
                     <div
                       onClick={() => fileInputRef.current.click()}
-                      className="relative group cursor-pointer w-24 h-24 bg-linear-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center text-white text-3xl font-black shadow-lg overflow-hidden border border-slate-200 dark:border-slate-700"
+                      className="relative group cursor-pointer w-24 h-24 bg-linear-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center text-white text-3xl font-black shadow-lg overflow-hidden border border-border-default dark:border-slate-700"
                     >
                       {formData.avatarUrl ? (
                         <img
@@ -357,10 +357,10 @@ const Settings = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-black text-lg text-slate-900 dark:text-white">
+                      <h3 className="font-black text-lg text-text-main dark:text-white">
                         {t("settings.picTitle")}
                       </h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      <p className="text-sm text-text-muted dark:text-text-disabled mt-1">
                         {t("settings.avatarDesc")}
                       </p>
                     </div>
@@ -376,7 +376,7 @@ const Settings = () => {
                         name="fullName"
                         value={formData.fullName}
                         onChange={handleChange}
-                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                        className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                       />
                     </div>
                     <div className="space-y-2">
@@ -388,7 +388,7 @@ const Settings = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                        className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                       />
                     </div>
                     <div className="space-y-2 md:col-span-2">
@@ -400,7 +400,7 @@ const Settings = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                        className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                       />
                     </div>
                     
@@ -414,7 +414,7 @@ const Settings = () => {
                           name="tradeLicense"
                           value={formData.tradeLicense}
                           onChange={handleChange}
-                          className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                          className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                         />
                       </div>
                     )}
@@ -429,7 +429,7 @@ const Settings = () => {
                           name="location"
                           value={formData.location}
                           onChange={handleChange}
-                          className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                          className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                         />
                       </div>
                     )}
@@ -445,7 +445,7 @@ const Settings = () => {
                             name="farmSize"
                             value={formData.farmSize}
                             onChange={handleChange}
-                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                            className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                           />
                         </div>
                         <div className="space-y-2">
@@ -457,7 +457,7 @@ const Settings = () => {
                             name="soilType"
                             value={formData.soilType}
                             onChange={handleChange}
-                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                            className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                           />
                         </div>
                       </>
@@ -474,7 +474,7 @@ const Settings = () => {
                             name="academicDegree"
                             value={formData.academicDegree}
                             onChange={handleChange}
-                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                            className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                           />
                         </div>
                         <div className="space-y-2">
@@ -486,7 +486,7 @@ const Settings = () => {
                             name="experienceYears"
                             value={formData.experienceYears}
                             onChange={handleChange}
-                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                            className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                           />
                         </div>
                         <div className="space-y-2 md:col-span-2">
@@ -497,7 +497,7 @@ const Settings = () => {
                             name="bio"
                             value={formData.bio}
                             onChange={handleChange}
-                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white min-h-[100px] resize-none"
+                            className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white min-h-[100px] resize-none"
                           />
                         </div>
                       </>
@@ -516,35 +516,35 @@ const Settings = () => {
                   className="space-y-8"
                 >
                   <div>
-                    <h3 className="font-black text-lg text-slate-900 dark:text-white mb-4">
+                    <h3 className="font-black text-lg text-text-main dark:text-white mb-4">
                       {t("settings.sessions")}
                     </h3>
-                    <div className="border border-slate-200 dark:border-slate-700 rounded-2xl divide-y divide-slate-100 dark:divide-slate-700">
+                    <div className="border border-border-default dark:border-slate-700 rounded-2xl divide-y divide-slate-100 dark:divide-slate-700">
                       {sessions.length === 0 ? (
-                        <div className="p-4 text-center text-sm font-medium text-slate-500">
+                        <div className="p-4 text-center text-sm font-medium text-text-muted">
                           {t("settings.noSessions")}
                         </div>
                       ) : (
                         sessions.map((session) => (
                           <div
                             key={session.id}
-                            className={`p-4 flex items-center justify-between ${session.current ? "bg-emerald-50/50 dark:bg-emerald-900/10 rounded-t-2xl" : ""}`}
+                            className={`p-4 flex items-center justify-between ${session.current ? "bg-primary-light/50 dark:bg-emerald-900/10 rounded-t-2xl" : ""}`}
                           >
                             <div className="flex items-center gap-4">
                               <LuMonitor
                                 className={
                                   session.current
                                     ? "text-emerald-500"
-                                    : "text-slate-400"
+                                    : "text-text-disabled"
                                 }
                                 size={24}
                               />
                               <div>
-                                <p className="font-bold text-slate-900 dark:text-white text-sm">
+                                <p className="font-bold text-text-main dark:text-white text-sm">
                                   {session.device}
                                 </p>
                                 <p
-                                  className={`text-xs font-medium ${session.current ? "text-emerald-600" : "text-slate-500"}`}
+                                  className={`text-xs font-medium ${session.current ? "text-primary-base" : "text-text-muted"}`}
                                 >
                                   {session.location}{" "}
                                   {session.current ? `• ${t("settings.activeNow")}` : ""}
@@ -558,7 +558,7 @@ const Settings = () => {
                             ) : (
                               <button
                                 onClick={() => handleRevokeSession(session.id)}
-                                className="text-sm font-bold text-slate-500 hover:text-red-500 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg transition-colors"
+                                className="text-sm font-bold text-text-muted hover:text-red-500 bg-surface-secondary dark:bg-slate-800 px-3 py-1.5 rounded-lg transition-colors"
                               >
                                 {t("settings.revoke")}
                               </button>
@@ -570,7 +570,7 @@ const Settings = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-black text-lg text-slate-900 dark:text-white mb-4">
+                    <h3 className="font-black text-lg text-text-main dark:text-white mb-4">
                       {t("settings.changePass")}
                     </h3>
                     <div className="grid grid-cols-1 gap-4">
@@ -579,18 +579,18 @@ const Settings = () => {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder={t("settings.currPass")}
-                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                        className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                       />
                       <input
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder={t("settings.newPass")}
-                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                        className="w-full bg-surface-secondary dark:bg-slate-900 border border-border-default dark:border-slate-700 px-4 py-3 rounded-xl focus:ring-2 ring-emerald-500/40 outline-none transition-all font-medium text-text-main dark:text-white"
                       />
                       <button
                         onClick={handlePasswordUpdate}
-                        className="px-6 py-3 bg-slate-900 dark:bg-emerald-600 text-white font-bold rounded-xl whitespace-nowrap hover:opacity-90 transition-opacity"
+                        className="px-6 py-3 bg-slate-900 dark:bg-primary-base text-white font-bold rounded-xl whitespace-nowrap hover:opacity-90 transition-opacity"
                       >
                         {t("settings.updatePass")}
                       </button>
@@ -608,12 +608,12 @@ const Settings = () => {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  <div className="flex items-center justify-between p-5 border border-slate-200 dark:border-slate-700 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <div className="flex items-center justify-between p-5 border border-border-default dark:border-slate-700 rounded-2xl hover:bg-surface-secondary dark:hover:bg-slate-800 transition-colors">
                     <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white">
+                      <h4 className="font-bold text-text-main dark:text-white">
                         {t("settings.smsAlerts")}
                       </h4>
-                      <p className="text-sm text-slate-500 mt-1">
+                      <p className="text-sm text-text-muted mt-1">
                         {t("settings.smsDesc")}
                       </p>
                     </div>
@@ -625,16 +625,16 @@ const Settings = () => {
                         onChange={handleChange}
                         className="sr-only peer"
                       />
-                      <div className="w-14 h-7 bg-slate-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                      <div className="w-14 h-7 bg-slate-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-surface-card after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>
                   </div>
 
-                  <div className="flex items-center justify-between p-5 border border-slate-200 dark:border-slate-700 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <div className="flex items-center justify-between p-5 border border-border-default dark:border-slate-700 rounded-2xl hover:bg-surface-secondary dark:hover:bg-slate-800 transition-colors">
                     <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white">
+                      <h4 className="font-bold text-text-main dark:text-white">
                         {t("settings.emailAlerts")}
                       </h4>
-                      <p className="text-sm text-slate-500 mt-1">
+                      <p className="text-sm text-text-muted mt-1">
                         {t("settings.emailDesc")}
                       </p>
                     </div>
@@ -646,7 +646,7 @@ const Settings = () => {
                         onChange={handleChange}
                         className="sr-only peer"
                       />
-                      <div className="w-14 h-7 bg-slate-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                      <div className="w-14 h-7 bg-slate-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-surface-card after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>
                   </div>
                 </motion.div>
@@ -663,7 +663,7 @@ const Settings = () => {
                 >
                   {/* Real Theme Selector */}
                   <div>
-                    <h3 className="font-black text-lg text-slate-900 dark:text-white mb-4">
+                    <h3 className="font-black text-lg text-text-main dark:text-white mb-4">
                       {t("settings.themeTitle")}
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -671,7 +671,7 @@ const Settings = () => {
                         <button
                           key={themeVal}
                           onClick={() => handleThemeChange(themeVal)}
-                          className={`p-4 border rounded-2xl font-bold text-sm transition-all ${formData.theme === themeVal ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400" : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 bg-slate-50 dark:bg-slate-900"}`}
+                          className={`p-4 border rounded-2xl font-bold text-sm transition-all ${formData.theme === themeVal ? "border-emerald-500 bg-primary-light text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400" : "border-border-default dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 bg-surface-secondary dark:bg-slate-900"}`}
                         >
                           {themeVal === "Light" ? t("settings.lightMode") : t("settings.darkMode")}
                         </button>
@@ -707,11 +707,11 @@ const Settings = () => {
           </div>
 
           {/* Footer Action */}
-          <div className="p-6 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30 flex justify-end">
+          <div className="p-6 border-t border-border-default dark:border-slate-700 bg-surface-secondary dark:bg-slate-900/30 flex justify-end">
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-8 py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.35)] active:scale-95 transition-all disabled:opacity-70 disabled:active:scale-100"
+              className="flex items-center gap-2 px-8 py-3 bg-primary-base text-white font-bold rounded-xl shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.35)] active:scale-95 transition-all disabled:opacity-70 disabled:active:scale-100"
             >
               {isSaving ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
