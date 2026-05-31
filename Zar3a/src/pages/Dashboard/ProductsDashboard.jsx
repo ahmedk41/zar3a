@@ -286,9 +286,9 @@ export default function ProductsDashboard() {
             {filteredProducts.length > 0 && (
               <button
                 onClick={handleBoostAll}
-                className="flex-1 md:flex-none px-6 py-3 rounded-2xl font-black text-xs text-white bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all active:scale-95 uppercase tracking-wider"
+                className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl font-black text-[11px] text-white bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all active:scale-95 uppercase tracking-widest"
               >
-                Boost All Products ✨
+                Premium Boost by 500 EGP ✨
               </button>
             )}
             <button
