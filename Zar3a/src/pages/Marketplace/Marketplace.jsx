@@ -22,6 +22,7 @@ import {
   LuTrash2,
 } from "react-icons/lu";
 import { FiEdit } from "react-icons/fi";
+import DualImageUpload from "../../components/DualImageUpload";
 
 const DEFAULT_PRODUCTS = [
   {
