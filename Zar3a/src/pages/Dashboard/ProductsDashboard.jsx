@@ -9,6 +9,7 @@ import {
   LuCheck,
   LuLayoutGrid,
   LuX,
+  LuPlus
 } from "react-icons/lu";
 import { FiAlertCircle, FiCheckCircle, FiEdit } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
@@ -459,7 +460,7 @@ export default function ProductsDashboard() {
                             className="w-12 h-12 bg-primary-light dark:bg-emerald-950/20 text-primary-base dark:text-emerald-400 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all active:scale-95 shadow-sm"
                             title={t("common.edit")}
                           >
-                            <LuPenSquare size={18} />
+                            <FiEdit size={18} />
                           </button>
                           <button
                             onClick={() => handleDelete(product.id)}
